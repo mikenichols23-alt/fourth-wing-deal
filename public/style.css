@@ -402,7 +402,23 @@ body {
 #hand .card.fw.mini .vbadge { width: 16px; height: 16px; font-size: 9px; }
 #controls { margin: 4px 0 0; flex-shrink: 0; }
 
-/* wild flip animation — rotates like turning the physical card over */
+/* Challenge cards: big swords circle in the middle like action cards */
+.card.fw .pbody.rent-body {
+  display: flex; flex-direction: column; align-items: center;
+  background: #1a1a1a; padding: 6px 4px;
+}
+.card.fw .rent-circle {
+  background: #fff; border: 2px solid #fff; border-radius: 50%;
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; margin: 4px 0; box-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+.card.fw.mini .rent-circle { width: 36px; height: 36px; font-size: 20px; }
+/* focus card big swords circle */
+.focus-card.fw .fc-rent-circle {
+  background: #fff; border: 3px solid #fff; border-radius: 50%;
+  width: 92px; height: 92px; display: flex; align-items: center; justify-content: center;
+  font-size: 48px; margin: 8px 0; box-shadow: 0 4px 16px rgba(0,0,0,.4);
+}
 @keyframes wild-flip {
   0% { transform: rotateX(0); }
   50% { transform: rotateX(90deg); }
