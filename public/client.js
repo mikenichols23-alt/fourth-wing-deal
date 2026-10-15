@@ -164,20 +164,29 @@ const AudioSys = {
   speak(text) {
     if (!voiceOn || !('speechSynthesis' in window)) return;
     try {
-      // iOS unlock: warm up speechSynthesis on first user interaction
-      if (!this._unlocked) {
-        this._unlocked = true;
-        const warm = new SpeechSynthesisUtterance(' ');
-        warm.volume = 0;
-        speechSynthesis.speak(warm);
-      }
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.rate = 1.05; u.pitch = 1.0; u.volume = 0.9;
       speechSynthesis.speak(u);
     } catch {}
+  },
+  // iOS: unlock audio on first user tap (must be called from a touch handler)
+  unlock() {
+    if (this._unlocked) return;
+    this._unlocked = true;
+    try {
+      this.ensure();
+      if ('speechSynthesis' in window) {
+        const warm = new SpeechSynthesisUtterance(' ');
+        warm.volume = 0;
+        speechSynthesis.speak(warm);
+      }
+    } catch {}
   }
 };
+// unlock iOS audio on first tap anywhere
+document.addEventListener('touchend', () => AudioSys.unlock(), { once: true, passive: true });
+document.addEventListener('click', () => AudioSys.unlock(), { once: true });
 
 const $ = id => document.getElementById(id);
 const SETMAP = {};
