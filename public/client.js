@@ -1272,15 +1272,18 @@ function showLightningModal() {
 
 function showRelicModal(c) {
   const me = S.players[myIdx];
-  const sets = Object.keys(me.sets || {}).filter(s => (me.sets[s] || []).length > 0);
+  const sets = Object.keys(me.sets || {}).filter(s => (me.sets[s] || []).length > 0 && SETMAP[s]);
   if (!sets.length) return toast('You need properties to use Double Relics.');
   showModal(`<h3>🐉 Double Relics</h3><p style="color:var(--dim);font-size:13px">Choose a color — collect 1 Blade per property from each rider.</p><div class="pickgrid">${
     sets.map(s => `<button class="btn" data-s="${s}" style="border-color:${setColor(s)}">${esc(SETMAP[s].name)} (${(me.sets[s]||[]).length})</button>`).join('')
   }</div><div><button class="btn" id="mCancel">Cancel</button></div>`);
-  $('modalBox').querySelectorAll('[data-s]').forEach(b => b.onclick = () => {
+  const box = $('modalBox');
+  if (!box) return;
+  box.querySelectorAll('[data-s]').forEach(b => b.onclick = () => {
     hideModal(); send({ t: 'play', card: c.id, opts: { set: b.dataset.s } }); selCard = null;
   });
-  $('mCancel').onclick = hideModal;
+  const cancel = $('mCancel');
+  if (cancel) cancel.onclick = hideModal;
 }
 
 function showSearchModal(c) {
