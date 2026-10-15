@@ -453,14 +453,15 @@ function focusCardEl(c) {
 function setGroupEl(p, setId, entries, forFlow) {
   const g = document.createElement('div');
   const complete = entries.length >= SETMAP[setId].size;
-  g.className = 'setgroup' + (complete ? ' complete' : '');
-  let inner = `<div class="setname" style="color:${setGlow(setId)}">${esc(SETMAP[setId].name)} (${entries.length}/${SETMAP[setId].size})</div><div class="cards">`;
+  g.className = 'setgroup' + (complete ? ' complete stacked' : '');
+  let inner = `<div class="setname" style="color:${setGlow(setId)}">${esc(SETMAP[setId].name)} (${entries.length}/${SETMAP[setId].size})${complete ? ' ✓ COMPLETE' : ''}</div><div class="cards">`;
   entries.forEach(e => {
     const full = (S.cardMap && S.cardMap[e.card]) || e;
     const el = cardEl(full, true);
     el.dataset.set = setId;
     if (forFlow) el.classList.add('targetable');
     const wrap = document.createElement('span');
+    wrap.className = 'card-wrap';
     wrap.appendChild(el);
     inner += wrap.outerHTML;
   });
