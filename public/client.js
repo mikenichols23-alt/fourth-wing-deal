@@ -666,16 +666,18 @@ function playSelected(c) {
 
 function playActionCard(c) {
   const a = c.action;
+  // close the overlay so the targeting UI is visible
+  const closeOverlay = () => { selCard = null; render(); };
   if (a === 'tairn_wisdom') { send({ t: 'play', card: c.id, opts: {} }); selCard = null; }
-  else if (a === 'house' || a === 'hotel') startBoostFlow(c);
-  else if (a === 'memory_reading') startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Step 1/1: tap a rider to collect 5 blades from' });
-  else if (a === 'outsmart') startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Step 1/2: tap a rider to steal a full set from' });
-  else if (a === 'dragons_fire') startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: "Step 1/2: tap a rider (or one of their cards) to discard one of their properties" });
-  else if (a === 'leighorrel') startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Step 1/2: tap a rider (or one of their cards) to swap a property with' });
-  else if (a === 'dagger_acro') startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Step 1/2: tap a rider (or one of their cards) to steal a property from' });
-  else if (a === 'double_relics') showRelicModal(c);
-  else if (a === 'search_arch') showSearchModal(c);
-  else if (a === 'time_stopping') startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Time Stopping: choose a rider' });
+  else if (a === 'house' || a === 'hotel') { closeOverlay(); startBoostFlow(c); }
+  else if (a === 'memory_reading') { closeOverlay(); startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Step 1/1: tap a rider to collect 5 blades from' }); }
+  else if (a === 'outsmart') { closeOverlay(); startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Step 1/2: tap a rider to steal a full set from' }); }
+  else if (a === 'dragons_fire') { closeOverlay(); startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: "Step 1/2: tap a rider (or one of their cards) to discard one of their properties" }); }
+  else if (a === 'leighorrel') { closeOverlay(); startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Step 1/2: tap a rider (or one of their cards) to swap a property with' }); }
+  else if (a === 'dagger_acro') { closeOverlay(); startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Step 1/2: tap a rider (or one of their cards) to steal a property from' }); }
+  else if (a === 'double_relics') { closeOverlay(); showRelicModal(c); }
+  else if (a === 'search_arch') { closeOverlay(); showSearchModal(c); }
+  else if (a === 'time_stopping') { closeOverlay(); startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Time Stopping: choose a rider' }); }
   else if (a === 'fonilee') { if (confirm('Collect 2 Blades from EVERY other rider?')) send({ t: 'play', card: c.id, opts: {} }); selCard = null; }
   else if (a === 'dragonscale') toast('Dragonscale Armor is played when someone targets you.');
 }
