@@ -71,7 +71,7 @@ class Game {
   // Replaces your normal draw; use during your draw phase.
   mendingDraw(i, cardId, target) {
     const p = this.me(i);
-    if (this.phase !== 'draw' || this.turn !== i || this.winner) return { ok: false };
+    if (this.phase !== 'draw' || this.turn !== i || this.winner != null) return { ok: false };
     if (!this.signetActive(i) || this.signetOf(i) !== 'mending') return { ok: false };
     if (!p.hand.includes(cardId)) return { ok: false, err: 'Card not in hand.' };
     if (target == null || target === i || !this.players[target]) return { ok: false, err: 'Choose another rider.' };
@@ -86,7 +86,7 @@ class Game {
   // BATTLE FORESIGHT: draw 3, choose 2 to keep, return 1 to the top of the deck.
   foresightDraw(i) {
     const p = this.me(i);
-    if (this.phase !== 'draw' || this.turn !== i || this.winner) return { ok: false };
+    if (this.phase !== 'draw' || this.turn !== i || this.winner != null) return { ok: false };
     if (!this.signetActive(i) || this.signetOf(i) !== 'foresight') return { ok: false };
     const drawn = [];
     for (let k = 0; k < 3; k++) { const d = this._draw(); if (d) drawn.push(d); }
@@ -113,7 +113,7 @@ class Game {
   // Free — doesn't count as one of your plays. You keep it if the set is stolen.
   placeLightning(i, setId) {
     const p = this.me(i);
-    if (this.turn !== i || this.phase !== 'play' || this.pending || this.winner) return { ok: false };
+    if (this.turn !== i || this.phase !== 'play' || this.pending || this.winner != null) return { ok: false };
     if (!this.signetActive(i) || this.signetOf(i) !== 'lightning') return { ok: false };
     if (!SET_BY_ID[setId]) return { ok: false };
     const lid = 'lightning-' + i;
@@ -131,7 +131,7 @@ class Game {
 
   unblockSignet(i, cardIds) {
     if (!this.signetBlocked[i]) return { ok: false };
-    if (this.turn !== i || this.phase !== 'play' || this.winner) return { ok: false };
+    if (this.turn !== i || this.phase !== 'play' || this.winner != null) return { ok: false };
     const p = this.me(i);
     let sum = 0;
     for (const id of cardIds) {
@@ -146,7 +146,7 @@ class Game {
   }
   recolorWild(i, cardId, newSet) {
     const p = this.me(i);
-    if (this.turn !== i || this.phase !== 'play' || this.pending || this.winner) return { ok: false };
+    if (this.turn !== i || this.phase !== 'play' || this.pending || this.winner != null) return { ok: false };
     const e = p.table.find(e => e.card === cardId);
     if (!e) return { ok: false };
     const c = this.card(cardId);
@@ -204,7 +204,7 @@ class Game {
   checkWin(p) {
     // official: three complete sets, each a DIFFERENT color
     const colors = new Set(this.completeSets(p));
-    if (colors.size >= 3 && !this.winner) {
+    if (colors.size >= 3 && this.winner == null) {
       this.winner = p.idx; this.phase = 'over';
       this.logMsg(`${p.name} protected 3 different complete sets and wins! A standout dragon rider!`);
     }
@@ -212,7 +212,7 @@ class Game {
 
   // ---------- turn flow ----------
   drawPhase(i) {
-    if (this.phase !== 'draw' || this.turn !== i || this.winner) return { ok: false };
+    if (this.phase !== 'draw' || this.turn !== i || this.winner != null) return { ok: false };
     const p = this.me(i);
     let n = p.hand.length === 0 ? 5 : 2;
     if (n === 2 && this.signetActive(i) && this.signetOf(i) === 'shadow') n = 3; // Shadow Wielding
@@ -224,7 +224,7 @@ class Game {
   }
 
   endTurn(i) {
-    if (this.turn !== i || this.winner) return { ok: false };
+    if (this.turn !== i || this.winner != null) return { ok: false };
     if (this.pending) return { ok: false, err: 'Resolve the pending action first.' };
     const p = this.me(i);
     if (p.hand.length > 7) return { ok: true, needDiscard: p.hand.length - 7 };
@@ -252,7 +252,7 @@ class Game {
   // ---------- playing cards ----------
   play(i, cardId, opts = {}) {
     const p = this.me(i);
-    if (this.winner) return { ok: false };
+    if (this.winner != null) return { ok: false };
     if (this.pending) return { ok: false, err: 'Resolve the pending action first.' };
     if (this.turn !== i || this.phase !== 'play') return { ok: false, err: 'Not your play phase.' };
     if (this.plays >= this.maxPlays(i)) return { ok: false, err: 'No plays left — end your turn.' };
@@ -449,6 +449,12 @@ class Game {
     if (pd.lastWardsBy === null) {
       return this._resolveAction(); // no wards used -> proceed
     }
+    // Wards chain: if the last wards was played by the action owner (a counter),
+    // it negates the block -> action resolves. Otherwise the block stands.
+    if (pd.lastWardsBy === pd.by) {
+      this.logMsg(`${this.me(pd.by).name}'s counter-wards negates the block!`);
+      return this._afterWardsContinue();
+    }
     // wards stands -> action cancelled
     this.discardPile.push(pd.cardId);
     this.logMsg(`${this.card(pd.cardId).name} was blocked by Dragonscale Armor.`);
@@ -543,7 +549,7 @@ class Game {
   _startCharge(by, target, amount, reason, label) {
     // target null => all others (rent)
     const targets = target == null ? this.players.filter(p => p.idx !== by).map(p => p.idx) : [target];
-    this.pending = { type: 'charge', by, cardId: this.pending?.cardId, label: label || (this.pending ? this.card(this.pending.cardId).name : 'Charge'),
+    this.pending = { type: 'charge', by, cardId: this.pending?.cardId, label: label || (this.pending && this.pending.cardId ? this.card(this.pending.cardId).name : 'Charge'),
       targets, ti: 0, amount, reason, awaits: null, lastWardsBy: null };
     return this._chargeStep();
   }
@@ -729,6 +735,12 @@ Game.prototype._answerWards = function (i, resp) {
   const p = this.me(i);
   if (resp.use) return _origAnswerWards.call(this, i, resp);
   if (pd.lastWardsBy === null) return this._afterWardsContinue();
+  // Counter-wards: if the last wards was the action owner's counter, it negates
+  // the block -> action resolves. Otherwise the block stands -> cancelled.
+  if (pd.lastWardsBy === pd.by) {
+    this.logMsg(`${this.me(pd.by).name}'s counter-wards negates the block!`);
+    return this._afterWardsContinue();
+  }
   if (pd.cardId) this.discardPile.push(pd.cardId);
   this.logMsg(`${pd.label || this.card(pd.cardId).name} was blocked by Dragonscale Armor.`);
   this.pending = null;
