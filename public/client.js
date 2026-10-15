@@ -176,14 +176,14 @@ function setGlow(id) { const s = SETMAP[id]; return s ? s.glow : '#aaa'; }
 const ACTION_STYLE = {
   fonilee:        { color: '#c2185b', icon: '🫐' },
   dragonscale:    { color: '#2e7d32', icon: '🛡️' },
-  tairn_wisdom:   { color: '#b8860b', icon: '📖' },
+  tairn_wisdom:   { color: '#b8860b', icon: '🐉' },
   dragons_fire:   { color: '#d84315', icon: '🔥' },
   leighorrel:     { color: '#7b1fa2', icon: '🍄' },
   dagger_acro:    { color: '#455a64', icon: '🗡️' },
   double_relics:  { color: '#1565c0', icon: '🏺' },
   memory_reading: { color: '#3949ab', icon: '🧠' },
   search_arch:    { color: '#6d4c41', icon: '🔍' },
-  time_stopping:  { color: '#00838f', icon: '⏳' },
+  time_stopping:  { color: '#00838f', icon: '⏸️' },
   outsmart:       { color: '#4a148c', icon: '🎭' },
 };
 function actionStyle(c) { return ACTION_STYLE[c.action] || { color: '#2a3560', icon: '⚡' }; }
@@ -352,9 +352,11 @@ function cardEl(c, mini, extra) {
   } else if (c.kind === 'money') {
     inner = `${badge}<div class="mnum">${c.value}</div><div class="mlabel">BLADES</div>`;
   } else {
+    // action: clean cream card like the sample — emoji center, no bright colors
     const st = actionStyle(c);
-    inner = `${badge}<div class="ahead" style="background:${st.color}"><span class="aicon">${st.icon}</span> ACTION</div>` +
-      `<div class="pbody"><div class="aname">${esc(c.name)}</div><div class="atext">${esc(c.text || '')}</div></div>`;
+    d.classList.add('action-clean');
+    inner = `${badge}<div class="ahead-clean"><span class="aicon-big">${st.icon}</span></div>` +
+      `<div class="pbody"><div class="aname-clean">${esc(c.name)}</div></div>`;
   }
   d.innerHTML = inner;
   return d;
@@ -403,12 +405,14 @@ function focusCardEl(c) {
         <div class="fc-desc">Worth ${c.value}⚔️ in your armory.</div>
       </div>`;
   } else {
+    // action focus: clean cream card like the sample — big emoji circle center
     const st = actionStyle(c);
     d.innerHTML = `${badge}
-      <div class="fc-phead" style="background:${st.color}"><span class="fc-aicon">${st.icon}</span> ACTION</div>
-      <div class="fc-pbody">
-        <div class="fc-aname"><span class="fc-asmall">${st.icon}</span> ${esc(c.name.toUpperCase())}</div>
-        <div class="fc-desc">${esc(c.text || '')}</div>
+      <div class="fc-acream">
+        <div class="fc-atop"><span class="fc-aval">${c.value}</span> ACTION CARD</div>
+        <div class="fc-acircle"><span class="fc-aemoji">${st.icon}</span></div>
+        <div class="fc-aname-big">${esc(c.name.toUpperCase())}</div>
+        <div class="fc-adesc">${esc(c.text || '')}</div>
       </div>`;
   }
   return d;
