@@ -187,7 +187,7 @@ async function pumpBots(room) {
   room._pumping = true;
   try {
     let guard = 0;
-    while (guard++ < 300 && !g.winner) {
+    while (guard++ < 300 && g.winner == null) {
       let acted = false;
       // 0. Signet draft: bot's turn to pick
       if (g.phase === 'signet') {
@@ -222,7 +222,7 @@ async function pumpBots(room) {
   // hasn't advanced the game by then, force it forward — a stuck bot must
   // never freeze the table.
   const gg = room.game;
-  if (gg && !gg.winner) {
+  if (gg && gg.winner == null) {
     const botTurn = room.botObjs.some(b => b.i === gg.turn);
     const pd = gg.pending;
     const botAwaited = pd && room.botObjs.some(b => {
@@ -261,7 +261,7 @@ async function pumpBots(room) {
 // force the turn forward so a stuck bot can never freeze the game.
 function unstickBot(room) {
   const g = room.game;
-  if (!g || g.winner || !room.botObjs || !room.botObjs.length) return false;
+  if (!g || g.winner != null || !room.botObjs || !room.botObjs.length) return false;
   const bot = room.botObjs.find(b => b.i === g.turn);
   if (!bot) return false;
   const key = g.turn + '|' + g.phase + '|' + JSON.stringify(g.pending) + '|' +
