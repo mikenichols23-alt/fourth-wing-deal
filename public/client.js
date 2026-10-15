@@ -968,19 +968,25 @@ function tableCardClick(entry, setId) {
   if (flow.kind === 'theirCard' && flow.target !== myIdx) {
     const complete = (S.players[flow.target].sets[setId] || []).length >= SETMAP[setId].size;
     if (complete) return toast('Cannot take from a complete set.');
+    const theirCardId = entry.card || entry.id;
     if (flow.action === 'dragons_fire') {
-      send({ t: 'play', card: flow.card, opts: { target: flow.target, card: entry.card } });
+      send({ t: 'play', card: flow.card, opts: { target: flow.target, card: theirCardId } });
+      flow = null; selCard = null;
+    } else if (flow.action === 'dagger_acro') {
+      // steal: take their card immediately
+      send({ t: 'play', card: flow.card, opts: { target: flow.target, card: theirCardId } });
       flow = null; selCard = null;
     } else { // leighorrel: now pick mine
-      flow.theirCard = entry.card; flow.kind = 'myCard';
+      flow.theirCard = theirCardId; flow.kind = 'myCard';
       flow.label = 'Step 2/2: now tap one of YOUR glowing properties to swap it with';
       render(); toast(flow.label);
     }
   } else if (flow.kind === 'myCard' && flow.target !== myIdx) {
     // clicked own table
     const complete = (me.sets[setId] || []).length >= SETMAP[setId].size;
-    if (complete) return toast('Cannot leighorrel from a complete set.');
-    send({ t: 'play', card: flow.card, opts: { target: flow.target, theirCard: flow.theirCard, myCard: entry.card } });
+    if (complete) return toast('Cannot swap from a complete set.');
+    const myCardId = entry.card || entry.id;
+    send({ t: 'play', card: flow.card, opts: { target: flow.target, theirCard: flow.theirCard, myCard: myCardId } });
     flow = null; selCard = null;
   } else if (flow.kind === 'payProps') {
     const cid = entry.card;
