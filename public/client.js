@@ -519,12 +519,13 @@ function focusCardEl(c) {
 function setGroupEl(p, setId, entries, forFlow) {
   const g = document.createElement('div');
   const complete = entries.length >= SETMAP[setId].size;
-  g.className = 'setgroup' + (complete ? ' complete stacked' : '');
+  g.className = 'setgroup bd' + (complete ? ' complete' : '');
   // highlight valid move destinations during moveWild flow
   if (flow && flow.kind === 'moveWild' && p.idx === myIdx && flow.sets.includes(setId)) {
     g.classList.add('move-target');
   }
-  let inner = `<div class="setname" style="color:${setGlow(setId)}">${esc(SETMAP[setId].name)} (${entries.length}/${SETMAP[setId].size})${complete ? ' ✓ COMPLETE' : ''}</div><div class="cards">`;
+  // Business Deals style: NO set name label, just stacked cards
+  let inner = `<div class="cards stacked">`;
   entries.forEach(e => {
     const full = (S.cardMap && S.cardMap[e.card]) || e;
     const el = cardEl(full, true, '', true);
@@ -538,6 +539,8 @@ function setGroupEl(p, setId, entries, forFlow) {
   inner += '</div>';
   const b = p.boosts[setId] || {};
   if (b.house || b.hotel) inner += `<div class="boost">${b.house ? '🏠' : ''}${b.hotel ? '🏨' : ''}</div>`;
+  // complete indicator: small checkmark badge, not text
+  if (complete) inner += `<div class="complete-badge">✓</div>`;
   g.innerHTML = inner;
   // re-attach handlers (innerHTML kills them)
   g.querySelectorAll('.card').forEach((el, i) => {
