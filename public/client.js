@@ -404,14 +404,26 @@ function frameStyle(c) {
   if (c.kind === 'action') return `border-color:${actionStyle(c).color}`;
   return `border-color:#5b2a86`;
 }
-function cardEl(c, mini, extra) {
+function cardEl(c, mini, extra, simple) {
   const d = document.createElement('div');
-  d.className = 'card fw' + (mini ? ' mini' : '') + (extra ? ' ' + extra : '');
+  d.className = 'card fw' + (mini ? ' mini' : '') + (extra ? ' ' + extra : '') + (simple ? ' simple' : '');
   d.dataset.cid = c.id;
   d.style.cssText += frameStyle(c);
   const badge = `<div class="vbadge">${c.value}</div>`;
   let inner = '';
-  if (c.kind === 'property') {
+  if (simple) {
+    // Business Deals style: just color + value, no names
+    if (c.kind === 'property') {
+      inner = `${badge}<div class="shead" style="background:${setColor(c.set)}"></div><div class="sbody"></div>`;
+    } else if (c.kind === 'wild') {
+      const lbl = c.signetCard ? '⚡️' : '';
+      inner = `${badge}<div class="shead" style="background:${wildGrad(c.sets)}"><span class="swild">${lbl}</span></div><div class="sbody"></div>`;
+    } else if (c.kind === 'money') {
+      inner = `${badge}<div class="shead" style="background:#b8860b"></div><div class="sbody"></div>`;
+    } else {
+      inner = `${badge}<div class="shead" style="background:#ddd"></div><div class="sbody"></div>`;
+    }
+  } else if (c.kind === 'property') {
     const s = SETMAP[c.set];
     inner = `${badge}<div class="phead" style="background:${setColor(c.set)}">${esc(c.name)}</div>` +
       `<div class="pbody"><div class="pset">${esc(s.name)}</div><div class="ptiers">${s.rent.join(' · ')}</div></div>`;
@@ -515,7 +527,7 @@ function setGroupEl(p, setId, entries, forFlow) {
   let inner = `<div class="setname" style="color:${setGlow(setId)}">${esc(SETMAP[setId].name)} (${entries.length}/${SETMAP[setId].size})${complete ? ' ✓ COMPLETE' : ''}</div><div class="cards">`;
   entries.forEach(e => {
     const full = (S.cardMap && S.cardMap[e.card]) || e;
-    const el = cardEl(full, true);
+    const el = cardEl(full, true, '', true);
     el.dataset.set = setId;
     if (forFlow) el.classList.add('targetable');
     const wrap = document.createElement('span');
