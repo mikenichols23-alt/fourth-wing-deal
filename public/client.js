@@ -887,14 +887,16 @@ function tableCardClick(entry, setId) {
     // no flow: tapping my own table wild starts move mode
     const me = S.players[myIdx];
     const isMine = S.turn === myIdx && !S.winner;
-    // entry IS the card object (spread with asSet)
-    const card = entry;
+    // entry from me.sets is {card: id, set: setId} — look up the card
+    const cardId = entry.card || entry.id;
+    const card = (S.cardMap && S.cardMap[cardId]) || entry;
     if (isMine && card.kind === 'wild') {
       // only my table wilds: tap wild → tap destination set (no popup)
       const myTable = me.table || [];
-      if (myTable.some(e => e.id === entry.id)) {
+      // me.table has spread cards with .id
+      if (myTable.some(e => (e.id === cardId) || (e.card === cardId))) {
         const sets = card.sets || (card.signetCard ? Object.keys(SETMAP) : []) || [];
-        startFlow({ kind: 'moveWild', card: entry.id, sets,
+        startFlow({ kind: 'moveWild', card: cardId, sets,
           label: 'Tap one of YOUR sets to move the wild there' });
         selCard = null;
         render();
