@@ -113,11 +113,12 @@ body {
 #myAvatar .ava.my-turn { box-shadow: 0 0 0 3px #ffd75f, 0 0 16px #ffd75f; border-color: #ffd75f; }
 /* Business Deals EXACT: no turn banner (glowing avatar shows turn), no clutter */
 #turnBar { display: none !important; }
-/* signet bar: tiny floating button, not a panel */
-#signetBar { position: absolute; bottom: 140px; right: 8px; z-index: 20; background: none; padding: 0; }
+/* signet bar: in-flow small button, never overlapping */
+#signetBar { display: flex; gap: 6px; align-items: center; justify-content: center; padding: 2px; min-height: 0; position: static; }
 #signetBar:empty { display: none; }
 #signetBar .my-signet { display: none; }
-#signetBar .btn.signet-power { font-size: 11px; padding: 8px 10px; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+#signetBar .btn.signet-power { font-size: 12px; padding: 6px 14px; border-radius: 16px; }
+#signetBar .btn.gold { font-size: 12px; padding: 6px 14px; }
 /* player row: Business Deals style - no label, no panel, just cards */
 #playerRow { background: none !important; border: none !important; box-shadow: none !important; padding: 0; }
 #myTable .sect-label { display: none !important; }
