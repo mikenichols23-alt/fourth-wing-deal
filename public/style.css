@@ -412,7 +412,14 @@ body {
 #myBank .card:nth-child(2) { transform: translate(7px, -4px) rotate(5deg); }
 #myBank .card:nth-child(3) { transform: translate(14px, -8px) rotate(-5deg); }
 #myBank .card:nth-child(n+4) { transform: translate(21px, -12px) rotate(9deg); }
-#myBank .card:nth-child(n+5) { display: none; }
+#drawBtn.end-ready {
+  animation: draw-pulse 1.2s ease-in-out infinite;
+  font-size: 18px; font-weight: 900;
+}
+@keyframes draw-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 215, 95, .4); }
+  50% { transform: scale(1.08); box-shadow: 0 0 24px rgba(255, 215, 95, .9); }
+}
 /* compact own table cards */
 #myTable .setgroup { margin: 2px; padding: 3px; }
 #myTable .setgroup .setname { font-size: 10px; margin-bottom: 2px; }
