@@ -123,7 +123,12 @@ body {
 .opp-name { font-weight: 700; font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .opp-bank { display: flex; align-items: center; gap: 4px; font-weight: 800; font-size: 16px; }
 .mcoin { width: 22px; height: 22px; border-radius: 50%; background: #ffd75f; color: #7c4a00; font-size: 13px; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; }
-.opp-area { padding: 4px 2px; min-height: 20px; }
+/* opponent card area: cards fit within column, never cut off */
+.opp-area { padding: 4px 2px; min-height: 20px; overflow: hidden; display: flex; flex-wrap: wrap; gap: 3px; align-items: flex-start; max-width: 100%; }
+.opp-area .setgroup.bd { max-width: 100%; }
+.opp-area .setgroup.bd .card.simple { width: 32px !important; height: 46px !important; }
+.opp-area .setgroup.bd .card-wrap { margin-left: -10px; }
+.opp-area .setgroup.bd .card-wrap:first-child { margin-left: 0; }
 .opp-handcount { font-size: 13px; color: #fff; opacity: .9; margin-bottom: 2px; }
 /* Business Deals: opponent columns with dividers, active player glow */
 #opponents { display: flex; gap: 0; padding: 0; }
