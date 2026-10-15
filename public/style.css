@@ -122,8 +122,9 @@ body {
 /* my hand count next to name (Business Deals style) */
 .my-handcount { font-size: 12px; font-weight: 700; color: #fff; margin-top: 2px; }
 /* Business Deals: player's properties in dark navy rounded panel */
-#mySets { display: flex; flex-wrap: wrap; gap: 8px; background: rgba(0,0,0,.3); border-radius: 12px; padding: 10px; min-height: 80px; align-items: flex-start; }
-#mySets:empty { min-height: 0; padding: 4px; }
+#mySets { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+#mySets:not(:empty) { background: rgba(0,0,0,.3); border-radius: 12px; padding: 10px; min-height: 80px; }
+#mySets:empty { display: none; }
 #mySets .setgroup.bd { display: flex; gap: 4px; }
 #mySets .setgroup.bd .card.simple { width: 52px !important; height: 72px !important; }
 /* player row: Business Deals style - no label, no panel, just cards */
