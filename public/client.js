@@ -1436,10 +1436,7 @@ function renderSignets() {
   }
   S.players.forEach((p, i) => {
     if (i === myIdx || !p.signet) return;
-    const d = document.createElement('div');
-    d.className = 'opp-signet';
-    d.innerHTML = `${esc(p.name)}: ⚡ <b>${esc(p.signet.name)}</b>${p.signetBlocked ? ' ⏸️' : ''}`;
-    bar.appendChild(d);
+    // Business Deals: don't clutter with opponent signet names - hide them
   });
 }
 
