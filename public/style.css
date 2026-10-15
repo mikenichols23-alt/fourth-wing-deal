@@ -119,6 +119,11 @@ body {
 #signetBar .my-signet { display: none; }
 #signetBar .btn.signet-power { font-size: 12px; padding: 6px 14px; border-radius: 16px; }
 #signetBar .btn.gold { font-size: 12px; padding: 6px 14px; }
+/* Business Deals: player's properties in dark navy rounded panel */
+#mySets { display: flex; flex-wrap: wrap; gap: 8px; background: rgba(0,0,0,.3); border-radius: 12px; padding: 10px; min-height: 80px; align-items: flex-start; }
+#mySets:empty { min-height: 0; padding: 4px; }
+#mySets .setgroup.bd { display: flex; gap: 4px; }
+#mySets .setgroup.bd .card.simple { width: 52px !important; height: 72px !important; }
 /* player row: Business Deals style - no label, no panel, just cards */
 #playerRow { background: none !important; border: none !important; box-shadow: none !important; padding: 0; }
 #myTable .sect-label { display: none !important; }
