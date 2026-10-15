@@ -1051,9 +1051,9 @@ function showStealPanel(playerIdx, actionId) {
     if (!selected) return;
     hideModal(); AudioSys.whoosh();
     if (actionId === 'dagger_acro') {
-      send({ t: 'play', card: flow.card, opts: { target: playerIdx, theirCard: selected.id } });
+      send({ t: 'play', card: flow.card, opts: { target: playerIdx, card: selected.id, theirCard: selected.id } });
     } else if (actionId === 'dragons_fire') {
-      send({ t: 'play', card: flow.card, opts: { target: playerIdx, theirCard: selected.id } });
+      send({ t: 'play', card: flow.card, opts: { target: playerIdx, card: selected.id, theirCard: selected.id } });
     } else {
       // mushroom swap: now pick MY card with the same clean panel
       hideModal();
