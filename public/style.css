@@ -409,6 +409,13 @@ body {
 }
 #drawPile.has-cards span { background: rgba(0,0,0,.6); border-radius: 8px; padding: 1px 6px; bottom: 4px; right: 4px; }
 #drawPile.empty { opacity: .45; }
+/* Business Deals: everything fits on screen, no scrolling */
+#game { height: 100dvh; max-height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+#opponents { flex-shrink: 0; }
+#midbar { flex: 1 1 auto; min-height: 40px; overflow: hidden; }
+#playerRow { flex-shrink: 0; }
+#handbar { flex-shrink: 0; }
+#controls { flex-shrink: 0; padding: 4px; }
 /* Business Deals: middle is open space, piles stacked on left */
 #midbar { flex: 1 1 auto; min-height: 100px; display: flex; align-items: flex-start; justify-content: flex-start; padding: 8px; }
 #piles { display: flex; flex-direction: column; gap: 12px; }
