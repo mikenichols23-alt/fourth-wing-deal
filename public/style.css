@@ -315,7 +315,7 @@ body {
 }
 /* compact game screen — everything fits in viewport, hand pinned to bottom */
 #game { height: 100dvh; max-height: 100dvh; display: flex; flex-direction: column; overflow: hidden; padding-top: max(8px, env(safe-area-inset-top)); padding-bottom: max(4px, env(safe-area-inset-bottom)); }
-#opponents { margin-bottom: 2px; flex-shrink: 0; max-height: 40dvh; overflow-y: auto; }
+#opponents { margin-bottom: 2px; flex-shrink: 0; max-height: 28dvh; overflow-y: auto; }
 .opp-area { min-height: 80px; padding: 4px; }
 .opp-area .card.fw { width: 56px; min-height: 78px; font-size: 10px; } /* readable mini cards */
 #handbar { flex-shrink: 0; margin-top: auto; }
@@ -327,10 +327,10 @@ body {
 #signetBar.expanded .signet-desc { display: block; }
 #log { display: none; }
 .opp-area { min-height: 44px; padding: 3px; }
-#midbar { margin: 2px 0; }
+#midbar { margin: 2px 0; flex: 1 1 auto; min-height: 0; }
 #focusWrap { min-height: 0; }
 #flowBar { flex-shrink: 0; }
-#playerRow { margin-top: 2px; flex-shrink: 0; max-height: 26dvh; overflow-y: auto; }
+#playerRow { margin-top: 2px; flex-shrink: 0; max-height: 20dvh; overflow-y: auto; }
 #myTable { min-height: 64px; padding: 6px; }
 #hand { min-height: 100px; flex-shrink: 0; }
 #controls { margin: 4px 0 0; flex-shrink: 0; }
