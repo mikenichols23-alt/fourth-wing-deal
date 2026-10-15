@@ -784,10 +784,12 @@ function selectCard(c) {
 
 // ---------- pending prompts ----------
 let lastWaitingOn = null;
+let lastAutoWards = null;
 function renderPending() {
   const pd = S.pending;
   if (!pd) {
     lastWaitingOn = null;
+    lastAutoWards = null;
     if (!$('modal').classList.contains('hidden') && !modalPinned) hideModal();
     return;
   }
@@ -797,10 +799,13 @@ function renderPending() {
   }
   lastWaitingOn = null;
   if (pd.kind === 'wards') {
+    if (!pd.hasWards) {
+      // Don't even ask — auto-decline once per prompt
+      if (lastAutoWards !== pd) { lastAutoWards = pd; send({ t: 'answer', resp: { use: false } }); }
+      return;
+    }
     showModal(`<h3>🛡️ Dragonscale Armor?</h3><p>${esc(pd.byName)} plays <b>${esc(pd.actionName)}</b> against you.</p>
-      ${pd.hasWards
-        ? '<button class="btn gold" id="wYes">Play Just Say No</button><button class="btn" id="wNo">Take it</button>'
-        : '<p>You have no Dragonscale Armor in hand.</p><button class="btn" id="wNo">Take it</button>'}`,
+      <button class="btn gold" id="wYes">Play Dragonscale Armor</button><button class="btn" id="wNo">Take it</button>`,
       true);
     $('wNo').onclick = () => { send({ t: 'answer', resp: { use: false } }); hideModal(); };
     const y = $('wYes'); if (y) y.onclick = () => { send({ t: 'answer', resp: { use: true } }); hideModal(); };
