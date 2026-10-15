@@ -1119,10 +1119,14 @@ function renderSignets() {
     grid.innerHTML = '';
     (S.signetsAvailable || []).forEach(s => {
       const d = document.createElement('div');
-      d.className = 'signet-card';
-      d.innerHTML = `<h4>⚡ ${esc(s.name)}</h4><p class="sdesc">${esc(s.desc)}</p><p>${esc(s.text)}</p>`;
-      if (myTurnToPick) d.onclick = () => send({ t: 'signet', signet: s.id });
-      else { d.style.opacity = '.55'; d.style.cursor = 'default'; }
+      d.className = 'signet-card' + (myTurnToPick ? ' pickable' : '');
+      d.innerHTML = `<h4>⚡ ${esc(s.name)}</h4><p class="sdesc">${esc(s.desc)}</p><p>${esc(s.text)}</p>${myTurnToPick ? '<div class="pick-hint">👆 TAP TO CHOOSE</div>' : ''}`;
+      if (myTurnToPick) {
+        const pick = (e) => { e.preventDefault(); AudioSys.tap(); send({ t: 'signet', signet: s.id }); };
+        d.onclick = pick;
+        d.ontouchend = pick;
+        d.style.cursor = 'pointer';
+      } else { d.style.opacity = '.55'; d.style.cursor = 'default'; }
       grid.appendChild(d);
     });
   } else {
