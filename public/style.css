@@ -146,8 +146,14 @@ body {
 #mySets { display: flex; flex-wrap: wrap; gap: 6px; overflow: visible !important; max-height: none !important; }
 #mySets .setgroup { flex: 0 1 auto; min-width: 0; }
 #mySets .setgroup .setname { font-size: 11px; white-space: nowrap; }
-/* bank card: small, not cut off */
-.bankpile { transform: scale(.8); transform-origin: top left; }
+/* opponent area: contained, no cutoff */
+#opponents { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.opp { flex: 0 0 auto; min-width: 140px; max-width: 180px; }
+.opp-area { overflow: hidden; }
+/* bank: contained, not cut off */
+#myBankRow { overflow: visible; flex-wrap: wrap; }
+#myBank { display: flex; flex-wrap: wrap; gap: 4px; }
+#myBank .card { position: relative !important; width: 40px !important; height: 56px !important; }
 .opp-banner.c3 { background: linear-gradient(100deg, #9333ea, #a855f7); }
 .opp-avatar { font-size: 22px; background: rgba(255,255,255,.25); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .opp-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
