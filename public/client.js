@@ -422,12 +422,21 @@ function focusCardEl(c) {
       </div>`;
   } else if (c.kind === 'rent') {
     const names = c.sets.map(s => SETMAP[s].name).join(' / ');
+    // show which complete sets you have (or need) for this Challenge
+    const me = S.players[myIdx];
+    const reqLines = c.sets.map(s => {
+      const have = (me.sets[s] || []).length;
+      const need = SETMAP[s].size;
+      const ok = have >= need;
+      return `<div style="color:${ok ? '#7CFC00' : '#ff9a9a'};font-weight:700">${ok ? '✓' : '✗'} ${esc(SETMAP[s].name)}: ${have}/${need}</div>`;
+    }).join('');
     d.innerHTML = `${badge}
       <div class="fc-phead" style="background:${splitGrad(c.sets)}">CHALLENGE</div>
       <div class="fc-pbody">
         <div class="fc-name">${esc(c.name.toUpperCase())}</div>
         <div class="fc-set">${esc(names)}</div>
         <div class="fc-desc">${esc(c.text || '')}</div>
+        <div class="fc-req" style="margin-top:8px;font-size:13px">Needs a complete set:<br>${reqLines}</div>
       </div>`;
   } else if (c.kind === 'money') {
     d.innerHTML = `${badge}
