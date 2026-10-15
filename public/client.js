@@ -164,6 +164,13 @@ const AudioSys = {
   speak(text) {
     if (!voiceOn || !('speechSynthesis' in window)) return;
     try {
+      // iOS unlock: warm up speechSynthesis on first user interaction
+      if (!this._unlocked) {
+        this._unlocked = true;
+        const warm = new SpeechSynthesisUtterance(' ');
+        warm.volume = 0;
+        speechSynthesis.speak(warm);
+      }
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.rate = 1.05; u.pitch = 1.0; u.volume = 0.9;
@@ -593,6 +600,13 @@ function render() {
   // controls
   $('drawBtn').classList.toggle('hidden', !(myTurn && S.needDraw));
   $('drawBtn').classList.toggle('end-ready', myTurn && S.needDraw);
+  // clarify normal draw vs signet power
+  const me2 = S.players[myIdx];
+  if (myTurn && S.needDraw && me2.signet && (me2.signet.id === 'mending' || me2.signet.id === 'foresight') && !me2.signetBlocked) {
+    $('drawBtn').textContent = 'Draw 2 (skip power)';
+  } else {
+    $('drawBtn').textContent = 'Draw';
+  }
   const needD = S.needDiscard > 0 && myTurn;
   // Enter must-discard mode: End Turn was tapped (or plays exhausted) with >7 cards
   if (needD && !mustDiscard && (S.playsLeft === 0 || endTurnTapped)) {
