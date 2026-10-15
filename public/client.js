@@ -611,22 +611,23 @@ function _render() {
   const me = S.players[myIdx];
   const myTurn = S.turn === myIdx && !S.winner;
 
-  // hide flow banner if no active flow
-  if (!flow) { const fb = $('flowBanner'); if (fb) fb.classList.add('hidden'); }
+  // hide flow banner if no active flow (render() handles showing it via #flowBar)
 
-  // opponents as columns (Business Deals style)
+  // opponents as full-width colored banners (Business Deals style)
   const opp = $('opponents'); opp.innerHTML = '';
   let oi = 0;
+  const bannerColors = ['#16a34a', '#2563eb', '#dc2626', '#9333ea']; // green, blue, red, purple
   S.players.forEach((p, i) => {
     if (i === myIdx) return;
     const d = document.createElement('div');
     d.className = 'oppcol' + (S.turn === i ? ' active-turn' : '');
-    const av = AVATARS[oi % AVATARS.length]; oi++;
-    d.innerHTML = `<div class="opp-banner c${oi % 4}">
+    const av = AVATARS[oi % AVATARS.length];
+    const bg = bannerColors[oi % bannerColors.length]; oi++;
+    d.innerHTML = `<div class="opp-banner" style="background:${bg}">
         <div class="opp-avatar">${av}</div>
         <div class="opp-name">${esc(p.name)}</div>
-        <div class="opp-bank"><span class="coin">⚔</span>${p.bankTotal}</div>
-      </div><div class="opp-area"><div class="opp-handcount">🂠 ×${p.handCount} &nbsp; 🏰 ${p.setsComplete}/3</div></div>`;
+        <div class="opp-bank"><span class="mcoin">M</span>${p.bankTotal}M</div>
+      </div><div class="opp-area"><div class="opp-handcount">🂠 ×${p.handCount}</div></div>`;
     const area = d.querySelector('.opp-area');
     const pickRider = flow && (flow.kind === 'targetPlayer' || flow.kind === 'mendingTarget');
     for (const [setId, entries] of Object.entries(p.sets)) {
@@ -705,7 +706,7 @@ function _render() {
   // Business Deals style: just show total, not individual cards
   // (individual cards clutter the UI - total is what matters)
   $('bankTotal').textContent = me.bankTotal + '⚔️';
-  $('bankTotal2').textContent = me.bankTotal + '⚔️';
+  $('bankTotal2').textContent = me.bankTotal + 'M';
   $('handCount').textContent = me.hand.length;
 
   // hand
@@ -875,14 +876,11 @@ function playActionCard(c) {
 // ---------- multi-step flows ----------
 function startFlow(f) {
   flow = f; selCard = null; render();
-  // big bright persistent banner (not the auto-hiding toast)
-  const fb = $('flowBanner');
-  if (fb) { fb.textContent = '👉 ' + (f.label || 'Choose…'); fb.classList.remove('hidden'); }
+  // render() shows the persistent banner via #flowBar; just speak the instruction
   if (f.label) AudioSys.speak(f.label);
 }
 function cancelFlow() {
   flow = null;
-  const fb = $('flowBanner'); if (fb) fb.classList.add('hidden');
   render();
 }
 $('flowCancel').onclick = () => cancelFlow();
@@ -1291,6 +1289,9 @@ window.onload = () => {
   // sound + voice toggles
   $('sndBtn').onclick = () => { soundOn = !soundOn; $('sndBtn').classList.toggle('off', !soundOn); $('sndBtn').textContent = soundOn ? '🔊' : '🔇'; if (soundOn) AudioSys.tap(); };
   $('voiceBtn').onclick = () => { voiceOn = !voiceOn; $('voiceBtn').classList.toggle('off', !voiceOn); if (voiceOn) AudioSys.speak('Voice on'); else speechSynthesis.cancel(); };
+  // back button: leave game to lobby
+  const bb = $('backBtn');
+  if (bb) bb.onclick = () => { if (confirm('Leave this game?')) location.reload(); };
   // unlock audio on first touch (mobile browsers require a gesture)
   const unlock = () => { AudioSys.ensure(); document.removeEventListener('touchstart', unlock); };
   document.addEventListener('touchstart', unlock);
