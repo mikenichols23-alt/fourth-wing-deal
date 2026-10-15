@@ -215,15 +215,33 @@ function wildGrad(sets) {
 function connect() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
   ws = new WebSocket(proto + '://' + location.host);
-  ws.onopen = () => { $('connStatus').textContent = ''; };
+  ws.onopen = () => {
+    $('connStatus').textContent = '';
+    // auto-rejoin after disconnect: restore room without refresh
+    try {
+      const rc = sessionStorage.getItem('fw_room');
+      const nm = sessionStorage.getItem('fw_name');
+      if (rc && nm && roomCode) {
+        send({ t: 'rejoin', code: rc, name: nm });
+      }
+    } catch {}
+  };
   ws.onmessage = ev => handle(JSON.parse(ev.data));
   ws.onclose = () => { $('connStatus').textContent = '⚠️ Connecting to server…'; setTimeout(connect, 2000); };
+}
+// remember room for auto-rejoin
+function rememberRoom(code, name) {
+  try {
+    sessionStorage.setItem('fw_room', code);
+    sessionStorage.setItem('fw_name', name);
+  } catch {}
 }
 function send(m) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(m)); }
 
 function handle(m) {
   if (m.t === 'lobby') {
     roomCode = m.code; myId = m.you; isHost = m.you === m.host;
+    try { sessionStorage.setItem('fw_room', m.code); } catch {}
     $('roomCode').textContent = m.code;
     $('roomInfo').classList.remove('hidden');
     $('lobbyCount').textContent = m.players.length;
@@ -1056,12 +1074,14 @@ window.onload = () => {
   document.addEventListener('touchstart', unlock);
   $('createBtn').onclick = () => {
     const name = $('nameInput').value.trim() || 'Rider';
+    try { sessionStorage.setItem('fw_name', name); } catch {}
     send({ t: 'create', name });
   };
   $('joinBtn').onclick = () => {
     const name = $('nameInput').value.trim() || 'Rider';
     const code = $('codeInput').value.trim();
     if (!code) return $('lobbyErr').textContent = 'Enter a room code.';
+    rememberRoom(code.toUpperCase(), name);
     send({ t: 'join', code, name });
   };
   let signetMode = 'random';
