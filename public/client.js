@@ -302,8 +302,8 @@ function announceEvents() {
     if (/issues a Challenge/i.test(line)) AudioSys.speak('Challenge!');
   }
   lastLogLen = log.length;
-  // my turn?
-  if (S.turn === myIdx && S.phase === 'play' && !announcedTurn) {
+  // my turn? announce on draw or play phase, including the very first turn
+  if (S.turn === myIdx && (S.phase === 'play' || S.phase === 'draw') && !announcedTurn) {
     announcedTurn = true;
     AudioSys.speak("It's your turn!");
   }
