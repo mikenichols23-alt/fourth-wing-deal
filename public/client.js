@@ -642,16 +642,25 @@ function render() {
     el.onclick = () => selectCard(c);
     h.appendChild(el);
   });
-  // auto-fit: shrink the hand fan so all cards fit on narrow screens
+  // hand fan: overlap cards like Business Deals, keep headers readable
   requestAnimationFrame(() => {
     const n = me.hand.length;
-    if (!n) { h.style.transform = ''; return; }
-    const cardW = 84, squeeze = 14; // effective width per card with overlap
-    const needed = n * (cardW - squeeze) + squeeze;
+    if (!n) return;
+    const cards = h.querySelectorAll('.card');
+    const cardW = 72;
     const avail = (h.parentElement ? h.parentElement.clientWidth : window.innerWidth) || window.innerWidth;
-    const scale = Math.min(1, (avail - 8) / needed);
-    h.style.transform = scale < 1 ? `scale(${scale})` : '';
-    h.style.transformOrigin = 'bottom center';
+    // calculate overlap so cards fit, but never smaller than 28px visible per card
+    const maxOverlap = cardW - 28;
+    const needed = n * cardW;
+    let overlap = 0;
+    if (needed > avail) {
+      overlap = Math.min(maxOverlap, (needed - avail) / Math.max(1, n - 1));
+    }
+    cards.forEach((el, i) => {
+      el.style.marginLeft = i === 0 ? '' : `-${overlap}px`;
+      el.style.zIndex = i;
+    });
+    h.style.transform = '';
   });
   $('turnInfo').textContent = S.winner ? `🏆 ${esc(S.winner.name)} wins!`
     : myTurn ? `Your turn (${S.playsLeft} left)` : `${esc(S.players[S.turn].name)}'s turn`;
