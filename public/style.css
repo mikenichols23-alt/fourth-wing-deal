@@ -376,7 +376,47 @@ body {
 .card.fw.mini .phead, .card.fw.mini .whead, .card.fw.mini .ahead { font-size: 7px; padding-left: 22px; min-height: 24px; }
 .card.fw .ahead { justify-content: center; padding-left: 4px; letter-spacing: 2px; }
 .card.fw .ahead .aicon { font-size: 14px; margin-right: 4px; }
+/* clean action mini card — cream, emoji center, like the sample */
+.card.fw .ahead-clean {
+  background: #e9e2cb; display: flex; align-items: center; justify-content: center;
+  padding: 10px 4px 6px; min-height: 44px;
+}
+.card.fw .ahead-clean .aicon-big { font-size: 28px; line-height: 1; }
+.card.fw .pbody .aname-clean {
+  font-size: 8px; font-weight: 800; color: #3a3226; text-align: center;
+  padding: 4px 2px 6px; line-height: 1.2; background: #e9e2cb;
+}
+.card.fw.mini .ahead-clean { min-height: 36px; padding: 8px 4px 4px; }
+.card.fw.mini .ahead-clean .aicon-big { font-size: 22px; }
+/* full-cream action card */
+.card.fw.action-clean { background: #e9e2cb; border-color: #fff; }
+.card.fw.action-clean .pbody { background: #e9e2cb; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
 .focus-card.fw .fc-phead .fc-aicon { font-size: 22px; margin-right: 8px; }
+/* clean action focus card — cream like the sample, big emoji circle */
+.focus-card.fw .fc-acream {
+  background: #e9e2cb; flex: 1; display: flex; flex-direction: column;
+  align-items: center; padding: 14px 16px; color: #2a251c;
+}
+.focus-card.fw .fc-atop {
+  font-weight: 900; font-size: 15px; letter-spacing: 1px; color: #2a251c;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.focus-card.fw .fc-aval {
+  background: #fff; border: 2px solid #2a251c; border-radius: 50%;
+  width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 18px; color: #2a251c;
+}
+.focus-card.fw .fc-acircle {
+  background: #fff; border: 3px solid #2a251c; border-radius: 50%;
+  width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
+  margin: 6px 0 10px; box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+.focus-card.fw .fc-aemoji { font-size: 56px; line-height: 1; }
+.focus-card.fw .fc-aname-big {
+  font-weight: 900; font-size: 17px; letter-spacing: .5px; text-align: center;
+  margin-bottom: 8px; color: #2a251c;
+}
+.focus-card.fw .fc-adesc { font-size: 14px; text-align: center; color: #4a4234; line-height: 1.4; }
 /* action focus: big readable name, small icon accent */
 .focus-card.fw .fc-aname {
   font-size: 26px; font-weight: 900; color: #fff; line-height: 1.25;
