@@ -287,7 +287,8 @@ function handle(m) {
     const first = !S;
     S = m;
     if (first) {
-      $('lobby').classList.add('hidden'); $('game').classList.remove('hidden');
+      $('lobby').classList.add('hidden'); 
+      const g = $('game'); g.classList.remove('hidden'); g.style.display = '';
       lastLogLen = 0; dealPlayed = false;
       announcedTurn = false; announcedPay = false; announcedWards = null;      // cinematic deal: shuffle + cards fly to each player (overlay covers the game)
       playDealAnimation(m.players.length, null);
@@ -306,7 +307,7 @@ function handle(m) {
     if (m.msg === 'Room not found.' && roomCode) {
       try { sessionStorage.removeItem('fw_room'); } catch {}
       roomCode = null; S = null;
-      $('game').classList.add('hidden');
+      const g = $('game'); g.classList.add('hidden'); g.style.display = 'none';
       $('lobby').classList.remove('hidden');
       setTimeout(() => {
         toast('That game ended. Start a new one!');
