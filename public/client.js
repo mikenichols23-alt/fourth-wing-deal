@@ -884,18 +884,17 @@ function flowTarget(playerIdx) {
 
 function tableCardClick(entry, setId) {
   if (!flow) {
-    // no flow: tapping my own table wild pops it up for free flipping
+    // no flow: tapping my own table wild starts move mode
     const me = S.players[myIdx];
     const isMine = S.turn === myIdx && !S.winner;
-    const card = (S.cardMap && S.cardMap[entry.card]) || entry;
+    // entry IS the card object (spread with asSet)
+    const card = entry;
     if (isMine && card.kind === 'wild') {
       // only my table wilds: tap wild → tap destination set (no popup)
       const myTable = me.table || [];
-      if (myTable.some(e => e.card === entry.card)) {
-        // get card def from cardMap; fallback to all sets for signet wilds
-        const wc = (S.cardMap && S.cardMap[entry.card]);
-        const sets = (wc && wc.sets) || (wc && wc.signetCard ? Object.keys(SETMAP) : []) || [];
-        startFlow({ kind: 'moveWild', card: entry.card, sets,
+      if (myTable.some(e => e.id === entry.id)) {
+        const sets = card.sets || (card.signetCard ? Object.keys(SETMAP) : []) || [];
+        startFlow({ kind: 'moveWild', card: entry.id, sets,
           label: 'Tap one of YOUR sets to move the wild there' });
         selCard = null;
         render();
@@ -1193,11 +1192,8 @@ function renderSignets() {
     }
     if (inPlay && !me.signetBlocked && me.signet.id === 'lightning') {
       // hide once the lightning wild is already on the table — it's in use
-      // check by card property (signetCard) not just ID, to be robust
-      const alreadyPlaced = (me.table || []).some(e => {
-        const cd = (S.cardMap && S.cardMap[e.card]);
-        return cd && cd.signetCard;
-      });
+      // table entries are spread card objects (have signetCard directly)
+      const alreadyPlaced = (me.table || []).some(e => e.signetCard);
       if (!alreadyPlaced) {
         const b = document.createElement('button'); b.className = 'btn signet-power';
         b.innerHTML = '⚡ <b>USE LIGHTNING POWER</b><br><span style="font-size:12px;font-weight:400">Place wild on any set — FREE, not a play</span>';
