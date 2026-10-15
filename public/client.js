@@ -1166,10 +1166,12 @@ function selectCard(c) {
     if (i >= 0) selSet.splice(i, 1); else selSet.push(c.id);
     updateUnblockBar(); return;
   }
-  if (S.turn !== myIdx || S.winner || S.pending) return;
+  if (S.turn !== myIdx) { toast('Not your turn'); return; }
+  if (S.winner) return;
+  if (S.pending) { toast('Waiting for ' + (S.players[S.pending.awaits]?.name || 'opponent') + '…'); return; }
   if (S.phase === 'draw') { toast('Tap DRAW first to draw 2 cards!'); AudioSys.tap(); return; }
-  if (S.phase !== 'play') return;
-  if (discardMode) return; // tapping hand cards to choose discards right now
+  if (S.phase !== 'play') { toast('Phase: ' + S.phase); return; }
+  if (discardMode) { toast('Discard mode: tap cards to discard'); return; }
   if (flow) cancelFlow();
   selCard = selCard === c.id ? null : c.id;
   render();
