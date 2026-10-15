@@ -1273,40 +1273,14 @@ function showRelicModal(c) {
 function showSearchModal(c) {
   const pile = S.discardPile || [];
   if (!pile.length) return toast('Discard pile is empty.');
-  showModal(`<h3>📚 Search the Archives</h3><p style="color:var(--dim);font-size:13px">Take a card from the discard pile.</p><div class="pickgrid" id="searchGrid"></div><div><button class="btn" id="mCancel">Cancel</button></div>`);
+  showModal(`<h3>📚 Search the Archives</h3><p style="color:var(--dim);font-size:13px">Take a card from the discard pile — it goes to your hand.</p><div class="pickgrid" id="searchGrid"></div><div><button class="btn" id="mCancel">Cancel</button></div>`);
   const grid = $('searchGrid');
   pile.forEach(cardId => {
     const cd = S.cardMap[cardId]; if (!cd) return;
     const d = document.createElement('button');
     d.className = 'btn'; d.textContent = `${cd.name} (${cd.value}⚔️)`;
-    d.onclick = () => showSearchPlacement(c, cardId);
+    d.onclick = () => { hideModal(); send({ t: 'play', card: c.id, opts: { card: cardId } }); selCard = null; };
     grid.appendChild(d);
-  });
-  $('mCancel').onclick = hideModal;
-}
-
-function showSearchPlacement(c, cardId) {
-  const cd = S.cardMap[cardId];
-  const canProp = cd.kind === 'property' || cd.kind === 'wild';
-  showModal(`<h3>📚 ${esc(cd.name)}</h3><p style="color:var(--dim);font-size:13px">Place it as a property, or in your armory?</p>
-    <div class="pickgrid">
-    ${canProp ? `<button class="btn gold" id="sProp">🏰 Property</button>` : ''}
-    <button class="btn" id="sArm">💰 Armory</button>
-    </div><div><button class="btn" id="mCancel">Cancel</button></div>`);
-  const p = $('sProp');
-  if (p) p.onclick = () => showSearchSet(c, cardId);
-  $('sArm').onclick = () => { hideModal(); send({ t: 'play', card: c.id, opts: { card: cardId, placement: 'armory' } }); selCard = null; };
-  $('mCancel').onclick = hideModal;
-}
-
-function showSearchSet(c, cardId) {
-  const cd = S.cardMap[cardId];
-  const sets = cd.kind === 'property' ? [cd.set] : cd.sets;
-  showModal(`<h3>📚 ${esc(cd.name)}</h3><div class="pickgrid">${
-    sets.map(s => `<button class="btn" data-s="${s}" style="border-color:${setColor(s)}">${esc(SETMAP[s].name)}</button>`).join('')
-  }</div><div><button class="btn" id="mCancel">Cancel</button></div>`);
-  $('modalBox').querySelectorAll('[data-s]').forEach(b => b.onclick = () => {
-    hideModal(); send({ t: 'play', card: c.id, opts: { card: cardId, placement: 'property', set: b.dataset.s } }); selCard = null;
   });
   $('mCancel').onclick = hideModal;
 }
