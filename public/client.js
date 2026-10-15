@@ -306,9 +306,9 @@ function handle(m) {
     if (m.msg === 'Room not found.' && roomCode) {
       try { sessionStorage.removeItem('fw_room'); } catch {}
       roomCode = null; S = null;
+      $('game').classList.add('hidden');
+      $('lobby').classList.remove('hidden');
       setTimeout(() => {
-        $('game').classList.add('hidden');
-        $('lobby').classList.remove('hidden');
         toast('That game ended. Start a new one!');
       }, 1500);
     }
