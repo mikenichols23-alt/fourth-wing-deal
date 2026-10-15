@@ -880,16 +880,17 @@ function flowTarget(playerIdx) {
   }
   if (a === 'outsmart') {
     const p = S.players[playerIdx];
-    const cs = Object.keys(p.sets).filter(s => (p.sets[s] || []).length >= SETMAP[s].size);
+    const cs = Object.keys(p.sets || {}).filter(s => SETMAP[s] && (p.sets[s] || []).length >= SETMAP[s].size);
     if (!cs.length) return toast(p.name + ' has no complete set.');
     showModal(`<h3>🐉 Outsmart — steal a set from ${esc(p.name)}</h3><div class="pickgrid">${
       cs.map(s => `<button class="btn" data-s="${s}" style="border-color:${setColor(s)}">${esc(SETMAP[s].name)}</button>`).join('')
     }</div><div><button class="btn" id="mCancel">Cancel</button></div>`);
-    $('modalBox').querySelectorAll('[data-s]').forEach(b => b.onclick = () => {
+    const box = $('modalBox'); if (!box) return;
+    box.querySelectorAll('[data-s]').forEach(b => b.onclick = () => {
       hideModal(); send({ t: 'play', card: flow.card, opts: { target: playerIdx, set: b.dataset.s } });
       flow = null; selCard = null;
     });
-    $('mCancel').onclick = () => { hideModal(); cancelFlow(); };
+    const cancel = $('mCancel'); if (cancel) cancel.onclick = () => { hideModal(); cancelFlow(); };
     return;
   }
   // dragons_fire / leighorrel / dagger_acro need card picks
@@ -1301,7 +1302,7 @@ function showSearchModal(c) {
     d.onclick = () => { hideModal(); send({ t: 'play', card: c.id, opts: { card: cardId } }); selCard = null; };
     grid.appendChild(d);
   });
-  $('mCancel').onclick = hideModal;
+  const cancel = $('mCancel'); if (cancel) cancel.onclick = hideModal;
 }
 
 // big winner overlay with confetti
