@@ -149,7 +149,7 @@ body {
 }
 #drawPile.has-cards span { background: rgba(0,0,0,.6); border-radius: 8px; padding: 1px 6px; bottom: 4px; right: 4px; }
 #drawPile.empty { opacity: .45; }
-#focusWrap { flex: 1; display: flex; gap: 8px; justify-content: center; align-items: flex-start; min-height: 0; }
+#focusWrap { flex: 1; display: flex; gap: 8px; justify-content: center; align-items: center; min-height: 0; overflow: hidden; }
 #focusEmpty {
   color: var(--dim); font-size: 13px; text-align: center;
   padding: 8px 10px; flex: 1;
@@ -405,9 +405,9 @@ body {
 #hand .card.fw:first-child { margin-left: 0; }
 #hand .card.fw:last-child { margin-right: 0; }
 
-/* focus card — large physical card */
+/* focus card — large physical card, scales to fit available space */
 .focus-card.fw {
-  width: 210px; min-height: 300px;
+  width: min(210px, 58vw); height: min(300px, 100%); min-height: 0;
   background: #161616; color: #f0e9d8;
   border: 4px solid #888; border-radius: 16px; overflow: hidden;
   box-shadow: 0 10px 32px rgba(0,0,0,.5);
