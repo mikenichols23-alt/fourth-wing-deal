@@ -3,6 +3,9 @@ let ws, S = null, myIdx = 0, myId = null, roomCode = null, isHost = false;
 let selCard = null;          // selected hand card id
 let selSet = [];             // selected table cards (for pay) / hand cards (for discard)
 let discardMode = false;     // true while tapping hand cards to choose discards
+let mustDiscard = false;     // true after End Turn with >7 cards — big red discard UI
+let announcedDiscard = false;
+let endTurnTapped = false;   // true after tapping End Turn (to trigger must-discard)
 let flow = null;             // {kind, ...} multi-step flow
 let soundOn = true;          // audio toggle
 let voiceOn = true;          // voice announcements toggle
@@ -571,16 +574,27 @@ function render() {
   $('drawBtn').classList.toggle('hidden', !(myTurn && S.needDraw));
   $('drawBtn').classList.toggle('end-ready', myTurn && S.needDraw);
   const needD = S.needDiscard > 0 && myTurn;
-  if (!needD) { discardMode = false; selSet = []; }
-  $('endBtn').classList.toggle('hidden', !myTurn || S.phase !== 'play' || needD);
+  // Enter must-discard mode: End Turn was tapped (or plays exhausted) with >7 cards
+  if (needD && !mustDiscard && (S.playsLeft === 0 || endTurnTapped)) {
+    mustDiscard = true; discardMode = true; selSet = [];
+  }
+  if (!needD) { discardMode = false; mustDiscard = false; selSet = []; announcedDiscard = false; endTurnTapped = false; }
+  // Big red discard UI + voice when forced to discard at end of turn
+  if (mustDiscard && !announcedDiscard) {
+    announcedDiscard = true;
+    AudioSys.speak(`Discard ${S.needDiscard} card${S.needDiscard === 1 ? '' : 's'}!`);
+    AudioSys.tap();
+  }
+  $('endBtn').classList.toggle('hidden', !myTurn || S.phase !== 'play' || mustDiscard);
   $('endBtn').textContent = S.playsLeft === 3 && me.hand.length <= 7 ? 'End Turn' : `End Turn (${S.playsLeft} left)`;
   // pop bright when all plays are used — hard to miss
-  $('endBtn').classList.toggle('end-ready', myTurn && S.phase === 'play' && !needD && S.playsLeft === 0);
-  $('discardBtn').classList.toggle('hidden', !needD);
+  $('endBtn').classList.toggle('end-ready', myTurn && S.phase === 'play' && !mustDiscard && S.playsLeft === 0);
+  $('discardBtn').classList.toggle('hidden', !mustDiscard);
   $('discardBtn').textContent = discardMode
     ? `Confirm Discard (${selSet.length}/${S.needDiscard})`
     : `Discard ${S.needDiscard}`;
-  $('discardBtn').classList.toggle('end-ready', needD && discardMode && selSet.length >= S.needDiscard);
+  $('discardBtn').classList.toggle('end-ready', mustDiscard && discardMode && selSet.length >= S.needDiscard);
+  $('discardBtn').classList.toggle('big-red', mustDiscard);
 
   renderFocus();
   renderPending();
@@ -915,7 +929,7 @@ window.onload = () => {
   $('startBtn').onclick = () => send({ t: 'start', opts: { signetMode } });
   $('addBotBtn').onclick = () => send({ t: 'addBot' });
   $('drawBtn').onclick = () => { AudioSys.deal(); send({ t: 'draw' }); };
-  $('endBtn').onclick = () => { AudioSys.tap(); send({ t: 'end' }); };
+  $('endBtn').onclick = () => { AudioSys.tap(); endTurnTapped = true; send({ t: 'end' }); };
   $('drawPile').onclick = () => { if (myIdx != null && S && S.turn === myIdx && S.phase === 'draw') { AudioSys.deal(); send({ t: 'draw' }); } };
   $('discardBtn').onclick = () => {
     if (!S || S.needDiscard <= 0) return;
