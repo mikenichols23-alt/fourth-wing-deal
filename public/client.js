@@ -699,7 +699,17 @@ function renderFocus() {
   if (c.kind === 'money' || c.kind === 'action' || c.kind === 'rent')
     mkBtn('bank', '⚔️', 'Bank', () => { send({ t: 'play', card: c.id, opts: { asMoney: true } }); selCard = null; }, canAct);
   // Play — contextual (money cards are bank-only, no Play)
-  if (c.kind !== 'money') mkBtn('play', '▶', 'Play', () => playSelected(c), canAct);
+  // Challenge cards need a complete matching set; disable Play with explanation if none
+  let playEnabled = canAct;
+  let playLabel = 'Play';
+  if (c.kind === 'rent' && canAct) {
+    const okSets = c.sets.filter(s => (me.sets[s] || []).length >= SETMAP[s].size);
+    if (!okSets.length) {
+      playEnabled = false;
+      playLabel = 'Need Set';
+    }
+  }
+  if (c.kind !== 'money') mkBtn('play', '▶', playLabel, () => playSelected(c), playEnabled);
   // Pass — deselect
   mkBtn('pass', '⏭', 'Pass', () => { selCard = null; render(); }, true);
   // plays-left dots
