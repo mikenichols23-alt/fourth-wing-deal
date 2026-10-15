@@ -57,13 +57,18 @@ body {
   width: 40px !important; height: 56px !important;
   border-radius: 6px; overflow: hidden; position: relative;
 }
-/* Business Deals style: stacked cards, no labels */
-.setgroup.bd { position: relative; padding: 2px; margin: 2px; display: inline-block; }
-.setgroup.bd .cards.stacked { display: flex; position: relative; }
-.setgroup.bd .card-wrap { position: relative; margin-left: -18px; }
-.setgroup.bd .card-wrap:first-child { margin-left: 0; }
-.setgroup.bd .card.simple { width: 44px !important; height: 62px !important; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
-.setgroup.bd .setname { display: none; }
+/* Business Deals proportions: small cards, generous spacing */
+#game { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; overflow-x: hidden; padding: 8px; }
+.setgroup.bd .card.simple { width: 38px !important; height: 54px !important; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+.setgroup.bd .card-wrap { margin-left: -14px; }
+.setgroup.bd { margin: 3px; padding: 3px; }
+/* opponent area compact */
+#opponents { gap: 6px; }
+.opp .setgroup.bd .card.simple { width: 34px !important; height: 48px !important; }
+/* player sets row */
+#mySets { gap: 8px; }
+/* hand cards slightly larger for tapping */
+#hand .card { width: 56px !important; height: 78px !important; }
 .complete-badge {
   position: absolute; top: -6px; right: -6px;
   width: 20px; height: 20px; border-radius: 50%;
