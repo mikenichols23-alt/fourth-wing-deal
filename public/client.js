@@ -679,11 +679,11 @@ function playActionCard(c) {
   else if (a === 'search_arch') { closeOverlay(); showSearchModal(c); }
   else if (a === 'time_stopping') { closeOverlay(); startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Time Stopping: choose a rider' }); }
   else if (a === 'fonilee') { if (confirm('Collect 2 Blades from EVERY other rider?')) send({ t: 'play', card: c.id, opts: {} }); selCard = null; }
-  else if (a === 'dragonscale') toast('Dragonscale Armor is played when someone targets you.');
+  else if (a === 'dragonscale') { selCard = null; render(); toast('Dragonscale Armor is played when someone targets you.'); }
 }
 
 // ---------- multi-step flows ----------
-function startFlow(f) { flow = f; selCard = f.card || selCard; render(); toast(f.label || 'Choose…'); }
+function startFlow(f) { flow = f; selCard = null; render(); toast(f.label || 'Choose…'); }
 function cancelFlow() { flow = null; render(); }
 $('flowCancel').onclick = () => cancelFlow();
 
@@ -691,6 +691,7 @@ function startRentFlow(c) {
   const me = S.players[myIdx];
   const okSets = c.sets.filter(s => (me.sets[s] || []).length >= SETMAP[s].size);
   if (!okSets.length) return toast('No complete set matches this Challenge card.');
+  selCard = null; render(); // close overlay before showing modal
   showModal(`<h3>⚔️ Issue Challenge</h3><div class="pickgrid">${
     okSets.map(s => `<button class="btn" data-s="${s}" style="border-color:${setColor(s)}">${esc(SETMAP[s].name)}</button>`).join('')
   }</div><div><button class="btn" id="mCancel">Cancel</button></div>`);
@@ -710,6 +711,7 @@ function startBoostFlow(c) {
     return n && (c.action === 'house' ? !b.house : (b.house && !b.hotel));
   });
   if (!okSets.length) return toast(c.action === 'house' ? 'Need a complete set without a House.' : 'Need a complete set with a House.');
+  selCard = null; render(); // close overlay before showing modal
   showModal(`<h3>🏗️ ${esc(c.name)}</h3><div class="pickgrid">${
     okSets.map(s => `<button class="btn" data-s="${s}" style="border-color:${setColor(s)}">${esc(SETMAP[s].name)}</button>`).join('')
   }</div><div><button class="btn" id="mCancel">Cancel</button></div>`);
