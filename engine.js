@@ -577,7 +577,7 @@ class Game {
       this.logMsg(`${from.name} couldn't cover the full ${amount} Blades to ${to.name} — paid ${taken}.`);
       return null;
     }
-    this.pending = { type: 'pay', by: byIdx, from: fromIdx, to: byIdx, amount, need, bankTaken: taken };
+    this.pending = { type: 'pay', by: byIdx, from: fromIdx, to: byIdx, amount, need, bankTaken: taken, awaits: fromIdx };
     return this._promptFor(fromIdx);
   }
 
