@@ -464,6 +464,10 @@ function setGroupEl(p, setId, entries, forFlow) {
   const g = document.createElement('div');
   const complete = entries.length >= SETMAP[setId].size;
   g.className = 'setgroup' + (complete ? ' complete stacked' : '');
+  // highlight valid move destinations during moveWild flow
+  if (flow && flow.kind === 'moveWild' && p.idx === myIdx && flow.sets.includes(setId)) {
+    g.classList.add('move-target');
+  }
   let inner = `<div class="setname" style="color:${setGlow(setId)}">${esc(SETMAP[setId].name)} (${entries.length}/${SETMAP[setId].size})${complete ? ' ✓ COMPLETE' : ''}</div><div class="cards">`;
   entries.forEach(e => {
     const full = (S.cardMap && S.cardMap[e.card]) || e;
@@ -669,6 +673,11 @@ function renderFocus() {
         b.onclick = fn;
         fa.appendChild(b);
       };
+      mkBtn('move', '🎯', 'Move', () => {
+        // enter move mode: tap a destination set
+        selTableWild = null;
+        startFlow({ kind: 'moveWild', card: wc.id, sets: wc.sets, label: 'Tap one of YOUR sets to move the wild there' });
+      });
       mkBtn('flip', '🔄', 'Flip', () => {
         // cycle to next color and send recolor (free, doesn't burn a turn)
         const idx = wc.sets.indexOf(wc.asSet || wc.sets[0]);
@@ -869,6 +878,21 @@ function tableCardClick(entry, setId) {
     return;
   }
   const me = S.players[myIdx];
+  // moveWild: tap a destination set to move the wild there
+  if (flow.kind === 'moveWild') {
+    // only my own sets
+    const mySets = me.sets || {};
+    if (!mySets[setId]) return;
+    // check the wild supports this color
+    if (!flow.sets.includes(setId)) {
+      toast(`This wild can't be ${SETMAP[setId].name}.`);
+      return;
+    }
+    send({ t: 'recolor', card: flow.card, set: setId });
+    flow = null;
+    render();
+    return;
+  }
   // tapping an opponent's card directly during "choose a rider" skips straight to that rider
   if (flow.kind === 'targetPlayer') {
     for (let pi = 0; pi < S.players.length; pi++) {
