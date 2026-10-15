@@ -337,6 +337,18 @@ function playDealAnimation(numPlayers, done) {
 // ---------- voice announcements from game events ----------
 function announceEvents() {
   if (!S) return;
+  const me = S.players[myIdx];
+  const myName = me ? me.name : '';
+  // payment targeting ME: announce loudly
+  if (S.pending && S.pending.kind === 'pay' && !announcedPay) {
+    const fromName = S.players[S.pending.by] ? S.players[S.pending.by].name : 'Someone';
+    if (S.pending.from === myIdx || S.pending.awaits === myIdx) {
+      announcedPay = true;
+      AudioSys.speak(`${fromName} charges you ${S.pending.amount} blades!`);
+    }
+  } else if (!S.pending || S.pending.kind !== 'pay') {
+    announcedPay = false;
+  }
   // new log entries -> speak action cards / wins
   const log = S.log || [];
   for (let i = lastLogLen; i < log.length; i++) {
@@ -355,7 +367,18 @@ function announceEvents() {
       AudioSys.fanfare();
       showWinnerOverlay(winnerName);
     }
-    if (/issues a Challenge/i.test(line)) AudioSys.speak('Challenge!');
+    if (/issues a Challenge/i.test(line)) {
+      AudioSys.speak('Challenge!');
+      // if it targets me, say so
+      if (myName && line.includes(myName)) AudioSys.speak('Someone challenges you!');
+    }
+    // action card targeting me: "X played [card] on Y" or "X stole from Y"
+    if (myName && line.includes(myName)) {
+      const acted = line.match(/^(.+?) (played|stole|took|discarded|swapped)/i);
+      if (acted && acted[1] !== myName) {
+        AudioSys.speak(`${acted[1]} targets you!`);
+      }
+    }
   }
   lastLogLen = log.length;
   // my turn? announce on draw or play phase, including the very first turn
