@@ -708,7 +708,7 @@ function _render() {
   const mb = $('myBank'); mb.innerHTML = '';
   // Business Deals style: just show total, not individual cards
   // (individual cards clutter the UI - total is what matters)
-  $('bankTotal').textContent = me.bankTotal + '⚔️';
+  $('bankTotal').textContent = me.bankTotal + 'M';
   $('bankTotal2').textContent = me.bankTotal + 'M';
   $('handCount').textContent = me.hand.length;
 
