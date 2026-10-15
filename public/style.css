@@ -433,7 +433,20 @@ body {
 #myTable .setgroup { margin: 2px; padding: 3px; }
 #myTable .setgroup .setname { font-size: 10px; margin-bottom: 2px; }
 #myTable .setgroup .cards { gap: 2px; }
-#hand { min-height: 100px; flex-shrink: 0; }
+/* smooth scrolling with hardware acceleration */
+#opponents, #playerRow, #mySets, #hand {
+  -webkit-overflow-scrolling: touch;
+  will-change: scroll-position;
+}
+.card, .setgroup {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+/* reduce expensive shadows on mobile */
+@media (max-width: 500px) {
+  .card { box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+  .setgroup.complete { box-shadow: none; }
+}
 /* smaller hand cards to fit */
 #hand .card.fw { width: 72px; height: 100px; }
 #hand .card.fw.mini .vbadge { width: 16px; height: 16px; font-size: 9px; }
