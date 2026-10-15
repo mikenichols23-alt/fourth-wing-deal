@@ -100,6 +100,18 @@ body {
 .btn:active { transform: scale(.97); }
 .btn.gold { background: linear-gradient(180deg, #f5b301, #d99400); border-color: #ffb700; color: #3a2500; }
 .btn.danger { background: rgba(220, 40, 40, .85); border-color: #ff6b6b; }
+/* big red forced-discard button at end of turn */
+#discardBtn.big-red {
+  background: linear-gradient(180deg, #e03030, #b02020);
+  border: 3px solid #ff8080; border-radius: 16px;
+  font-size: 20px; font-weight: 900; padding: 16px 24px;
+  width: 100%; box-shadow: 0 6px 20px rgba(220, 40, 40, .5);
+  animation: pulse-red 1.2s ease-in-out infinite;
+}
+@keyframes pulse-red {
+  0%, 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(220, 40, 40, .5); }
+  50% { transform: scale(1.02); box-shadow: 0 6px 28px rgba(220, 40, 40, .8); }
+}
 .btn:disabled { opacity: .4; }
 .err { color: #ff9a9a; min-height: 20px; margin-top: 8px; font-size: 14px; }
 .roomcode { font-size: 30px; color: var(--gold); letter-spacing: 8px; margin: 12px 0; font-weight: 800; }
