@@ -330,27 +330,11 @@ class Game {
       if (!cid || !this.discardPile.includes(cid))
         return { ok: false, need: 'chooseDiscardCard' };
       const card = this.card(cid);
-      const placement = opts.placement; // 'property' or 'armory'
-      if (placement === 'property') {
-        const set = opts.set;
-        if (!set) return { ok: false, need: 'chooseSearchSet', card: cid };
-        // must be a valid set for this card
-        const validSet = card.kind === 'property' ? card.set === set
-          : card.kind === 'wild' ? card.sets.includes(set) : false;
-        if (!validSet) return { ok: false, err: 'That card cannot go in that set.' };
-      } else if (placement !== 'armory') {
-        return { ok: false, need: 'chooseSearchPlacement', card: cid };
-      }
       this.removeFromHand(p, c.id); this.discardPile.push(c.id); this.plays++;
       this.discardPile.splice(this.discardPile.indexOf(cid), 1);
-      if (placement === 'armory') {
-        p.bank.push(cid);
-        this.logMsg(`${p.name} searched the archives and banked ${card.name}.`);
-      } else {
-        p.table.push({ card: cid, set: opts.set });
-        this.logMsg(`${p.name} searched the archives and played ${card.name} to ${SET_BY_ID[opts.set].name}.`);
-      }
-      this.checkWin(p);
+      // recovered card goes to hand — play it whenever you want
+      p.hand.push(cid);
+      this.logMsg(`${p.name} searched the archives and recovered ${card.name} to hand.`);
       return { ok: true };
     }
     // targeted actions go through the wards pipeline
