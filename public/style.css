@@ -86,9 +86,12 @@ body {
 .opp-banner { position: relative; overflow: hidden; }
 .opp-banner .opp-avatar { flex-shrink: 0; }
 .opp-banner .opp-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
-/* my sets container: contained, no overflow */
-#myTable { min-width: 0; flex: 1; overflow: hidden; }
-#mySets { overflow: hidden; }
+/* my sets: allow wrapping, container grows */
+#myTable { min-width: 0; flex: 1; overflow: visible; }
+#mySets { display: flex; flex-wrap: wrap; gap: 6px; overflow: visible; align-items: flex-start; }
+#mySets .setgroup.bd { flex: 0 0 auto; }
+/* bank row below sets, not overlapping */
+#myBankRow { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.15); display: flex; align-items: center; gap: 8px; }
 /* hand: separate from sets */
 #hand-wrap { margin-top: 8px; border-top: 1px solid rgba(255,255,255,.1); padding-top: 8px; }
 .card.simple { overflow: hidden; }
