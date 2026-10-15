@@ -957,6 +957,53 @@ function flowTarget(playerIdx) {
   return;
 }
 
+// Business Deals panel for picking MY card (mushroom swap step 2)
+function showMyCardPanel(playerIdx, theirCardId) {
+  const me = S.players[myIdx];
+  const cards = [];
+  for (const [setId, entries] of Object.entries(me.sets || {})) {
+    const complete = (me.sets[setId] || []).length >= SETMAP[setId].size;
+    if (complete) continue; // can't swap from complete set
+    for (const e of entries) {
+      const entry = typeof e === 'object' ? e : { card: e };
+      const cardId = entry.card || entry.id;
+      const cdef = typeof e === 'object' && e.name ? e : null;
+      cards.push({ id: cardId, setId, name: cdef?.name || cardId, color: setId, value: cdef?.value || 0 });
+    }
+  }
+  const cardBtns = cards.map(c =>
+    `<button class="stealcard" data-id="${c.id}" data-set="${c.setId}" style="border:3px solid ${setColor(c.color)}">
+      <span class="stealcard-val">${c.value}⚔️</span>
+      <span class="stealcard-name">${esc(c.name)}</span>
+    </button>`).join('');
+  showModal(`<div style="background:#7c3aed;border-radius:12px;padding:10px;margin:-8px -8px 12px">
+      <h3 style="font-size:18px;margin:0;color:#fff">Now select YOUR property to swap.</h3>
+    </div>
+    <div class="paygrid">${cardBtns || '<p>No swappable properties!</p>'}</div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
+      <button class="btn" id="myCardCancel" style="font-size:16px;padding:12px 24px;background:#475569">Cancel</button>
+      <button class="btn" id="myCardGo" style="font-size:18px;padding:12px 32px;background:#ea580c" disabled>Swap</button>
+    </div>`, true);
+  let selected = null;
+  const goBtn = $('myCardGo');
+  $('modalBox').querySelectorAll('.stealcard').forEach(b => b.onclick = (ev) => {
+    ev.stopPropagation();
+    $('modalBox').querySelectorAll('.stealcard').forEach(x => { x.style.boxShadow = ''; x.style.transform = ''; });
+    b.style.boxShadow = '0 0 16px #ffd75f'; b.style.transform = 'translateY(-4px)';
+    selected = { id: b.dataset.id, set: b.dataset.set };
+    goBtn.disabled = false;
+    AudioSys.pop();
+  });
+  if (goBtn) goBtn.onclick = () => {
+    if (!selected) return;
+    hideModal(); AudioSys.whoosh();
+    send({ t: 'play', card: flow.card, opts: { target: playerIdx, theirCard: theirCardId, myCard: selected.id } });
+    flow = null; selCard = null; render();
+  };
+  const cancelBtn = $('myCardCancel');
+  if (cancelBtn) cancelBtn.onclick = () => { hideModal(); cancelFlow(); };
+}
+
 // Business Deals steal panel: target's properties as full-size tappable cards
 function showStealPanel(playerIdx, actionId) {
   const target = S.players[playerIdx];
@@ -1010,10 +1057,10 @@ function showStealPanel(playerIdx, actionId) {
     } else if (actionId === 'dragons_fire') {
       send({ t: 'play', card: flow.card, opts: { target: playerIdx, theirCard: selected.id } });
     } else {
-      // mushroom swap: now pick my card
+      // mushroom swap: now pick MY card with the same clean panel
+      hideModal();
       flow.kind = 'myCard'; flow.target = playerIdx; flow.theirCard = selected.id;
-      flow.label = `Step 3/3: tap one of YOUR glowing properties to swap`;
-      render(); toast(flow.label);
+      showMyCardPanel(playerIdx, selected.id);
       return;
     }
     flow = null; selCard = null; render();
