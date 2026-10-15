@@ -695,6 +695,9 @@ function _render() {
   $('myName').textContent = me.name;
   const mt = $('myTable'); mt.classList.toggle('turn', myTurn);
   $('playerRow').classList.toggle('turn', myTurn);
+  // my avatar glows on my turn (Business Deals style)
+  const myAva = document.querySelector('#myAvatar .ava');
+  if (myAva) myAva.classList.toggle('my-turn', myTurn);
   const ms = $('mySets'); ms.innerHTML = '';
   for (const [setId, entries] of Object.entries(me.sets)) {
     const inFlow = flow && (flow.kind === 'theirCard' || flow.kind === 'myCard' || flow.kind === 'payProps');
