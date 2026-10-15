@@ -568,6 +568,9 @@ function _render() {
   const me = S.players[myIdx];
   const myTurn = S.turn === myIdx && !S.winner;
 
+  // hide flow banner if no active flow
+  if (!flow) { const fb = $('flowBanner'); if (fb) fb.classList.add('hidden'); }
+
   // opponents as top banners
   const opp = $('opponents'); opp.innerHTML = '';
   let oi = 0;
@@ -825,8 +828,18 @@ function playActionCard(c) {
 }
 
 // ---------- multi-step flows ----------
-function startFlow(f) { flow = f; selCard = null; render(); toast(f.label || 'Choose…'); }
-function cancelFlow() { flow = null; render(); }
+function startFlow(f) {
+  flow = f; selCard = null; render();
+  // big bright persistent banner (not the auto-hiding toast)
+  const fb = $('flowBanner');
+  if (fb) { fb.textContent = '👉 ' + (f.label || 'Choose…'); fb.classList.remove('hidden'); }
+  if (f.label) AudioSys.speak(f.label);
+}
+function cancelFlow() {
+  flow = null;
+  const fb = $('flowBanner'); if (fb) fb.classList.add('hidden');
+  render();
+}
 $('flowCancel').onclick = () => cancelFlow();
 
 function startRentFlow(c) {
