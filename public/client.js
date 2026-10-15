@@ -369,7 +369,10 @@ function announceEvents() {
       } else if (sid === 'foresight' && S.phase === 'draw' && S.needDraw) {
         setTimeout(() => AudioSys.speak("Your Foresight power is ready!"), 1200);
       } else if (sid === 'lightning' && S.phase === 'play') {
-        setTimeout(() => AudioSys.speak("Your Lightning power is ready!"), 1200);
+        // only announce if the lightning wild isn't already on the table
+        const lid = 'lightning-' + myIdx;
+        const alreadyPlaced = (me.table || []).some(e => e.card === lid);
+        if (!alreadyPlaced) setTimeout(() => AudioSys.speak("Your Lightning power is ready!"), 1200);
       }
     }
   }
@@ -1176,10 +1179,15 @@ function renderSignets() {
       }
     }
     if (inPlay && !me.signetBlocked && me.signet.id === 'lightning') {
-      const b = document.createElement('button'); b.className = 'btn signet-power';
-      b.innerHTML = '⚡ <b>USE LIGHTNING POWER</b><br><span style="font-size:12px;font-weight:400">Place wild on any set — FREE, not a play</span>';
-      b.onclick = () => showLightningModal();
-      bar.appendChild(b);
+      // hide once the lightning wild is already on the table — it's in use
+      const lid = 'lightning-' + myIdx;
+      const alreadyPlaced = (me.table || []).some(e => e.card === lid);
+      if (!alreadyPlaced) {
+        const b = document.createElement('button'); b.className = 'btn signet-power';
+        b.innerHTML = '⚡ <b>USE LIGHTNING POWER</b><br><span style="font-size:12px;font-weight:400">Place wild on any set — FREE, not a play</span>';
+        b.onclick = () => showLightningModal();
+        bar.appendChild(b);
+      }
     }
     if (me.signetBlocked && myTurn) {
       const b = document.createElement('button'); b.className = 'btn gold'; b.textContent = '⏳ Unfreeze signet (discard 10⚔️)';
@@ -1218,33 +1226,9 @@ function updateUnblockBar() {
   fa.appendChild(cx);
 }
 
-// wild recolor on double-click / double-tap
-let lastTap = 0, lastTapCard = null;
-document.addEventListener('click', e => {
-  const ce = e.target.closest('.card');
-  if (!ce || !S || S.turn !== myIdx || S.phase !== 'play' || S.pending || S.winner) return;
-  const me = S.players[myIdx];
-  const entry = me.table.find(x => x.id === ce.dataset.cid);
-  if (!entry) return;
-  const now = Date.now();
-  if (lastTapCard === ce.dataset.cid && now - lastTap < 400) {
-    lastTap = 0; lastTapCard = null;
-    showRecolorModal(ce.dataset.cid);
-  } else {
-    lastTap = now; lastTapCard = ce.dataset.cid;
-  }
-});
+// (double-tap wild recolor removed — single tap goes straight to move mode)
 
-function showRecolorModal(cardId) {
-  const colors = [['darkblue','Dark Blue'],['darkgreen','Dark Green'],['red','Red'],['yellow','Yellow'],['orange','Orange'],['pink','Pink'],['lightblue','Light Blue'],['brown','Brown'],['black','Black'],['lightgreen','Light Green']];
-  showModal(`<h3>🎨 Shift Wild Color</h3><p style="color:var(--dim);font-size:13px">Free — doesn't use a play.</p><div class="pickgrid">${
-    colors.map(([c, n]) => `<button class="btn" data-s="${c}">${n}</button>`).join('')
-  }</div><div><button class="btn" id="mCancel">Cancel</button></div>`);
-  $('modalBox').querySelectorAll('[data-s]').forEach(b => b.onclick = () => {
-    hideModal(); send({ t: 'recolor', card: cardId, set: b.dataset.s });
-  });
-  $('mCancel').onclick = hideModal;
-}
+// (showRecolorModal removed — tap wild, tap destination set)
 
 function showLightningModal() {
   const colors = [['darkblue','Dark Blue'],['darkgreen','Dark Green'],['red','Red'],['yellow','Yellow'],['orange','Orange'],['pink','Pink'],['lightblue','Light Blue'],['brown','Brown'],['black','Black'],['lightgreen','Light Green']];
