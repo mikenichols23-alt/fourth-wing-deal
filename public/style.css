@@ -262,7 +262,32 @@ body {
 #myTable { flex: 1; background: var(--panel-dark); border-radius: 12px; padding: 8px; min-height: 96px; }
 #playerRow.turn #myAvatar .ava { animation: turnGlow 1.6s ease-in-out infinite; border-color: #ffd75f; }
 #playerRow.turn #myTable { outline: 2px solid var(--gold); box-shadow: 0 0 16px rgba(255,215,95,.35); }
-#mySets { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+#mySets { display: flex; flex-wrap: wrap; gap: 6px; overflow-x: visible; padding-bottom: 4px; }
+/* winner overlay with confetti */
+#winnerOverlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,.85);
+  display: flex; align-items: center; justify-content: center;
+}
+#winnerOverlay.hidden { display: none; }
+.winner-box {
+  text-align: center; padding: 32px;
+  background: linear-gradient(180deg, #1a2a6c, #0a1a5c);
+  border: 4px solid #ffd75f; border-radius: 24px;
+  box-shadow: 0 0 40px rgba(255,215,95,.6);
+  z-index: 2; position: relative;
+}
+.winner-trophy { font-size: 80px; }
+.winner-name { font-size: 32px; font-weight: 900; color: #ffd75f; margin: 12px 0; }
+.winner-sub { font-size: 16px; color: #fff; margin-bottom: 20px; }
+.winner-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.confetti-piece {
+  position: absolute; top: -10px; width: 10px; height: 16px;
+  animation: confetti-fall linear infinite;
+}
+@keyframes confetti-fall {
+  to { transform: translateY(110vh) rotate(720deg); }
+}
 #myBankRow { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 14px; font-weight: 700; }
 #myBankRow .coin {
   width: 22px; height: 22px; border-radius: 50%;
