@@ -376,8 +376,10 @@ function cardEl(c, mini, extra) {
   } else if (c.kind === 'wild') {
     const active = c.asSet || c.sets[0];
     const cur = c.asSet ? `<div class="wcur" style="background:${setColor(active)}">${esc(SETMAP[active].name).toUpperCase()}</div>` : '';
-    inner = `${badge}<div class="wface" style="background:${wildGrad(c.sets)}"><div class="wwild">WILD</div></div>${cur}` +
-      `<div class="pbody"><div class="pset">${esc(c.sets.map(s => SETMAP[s].name).join(' / '))}</div></div>`;
+    // lightning signet wild: big ⚡️ to tell it apart
+    const wildLabel = c.signetCard ? '⚡️' : 'WILD';
+    inner = `${badge}<div class="wface" style="background:${wildGrad(c.sets)}"><div class="wwild">${wildLabel}</div></div>${cur}` +
+      `<div class="pbody"><div class="pset">${c.signetCard ? '⚡️ Lightning Wild' : esc(c.sets.map(s => SETMAP[s].name).join(' / '))}</div></div>`;
   } else if (c.kind === 'rent') {
     inner = `${badge}<div class="whead" style="background:${splitGrad(c.sets)}">CHALLENGE</div>` +
       `<div class="pbody rent-body"><div class="rent-circle">⚔️</div><div class="pset">${esc(c.sets.map(s => SETMAP[s].name).join(' / '))}</div></div>`;
@@ -411,10 +413,11 @@ function focusCardEl(c) {
         <div class="fc-rent"><div class="fc-rent-title">⚔️ CHALLENGE</div>${tiers}</div>
       </div>`;
   } else if (c.kind === 'wild') {
-    const names = c.sets.map(s => SETMAP[s].name).join(' / ');
+    const names = c.signetCard ? '⚡️ Lightning Wild — any color' : c.sets.map(s => SETMAP[s].name).join(' / ');
     const active = c.asSet || c.sets[0];
+    const wildBig = c.signetCard ? '⚡️' : 'WILD';
     d.innerHTML = `${badge}
-      <div class="fc-wface" style="background:${wildGrad(c.sets)}"><div class="fc-wwild">WILD</div></div>
+      <div class="fc-wface" style="background:${wildGrad(c.sets)}"><div class="fc-wwild">${wildBig}</div></div>
       <div class="fc-pbody">
         <div class="fc-set">${esc(names)}</div>
         ${c.asSet ? `<div class="fc-curnote">Currently counts as <b style="color:${setColor(active)}">${esc(SETMAP[active].name).toUpperCase()}</b> — tap 🔄 Flip to switch sides.</div>` : ''}
