@@ -76,6 +76,49 @@ wss.on('connection', ws => {
       return;
     }
 
+    if (m.t === 'rejoin') {
+      // auto-rejoin after disconnect: restore lobby spot or game seat
+      const c = String(m.code || '').toUpperCase().trim();
+      const room = rooms[c];
+      if (!room) return errTo(ws, 'Room not found.');
+      const name = String(m.name || 'Player').slice(0, 16);
+      // if game in progress, try to find their seat by name
+      if (room.game) {
+        const gi = room.game.players.findIndex(p => p.name === name);
+        if (gi >= 0) {
+          const id = nextId++;
+          // replace the disconnected placeholder or add back
+          const existing = room.players.find(p => p.name === name);
+          if (existing) {
+            existing.ws = ws; existing.id = id;
+            ws._pid = id; ws._room = c;
+          } else {
+            room.players.push({ ws, id, name, idx: room.players.length });
+            ws._pid = id; ws._room = c;
+          }
+          send(ws, { t: 'rejoined', code: c });
+          broadcast(room);
+          return;
+        }
+        return errTo(ws, 'Game already started.');
+      }
+      // lobby: re-add if not already there
+      if (room.players.length >= 4 && !room.players.some(p => p.name === name)) {
+        return errTo(ws, 'Room is full (4 max).');
+      }
+      let pl = room.players.find(p => p.name === name);
+      if (!pl) {
+        const id = nextId++;
+        pl = { ws, id, name, idx: room.players.length };
+        room.players.push(pl);
+      } else {
+        pl.ws = ws;
+      }
+      ws._pid = pl.id; ws._room = c;
+      broadcast(room);
+      return;
+    }
+
     if (m.t === 'join') {
       const c = String(m.code || '').toUpperCase().trim();
       const room = rooms[c];
