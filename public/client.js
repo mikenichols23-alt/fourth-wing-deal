@@ -537,7 +537,17 @@ function setGroupEl(p, setId, entries, forFlow) {
 }
 
 const AVATARS = ['🐉', '🔥', '⚡', '🌿'];
+let renderQueued = false;
 function render() {
+  // debounce: batch rapid state updates into one render
+  if (renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(() => {
+    renderQueued = false;
+    _render();
+  });
+}
+function _render() {
   const me = S.players[myIdx];
   const myTurn = S.turn === myIdx && !S.winner;
 
