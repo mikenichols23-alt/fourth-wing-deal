@@ -48,15 +48,29 @@ body {
 .opp-banner.c0 { background: linear-gradient(100deg, #16a34a, #22c55e); }
 .opp-banner.c1 { background: linear-gradient(100deg, #2563eb, #3b82f6); }
 .opp-banner.c2 { background: linear-gradient(100deg, #dc2626, #ef4444); }
-/* opponent sets: tiny grid like Business Deals */
-.opp-area { padding: 4px; display: flex; flex-wrap: wrap; gap: 3px; }
-.opp .setgroup { padding: 2px; margin: 0; border-radius: 6px; }
-.opp .setgroup .setname { font-size: 8px; margin-bottom: 2px; }
-.opp .setgroup .cards { gap: 2px; }
-.opp .card.fw { width: 32px !important; height: 44px !important; font-size: 8px; }
-.opp .card.fw .vbadge { width: 14px; height: 14px; font-size: 8px; }
-.opp .card.fw .pbody { display: none; } /* hide body on tiny opp cards */
-.opp .card.fw .whead { font-size: 7px; padding: 2px; }
+/* opponent sets: tiny color chips like Business Deals - NO text, just color+value */
+.opp-area { padding: 4px; display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; }
+.opp .setgroup { padding: 3px; margin: 0; border-radius: 8px; background: rgba(0,0,0,.25); }
+.opp .setgroup .setname { font-size: 9px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+.opp .setgroup .cards { display: flex; gap: 3px; }
+.opp .card.fw {
+  width: 36px !important; height: 50px !important;
+  border-radius: 6px; overflow: hidden; position: relative;
+}
+.opp .card.fw .pbody, .opp .card.fw .whead, .opp .card.fw .chead,
+.opp .card.fw .pname, .opp .card.fw .wsub { display: none !important; }
+.opp .card.fw .vbadge {
+  position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; font-size: 9px; line-height: 16px;
+}
+/* my sets: compact, no scroll, wrap */
+#playerRow { overflow: visible !important; }
+#myTable { overflow: visible !important; }
+#mySets { display: flex; flex-wrap: wrap; gap: 6px; overflow: visible !important; max-height: none !important; }
+#mySets .setgroup { flex: 0 1 auto; min-width: 0; }
+#mySets .setgroup .setname { font-size: 11px; white-space: nowrap; }
+/* bank card: small, not cut off */
+.bankpile { transform: scale(.8); transform-origin: top left; }
 .opp-banner.c3 { background: linear-gradient(100deg, #9333ea, #a855f7); }
 .opp-avatar { font-size: 22px; background: rgba(255,255,255,.25); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .opp-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
