@@ -1,6 +1,7 @@
 // Fourth Wing Deal — client
 let ws, S = null, myIdx = 0, myId = null, roomCode = null, isHost = false;
 let selCard = null;          // selected hand card id
+let selTableWild = null;      // selected table wild {cardId, setId} for free flipping
 let selSet = [];             // selected table cards (for pay) / hand cards (for discard)
 let discardMode = false;     // true while tapping hand cards to choose discards
 let mustDiscard = false;     // true after End Turn with >7 cards — big red discard UI
@@ -196,6 +197,13 @@ function splitGrad(sets) {
   const step = 100 / cols.length;
   return 'linear-gradient(90deg,' + cols.map((c, i) => `${c} ${i * step}%,${c} ${(i + 1) * step}%`).join(',') + ')';
 }
+// wild cards: top/bottom split like the physical cards (flip = rotate 180°)
+function wildGrad(sets) {
+  const cols = sets.map(setColor);
+  if (cols.length === 1) return cols[0];
+  const step = 100 / cols.length;
+  return 'linear-gradient(180deg,' + cols.map((c, i) => `${c} ${i * step}%,${c} ${(i + 1) * step}%`).join(',') + ')';
+}
 
 function connect() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
@@ -347,7 +355,7 @@ function cardEl(c, mini, extra) {
   } else if (c.kind === 'wild') {
     const active = c.asSet || c.sets[0];
     const cur = c.asSet ? `<div class="wcur" style="background:${setColor(active)}">${esc(SETMAP[active].name).toUpperCase()}</div>` : '';
-    inner = `${badge}<div class="wface" style="background:${splitGrad(c.sets)}"><div class="wwild">WILD</div></div>${cur}` +
+    inner = `${badge}<div class="wface" style="background:${wildGrad(c.sets)}"><div class="wwild">WILD</div></div>${cur}` +
       `<div class="pbody"><div class="pset">${esc(c.sets.map(s => SETMAP[s].name).join(' / '))}</div></div>`;
   } else if (c.kind === 'rent') {
     inner = `${badge}<div class="whead" style="background:${splitGrad(c.sets)}">CHALLENGE</div>` +
@@ -385,7 +393,7 @@ function focusCardEl(c) {
     const names = c.sets.map(s => SETMAP[s].name).join(' / ');
     const active = c.asSet || c.sets[0];
     d.innerHTML = `${badge}
-      <div class="fc-wface" style="background:${splitGrad(c.sets)}"><div class="fc-wwild">WILD</div></div>
+      <div class="fc-wface" style="background:${wildGrad(c.sets)}"><div class="fc-wwild">WILD</div></div>
       <div class="fc-pbody">
         <div class="fc-set">${esc(names)}</div>
         ${c.asSet ? `<div class="fc-curnote">Currently counts as <b style="color:${setColor(active)}">${esc(SETMAP[active].name).toUpperCase()}</b> — tap 🔄 Flip to switch sides.</div>` : ''}
@@ -607,6 +615,34 @@ function renderFocus() {
   const me = S.players[myIdx];
   const c = selCard && me.hand.find(x => x.id === selCard);
   const canAct = S && S.turn === myIdx && S.phase === 'play' && !S.winner && !S.pending && S.playsLeft > 0;
+  // table wild flip mode: show popup for free flipping
+  if (selTableWild && !c) {
+    const wc = (S.cardMap && S.cardMap[selTableWild.cardId]);
+    if (wc) {
+      fw.classList.add('overlay');
+      fe.classList.add('hidden'); fc.classList.remove('hidden'); fa.classList.remove('hidden');
+      fc.innerHTML = ''; fc.appendChild(focusCardEl(wc));
+      fa.innerHTML = '';
+      const mkBtn = (cls, icon, label, fn) => {
+        const b = document.createElement('div');
+        b.className = 'act-btn ' + cls;
+        b.innerHTML = `<div class="circle">${icon}</div><div class="lbl">${label}</div>`;
+        b.onclick = fn;
+        fa.appendChild(b);
+      };
+      mkBtn('flip', '🔄', 'Flip', () => {
+        // cycle to next color and send recolor (free, doesn't burn a turn)
+        const idx = wc.sets.indexOf(wc.asSet || wc.sets[0]);
+        const newSet = wc.sets[(idx + 1) % wc.sets.length];
+        send({ t: 'recolor', card: wc.id, set: newSet });
+        selTableWild = null;
+        render();
+      });
+      mkBtn('pass', '⏭', 'Close', () => { selTableWild = null; render(); });
+      return;
+    }
+    selTableWild = null;
+  }
   // overlay mode: card pops up large when selected, closes when deselected
   fw.classList.toggle('overlay', !!c);
   if (!c) {
@@ -624,8 +660,13 @@ function renderFocus() {
     if (enabled !== false) b.onclick = fn;
     fa.appendChild(b);
   };
-  // Flip — wilds: shift color
-  if (c.kind === 'wild') mkBtn('flip', '🔄', 'Flip', () => showFlipModal(c), canAct);
+  // Flip — wilds: cycle through colors (top/bottom like physical card)
+  if (c.kind === 'wild') mkBtn('flip', '🔄', 'Flip', () => {
+    const idx = c.sets.indexOf(c.asSet || c.sets[0]);
+    c.asSet = c.sets[(idx + 1) % c.sets.length];
+    AudioSys.tap();
+    render(); // re-render to show the flipped color
+  }, canAct);
   // Bank — money, action, and challenge cards can go to the armory (not properties/wilds)
   if (c.kind === 'money' || c.kind === 'action' || c.kind === 'rent')
     mkBtn('bank', '⚔️', 'Bank', () => { send({ t: 'play', card: c.id, opts: { asMoney: true } }); selCard = null; }, canAct);
@@ -658,7 +699,12 @@ function showFlipModal(c) {
 }
 
 function playSelected(c) {
-  if (c.kind === 'property' || c.kind === 'wild') { send({ t: 'play', card: c.id, opts: {} }); selCard = null; }
+  if (c.kind === 'property') { send({ t: 'play', card: c.id, opts: {} }); selCard = null; }
+  else if (c.kind === 'wild') {
+    // play directly on the flipped color — no extra modal needed
+    send({ t: 'play', card: c.id, opts: { set: c.asSet || c.sets[0] } });
+    selCard = null;
+  }
   else if (c.kind === 'rent') startRentFlow(c);
   else if (c.kind === 'money') { send({ t: 'play', card: c.id, opts: { asMoney: true } }); selCard = null; }
   else if (c.kind === 'action') playActionCard(c);
@@ -756,7 +802,23 @@ function flowTarget(playerIdx) {
 }
 
 function tableCardClick(entry, setId) {
-  if (!flow) return;
+  if (!flow) {
+    // no flow: tapping my own table wild pops it up for free flipping
+    const me = S.players[myIdx];
+    const isMine = S.turn === myIdx && !S.winner;
+    const card = (S.cardMap && S.cardMap[entry.card]) || entry;
+    if (isMine && card.kind === 'wild') {
+      // only my table wilds
+      const myTable = me.table || [];
+      if (myTable.some(e => e.card === entry.card)) {
+        selTableWild = { cardId: entry.card, setId };
+        selCard = null;
+        render();
+        return;
+      }
+    }
+    return;
+  }
   const me = S.players[myIdx];
   // tapping an opponent's card directly during "choose a rider" skips straight to that rider
   if (flow.kind === 'targetPlayer') {
@@ -937,8 +999,8 @@ window.onload = () => {
   $('drawBtn').onclick = () => { AudioSys.deal(); send({ t: 'draw' }); };
   $('endBtn').onclick = () => { AudioSys.tap(); endTurnTapped = true; send({ t: 'end' }); };
   $('drawPile').onclick = () => { if (myIdx != null && S && S.turn === myIdx && S.phase === 'draw') { AudioSys.deal(); send({ t: 'draw' }); } };
-  $('focusOverlayClose').onclick = () => { selCard = null; render(); };
-  $('focusWrap').onclick = (e) => { if (e.target.id === 'focusWrap') { selCard = null; render(); } };
+  $('focusOverlayClose').onclick = () => { selCard = null; selTableWild = null; render(); };
+  $('focusWrap').onclick = (e) => { if (e.target.id === 'focusWrap') { selCard = null; selTableWild = null; render(); } };
   $('discardBtn').onclick = () => {
     if (!S || S.needDiscard <= 0) return;
     if (!discardMode) {
