@@ -10,6 +10,7 @@ let lastLogLen = 0;          // track new log entries for voice announcements
 let dealPlayed = false;      // deal animation played for this game
 let announcedTurn = false;   // "your turn" said for current turn
 let announcedPay = false;    // "you owe" said for current payment
+let announcedWards = null;   // wards prompt announced (tracks pending ref)
 let prevS = null;            // previous state for play-animation diffing
 let lastPlayInfo = null;     // {playerIdx, cardId} of most recent table play, for turnBar
 
@@ -221,8 +222,7 @@ function handle(m) {
     if (first) {
       $('lobby').classList.add('hidden'); $('game').classList.remove('hidden');
       lastLogLen = 0; dealPlayed = false;
-      announcedTurn = false; announcedPay = false;
-      // cinematic deal: shuffle + cards fly to each player (overlay covers the game)
+      announcedTurn = false; announcedPay = false; announcedWards = null;      // cinematic deal: shuffle + cards fly to each player (overlay covers the game)
       playDealAnimation(m.players.length, null);
       dealPlayed = true;
     }
@@ -313,6 +313,13 @@ function announceEvents() {
     AudioSys.clink();
   }
   if (!pd || pd.kind !== 'pay') announcedPay = false;
+  // Dragonscale prompt? play a sound + read it aloud (only if I have one)
+  if (pd && pd.kind === 'wards' && pd.hasWards && announcedWards !== pd) {
+    announcedWards = pd;
+    AudioSys.tap();
+    AudioSys.speak(`${pd.byName} plays ${pd.actionName} against you. Use Dragonscale Armor?`);
+  }
+  if (!pd || pd.kind !== 'wards') announcedWards = null;
 }
 // Physical-card style: dark card, set-color frame, gold value badges
 function frameStyle(c) {
