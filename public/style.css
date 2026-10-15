@@ -119,6 +119,8 @@ body {
 #signetBar .my-signet { display: none; }
 #signetBar .btn.signet-power { font-size: 12px; padding: 6px 14px; border-radius: 16px; }
 #signetBar .btn.gold { font-size: 12px; padding: 6px 14px; }
+/* my hand count next to name (Business Deals style) */
+.my-handcount { font-size: 12px; font-weight: 700; color: #fff; margin-top: 2px; }
 /* Business Deals: player's properties in dark navy rounded panel */
 #mySets { display: flex; flex-wrap: wrap; gap: 8px; background: rgba(0,0,0,.3); border-radius: 12px; padding: 10px; min-height: 80px; align-items: flex-start; }
 #mySets:empty { min-height: 0; padding: 4px; }
