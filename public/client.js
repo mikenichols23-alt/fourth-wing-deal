@@ -798,6 +798,7 @@ function renderFocus() {
   // (selTableWild popup removed — tapping a wild goes straight to move mode)
   // overlay mode: card pops up large when selected, closes when deselected
   fw.classList.toggle('overlay', !!c);
+  fw.classList.toggle('hidden', !c);
   if (!c) {
     fc.classList.add('hidden'); fa.classList.add('hidden'); fe.classList.remove('hidden');
     fc.innerHTML = ''; fa.innerHTML = '';
