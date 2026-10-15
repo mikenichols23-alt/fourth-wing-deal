@@ -202,7 +202,7 @@ body {
 }
 .setgroup.bd.complete { border: 2px solid #22c55e; border-radius: 8px; }
 /* ===== CLEAN LAYOUT - no overlaps ===== */
-#game { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; overflow-x: hidden; }
+#game { flex-direction: column; gap: 8px; overflow-y: auto; overflow-x: hidden; }
 #game > * { flex-shrink: 0; }
 #midbar { flex: 1 1 auto; min-height: 0; flex-shrink: 1 !important; overflow: hidden; }
 #opponents { order: 1; }
@@ -371,7 +371,8 @@ body {
 }
 
 /* ---------- game layout ---------- */
-#game { padding: 6px; gap: 6px; }
+/* game layout - single authoritative rule */
+#game:not(.hidden) { display: flex; height: 100dvh; max-height: 100dvh; overflow: hidden; padding: 4px 6px; padding-top: max(4px, env(safe-area-inset-top)); padding-bottom: max(4px, env(safe-area-inset-bottom)); gap: 4px; }
 #banner {
   text-align: center; padding: 10px; font-size: 15px; font-weight: 600;
   background: rgba(0,0,0,.4); border-radius: 12px; color: var(--gold);
@@ -410,7 +411,7 @@ body {
 #drawPile.has-cards span { background: rgba(0,0,0,.6); border-radius: 8px; padding: 1px 6px; bottom: 4px; right: 4px; }
 #drawPile.empty { opacity: .45; }
 /* Business Deals: everything fits on screen, no scrolling */
-#game { height: 100dvh; max-height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+/* removed duplicate #game rules - consolidated above */
 #opponents { flex-shrink: 0; }
 #midbar { flex: 1 1 auto; min-height: 40px; overflow: hidden; }
 #playerRow { flex-shrink: 0; }
@@ -600,7 +601,7 @@ body {
   vertical-align: middle; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 /* compact game screen — everything fits in viewport, hand pinned to bottom */
-#game { height: 100dvh; max-height: 100dvh; display: flex; flex-direction: column; overflow: hidden; padding: 4px 6px; padding-top: max(4px, env(safe-area-inset-top)); padding-bottom: max(4px, env(safe-area-inset-bottom)); gap: 4px; }
+/* removed duplicate #game rules - consolidated above */
 /* compact signet bar - single row, not a chunky panel */
 #signetBar { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
 #signetBar .btn.signet-power { font-size: 13px; padding: 6px 12px; }
