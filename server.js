@@ -42,7 +42,7 @@ function code() {
 }
 
 function send(ws, msg) {
-  if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(msg));
+  if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(msg));
 }
 
 function broadcast(room) {
@@ -203,20 +203,24 @@ wss.on('connection', ws => {
   ws.on('close', () => {
     const room = rooms[ws._room];
     if (!room) return;
-    const ix = room.players.findIndex(p => p.id === ws._pid);
-    if (ix >= 0) {
-      const [gone] = room.players.splice(ix, 1);
-      if (room.game && !room.game.winner) {
-        room.game.logMsg(`${gone.name} disconnected.`);
-      }
-      room.players.forEach((p, k) => (p.idx = k));
-      if (!room.players.length) { delete rooms[ws._room]; return; }
-      if (room.host === ws._pid) room.host = room.players[0].id;
-      // NOTE: player indexes shifted; game player order no longer matches.
-      // Simplest: keep game going only if indexes still align (rare). For a friends
-      // game, a disconnect mid-game is disruptive; we keep state as-is.
+    const pl = room.players.find(p => p.id === ws._pid);
+    if (!pl) return;
+    if (room.game && !room.game.winner) {
+      // MID-GAME: don't splice — mark disconnected, keep seat idx.
+      // Splicing corrupts seat alignment for everyone else.
+      pl.ws = null;
+      room.game.logMsg(`${pl.name} disconnected.`);
       broadcast(room);
+      return;
     }
+    // LOBBY: safe to remove
+    const ix = room.players.indexOf(pl);
+    room.players.splice(ix, 1);
+    room.players.forEach((p, k) => (p.idx = k));
+    // count bots too — a solo human + bots disconnect shouldn't kill the room
+    if (!room.players.length && !room.bots.length) { delete rooms[ws._room]; return; }
+    if (room.host === ws._pid && room.players.length) room.host = room.players[0].id;
+    broadcast(room);
   });
 });
 
