@@ -122,7 +122,7 @@ wss.on('connection', ws => {
       room.game = new Game(allNames, { signetMode: (m.opts && m.opts.signetMode) || 'random' });
       room.botObjs = room.bots.map(b => new Bot(room.game, b.idx));
       broadcast(room);
-      pumpBots(room);
+      pumpBots(room).catch(e => console.error("pump:", e));
       return;
     }
 
@@ -152,7 +152,7 @@ wss.on('connection', ws => {
       send(ws, { t: 'nak', err: r.err, need: r.need, sets: r.sets, forTarget: r.forTarget, for: r.for });
     }
     broadcast(room);
-    pumpBots(room);
+    pumpBots(room).catch(e => console.error("pump:", e));
   });
 
   ws.on('close', () => {
@@ -177,39 +177,111 @@ wss.on('connection', ws => {
 
 server.listen(PORT, () => console.log(`Monopoly Deal on http://localhost:${PORT}`));
 
-// Run bots until no bot needs to act. Called after game start and after each human action.
-function pumpBots(room) {
+// Run bots step-by-step with pauses so each move is visible (cards slide).
+// Called after game start and after each human action.
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function pumpBots(room) {
   const g = room.game;
   if (!g || !room.botObjs || !room.botObjs.length) return;
-  let guard = 0;
-  while (guard++ < 50 && !g.winner) {
-    let acted = false;
-    // 0. Signet draft: bot's turn to pick
-    if (g.phase === 'signet') {
-      const dIdx = g.signetDraftIdx % g.players.length;
-      const dbot = room.botObjs.find(b => b.i === dIdx);
-      if (dbot) { dbot.takeTurn(); acted = true; continue; }
-      break; // waiting on a human to draft
+  if (room._pumping) return; // already running — it will pick up new state
+  room._pumping = true;
+  try {
+    let guard = 0;
+    while (guard++ < 300 && !g.winner) {
+      let acted = false;
+      // 0. Signet draft: bot's turn to pick
+      if (g.phase === 'signet') {
+        const dIdx = g.signetDraftIdx % g.players.length;
+        const dbot = room.botObjs.find(b => b.i === dIdx);
+        if (dbot && dbot.step()) acted = true;
+        else break; // waiting on a human to draft
+      } else if (g.pending) {
+        // 1. Pending decision awaiting a bot
+        const pd = g.pending;
+        const awaitIdx = pd.awaits != null ? pd.awaits
+          : pd.from != null ? pd.from
+          : (pd.type === 'foresight' ? pd.by : null);
+        const bot = awaitIdx != null ? room.botObjs.find(b => b.i === awaitIdx) : null;
+        if (bot && bot.step()) acted = true;
+        else break; // pending awaits a human — wait for them
+      } else {
+        // 2. Bot's turn: single step
+        const bot = room.botObjs.find(b => b.i === g.turn);
+        if (bot && g.turn === bot.i && bot.step()) acted = true;
+        else break;
+      }
+      if (!acted) break;
+      broadcast(room);
+      await sleep(750); // let the move be seen before the next one
     }
-    // 1. Pending decisions awaiting a bot
-    const pd = g.pending;
-    if (pd) {
-      const awaitIdx = pd.awaits != null ? pd.awaits
-        : pd.from != null ? pd.from
-        : (pd.type === 'foresight' ? pd.by : null);
-      const bot = awaitIdx != null ? room.botObjs.find(b => b.i === awaitIdx) : null;
-      if (bot && bot.decidePending()) { acted = true; continue; }
-      // If pending awaits a human, stop and wait
-      break;
-    }
-    // 2. Bot's turn
-    const bot = room.botObjs.find(b => b.i === g.turn);
-    if (bot && g.turn === bot.i) {
-      bot.takeTurn();
-      acted = true;
-      continue;
-    }
-    break;
+    broadcast(room);
+  } finally {
+    room._pumping = false;
   }
-  broadcast(room);
+  // Watchdog: if the game is left on a bot's turn, re-check in 8s. If the bot
+  // hasn't advanced the game by then, force it forward — a stuck bot must
+  // never freeze the table.
+  const gg = room.game;
+  if (gg && !gg.winner) {
+    const botTurn = room.botObjs.some(b => b.i === gg.turn);
+    const pd = gg.pending;
+    const botAwaited = pd && room.botObjs.some(b => {
+      const ai = pd.awaits != null ? pd.awaits : pd.from != null ? pd.from
+        : (pd.type === 'foresight' ? pd.by : null);
+      return ai === b.i;
+    });
+    if (botTurn || botAwaited) {
+      if (room._watchdog) clearTimeout(room._watchdog);
+      const snapshot = JSON.stringify({ t: gg.turn, ph: gg.phase, p: gg.pending,
+        h: gg.players.map(p => p.hand.length) });
+      room._watchdog = setTimeout(() => {
+        room._watchdog = null;
+        const g2 = room.game;
+        if (!g2 || g2.winner) return;
+        const now = JSON.stringify({ t: g2.turn, ph: g2.phase, p: g2.pending,
+          h: g2.players.map(p => p.hand.length) });
+        if (now === snapshot) {
+          if (unstickBot(room)) pumpBots(room).catch(e => console.error("pump:", e));
+          else { // last resort: clear pending and force next turn
+            try { g2.pending = null; g2._nextTurn(); } catch (e) {}
+            broadcast(room);
+            pumpBots(room).catch(e => console.error("pump:", e));
+          }
+        }
+      }, 8000);
+      if (room._watchdog.unref) room._watchdog.unref();
+    } else if (room._watchdog) {
+      clearTimeout(room._watchdog);
+      room._watchdog = null;
+    }
+  }
+}
+
+// Failsafe: if pumpBots leaves the game on a bot's turn with no progress,
+// force the turn forward so a stuck bot can never freeze the game.
+function unstickBot(room) {
+  const g = room.game;
+  if (!g || g.winner || !room.botObjs || !room.botObjs.length) return false;
+  const bot = room.botObjs.find(b => b.i === g.turn);
+  if (!bot) return false;
+  const key = g.turn + '|' + g.phase + '|' + JSON.stringify(g.pending) + '|' +
+    g.players.map(p => p.hand.length + '/' + p.table.length + '/' + p.bank.length).join(',');
+  if (room._lastBotKey === key && (room._botStuckCount = (room._botStuckCount || 0) + 1) >= 2) {
+    room._botStuckCount = 0;
+    try { g.logMsg(`${g.me(g.turn).name} timed out — turn skipped.`); } catch (e) {}
+    g.pending = null;
+    try { g.endTurn(g.turn); } catch (e) {}
+    // discard down if needed, then force next turn
+    const p = g.me(g.turn);
+    if (p && p.hand.length > 7) {
+      const excess = p.hand.length - 7;
+      for (let k = 0; k < excess; k++) g.discardPile.push(p.hand.pop());
+    }
+    if (g.turn === bot.i) { try { g._nextTurn(); } catch (e) {} }
+    room._lastBotKey = null;
+    broadcast(room);
+    return true;
+  }
+  room._lastBotKey = key;
+  return false;
 }
