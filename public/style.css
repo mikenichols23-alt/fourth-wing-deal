@@ -407,6 +407,12 @@ body {
 }
 #drawPile.has-cards span { background: rgba(0,0,0,.6); border-radius: 8px; padding: 1px 6px; bottom: 4px; right: 4px; }
 #drawPile.empty { opacity: .45; }
+/* Business Deals: middle is open space, piles stacked on left */
+#midbar { flex: 1 1 auto; min-height: 100px; display: flex; align-items: flex-start; justify-content: flex-start; padding: 8px; }
+#piles { display: flex; flex-direction: column; gap: 12px; }
+.pile { width: 64px; height: 88px; border-radius: 10px; background: rgba(0,0,0,.25); border: 2px dashed rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-size: 28px; color: rgba(255,255,255,.5); }
+/* focusWrap is now an overlay only, not in the middle flow */
+#focusWrap:not(.overlay) { display: none !important; }
 #focusWrap { flex: 1; display: flex; gap: 8px; justify-content: center; align-items: center; min-height: 0; overflow: hidden; }
 /* overlay mode: tapped card pops up large over the game, never squeezed */
 #focusWrap.overlay {
