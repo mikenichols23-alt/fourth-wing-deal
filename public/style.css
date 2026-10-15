@@ -100,6 +100,20 @@ body {
 .btn:active { transform: scale(.97); }
 .btn.gold { background: linear-gradient(180deg, #f5b301, #d99400); border-color: #ffb700; color: #3a2500; }
 .btn.danger { background: rgba(220, 40, 40, .85); border-color: #ff6b6b; }
+/* big obvious signet power button — impossible to miss */
+.btn.signet-power {
+  background: linear-gradient(180deg, #ffd75f, #d99400);
+  border: 3px solid #fff; border-radius: 16px;
+  color: #3a2500; font-size: 16px; font-weight: 800;
+  padding: 14px 18px; width: 100%; margin: 8px 0;
+  box-shadow: 0 4px 20px rgba(255, 215, 95, .6);
+  animation: signet-glow 1.8s ease-in-out infinite;
+  line-height: 1.3;
+}
+@keyframes signet-glow {
+  0%, 100% { box-shadow: 0 4px 20px rgba(255, 215, 95, .6); transform: scale(1); }
+  50% { box-shadow: 0 4px 32px rgba(255, 215, 95, .9); transform: scale(1.02); }
+}
 /* big red forced-discard button at end of turn */
 #discardBtn.big-red {
   background: linear-gradient(180deg, #e03030, #b02020);
