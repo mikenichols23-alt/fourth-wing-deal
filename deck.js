@@ -22,7 +22,7 @@ const SETS = [
     cards: ['The Parapet', 'Riders Quadrant Courtyard'] },
   { id: 'black',     name: 'Black',       size: 4, value: 2, rent: [1, 2, 3, 4], color: '#2a2a2a', glow: '#909090',
     cards: ['Feirge', 'Andarna', 'Tairn', 'Sgaeyl'] },
-  { id: 'lightgreen', name: 'Light Green', size: 2, value: 2, rent: [1, 2],      color: '#5a9e6f', glow: '#a8d8b8',
+  { id: 'lightgreen', name: 'Teal', size: 2, value: 2, rent: [1, 2],      color: '#a2d1cf', glow: '#d4ecea',
     cards: ["Raegan's House", 'Montserrat'] },
 ];
 
