@@ -4,25 +4,25 @@
 // Shared by server (require) and client (script tag).
 
 const SETS = [
-  { id: 'darkblue',  name: 'Dark Blue',   size: 2, rent: [3, 8],       color: '#1f2f6e', glow: '#8a9ae0',
+  { id: 'darkblue',  name: 'Dark Blue',   size: 2, value: 4, rent: [3, 8],       color: '#1f2f6e', glow: '#8a9ae0',
     cards: ['Athebyne Outpost', 'Aretia'] },
-  { id: 'darkgreen', name: 'Dark Green',  size: 3, rent: [2, 4, 7],    color: '#1e4d2b', glow: '#7fc48a',
+  { id: 'darkgreen', name: 'Dark Green',  size: 3, value: 4, rent: [2, 4, 7],    color: '#1e4d2b', glow: '#7fc48a',
     cards: ['The Flight Field', 'The Threshing Field', 'The Gauntlet'] },
-  { id: 'red',       name: 'Red',         size: 3, rent: [2, 3, 6],    color: '#c22f2f', glow: '#f08a8a',
+  { id: 'red',       name: 'Red',         size: 3, value: 3, rent: [2, 3, 6],    color: '#c22f2f', glow: '#f08a8a',
     cards: ['The Archives', 'The Healer Quadrant', "General Sorrengail's Office"] },
-  { id: 'yellow',    name: 'Yellow',      size: 3, rent: [2, 4, 6],    color: '#c9a91c', glow: '#f0dd8a',
+  { id: 'yellow',    name: 'Yellow',      size: 3, value: 3, rent: [2, 4, 6],    color: '#c9a91c', glow: '#f0dd8a',
     cards: ["Liam's Room", "Xaden's Room", "Violet's Room"] },
-  { id: 'orange',    name: 'Orange',      size: 3, rent: [1, 3, 5],    color: '#e07b1f', glow: '#f5bd7f',
+  { id: 'orange',    name: 'Orange',      size: 3, value: 2, rent: [1, 3, 5],    color: '#e07b1f', glow: '#f5bd7f',
     cards: ['The Gym', 'The Sparring Mats', 'The Challenge Board'] },
-  { id: 'pink',      name: 'Pink',        size: 3, rent: [1, 2, 4],    color: '#c2438a', glow: '#f0a8cc',
+  { id: 'pink',      name: 'Pink',        size: 3, value: 2, rent: [1, 2, 4],    color: '#c2438a', glow: '#f0a8cc',
     cards: ["Carr's Classroom", 'Battle Brief', "Kaori's Classroom"] },
-  { id: 'lightblue', name: 'Light Blue',  size: 3, rent: [1, 2, 3],    color: '#4a90c2', glow: '#a8d4f0',
+  { id: 'lightblue', name: 'Light Blue',  size: 3, value: 1, rent: [1, 2, 3],    color: '#4a90c2', glow: '#a8d4f0',
     cards: ['First-Year Dorms', 'Gathering Hall', 'Dragon Rotunda'] },
-  { id: 'brown',     name: 'Brown',       size: 2, rent: [1, 2],       color: '#7b4a21', glow: '#d8a05f',
+  { id: 'brown',     name: 'Brown',       size: 2, value: 1, rent: [1, 2],       color: '#7b4a21', glow: '#d8a05f',
     cards: ['The Parapet', 'Riders Quadrant Courtyard'] },
-  { id: 'black',     name: 'Black',       size: 4, rent: [1, 2, 3, 4], color: '#2a2a2a', glow: '#909090',
+  { id: 'black',     name: 'Black',       size: 4, value: 2, rent: [1, 2, 3, 4], color: '#2a2a2a', glow: '#909090',
     cards: ['Feirge', 'Andarna', 'Tairn', 'Sgaeyl'] },
-  { id: 'lightgreen', name: 'Light Green', size: 2, rent: [1, 2],      color: '#5a9e6f', glow: '#a8d8b8',
+  { id: 'lightgreen', name: 'Light Green', size: 2, value: 2, rent: [1, 2],      color: '#5a9e6f', glow: '#a8d8b8',
     cards: ["Raegan's House", 'Montserrat'] },
 ];
 
@@ -86,7 +86,7 @@ function buildDeck() {
   const id = () => 'c' + (n++);
   for (const s of SETS)
     for (const cname of s.cards)
-      deck.push({ id: id(), kind: 'property', set: s.id, name: cname, value: s.rent[0] });
+      deck.push({ id: id(), kind: 'property', set: s.id, name: cname, value: s.value });
   for (const [a, b, value, copies] of DUAL_WILDS)
     for (let i = 0; i < copies; i++)
       deck.push({ id: id(), kind: 'wild', sets: [a, b], name: SET_BY_ID[a].name + ' / ' + SET_BY_ID[b].name, value });
