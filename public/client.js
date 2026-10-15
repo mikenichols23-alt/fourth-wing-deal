@@ -808,8 +808,8 @@ function playSelected(c) {
 
 function playActionCard(c) {
   const a = c.action;
-  // close the overlay so the targeting UI is visible
-  const closeOverlay = () => { selCard = null; render(); };
+  // close the overlay directly (don't use debounced render - it races with modals/flows)
+  const closeOverlay = () => { selCard = null; const fw = $('focusWrap'); if (fw) fw.classList.add('hidden'); };
   if (a === 'tairn_wisdom') { send({ t: 'play', card: c.id, opts: {} }); selCard = null; }
   else if (a === 'house' || a === 'hotel') { closeOverlay(); startBoostFlow(c); }
   else if (a === 'memory_reading') { closeOverlay(); startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Step 1/1: tap a rider to collect 5 blades from' }); }
@@ -831,18 +831,21 @@ $('flowCancel').onclick = () => cancelFlow();
 
 function startRentFlow(c) {
   const me = S.players[myIdx];
-  const okSets = c.sets.filter(s => (me.sets[s] || []).length > 0);
+  const okSets = (c.sets || []).filter(s => (me.sets[s] || []).length > 0 && SETMAP[s]);
   if (!okSets.length) return toast('You own no properties in those colors.');
-  selCard = null; render(); // close overlay before showing modal
+  selCard = null;
+  // hide focus overlay directly (don't use debounced render - it races with modal)
+  const fw = $('focusWrap'); if (fw) fw.classList.add('hidden');
   showModal(`<h3>⚔️ Issue Challenge</h3><div class="pickgrid">${
     okSets.map(s => `<button class="btn" data-s="${s}" style="border-color:${setColor(s)}">${esc(SETMAP[s].name)}</button>`).join('')
   }</div><div><button class="btn" id="mCancel">Cancel</button></div>`);
-  $('modalBox').querySelectorAll('[data-s]').forEach(b => b.onclick = () => {
+  const box = $('modalBox'); if (!box) return;
+  box.querySelectorAll('[data-s]').forEach(b => b.onclick = () => {
     hideModal();
     send({ t: 'play', card: c.id, opts: { set: b.dataset.s } });
     selCard = null;
   });
-  $('mCancel').onclick = hideModal;
+  const cancel = $('mCancel'); if (cancel) cancel.onclick = hideModal;
 }
 
 function startBoostFlow(c) {
