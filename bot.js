@@ -37,57 +37,78 @@ class Bot {
   }
 
   // ---------- turn flow ----------
-  takeTurn() {
+  // One atomic action for paced play: draw, one play, one pending decision,
+  // one discard, or end turn. Returns true if it did something.
+  step() {
     const g = this.g, i = this.i;
+    if (g.winner) return false;
 
-    // Signet draft (if bot is drafting) — before turn guard, draft isn't a "turn"
+    // Signet draft
     if (g.phase === 'signet') {
+      if (g.signetDraftIdx % g.players.length !== i) return false;
       const taken = Object.values(g.signets || {});
       const avail = SIGNETS.filter(s => !taken.includes(s.id));
-      if (avail.length && g.signetDraftIdx % g.players.length === i) {
-        // Prefer: distance > shadow > foresight > mending > lightning
-        const pref = ['distance', 'shadow', 'foresight', 'mending', 'lightning'];
-        for (const p of pref) {
-          const s = avail.find(s => s.id === p);
-          if (s) { g.chooseSignet(i, s.id); break; }
-        }
+      if (!avail.length) return false;
+      const pref = ['distance', 'shadow', 'foresight', 'mending', 'lightning'];
+      for (const p of pref) {
+        const s = avail.find(s => s.id === p);
+        if (s) { g.chooseSignet(i, s.id); return true; }
       }
-      return;
+      return false;
     }
 
-    if (g.winner || g.turn !== i) return;
+    // Pending decision awaiting me
+    if (g.pending) {
+      const pd = g.pending;
+      const awaitIdx = pd.awaits != null ? pd.awaits
+        : pd.from != null ? pd.from
+        : (pd.type === 'foresight' ? pd.by : null);
+      if (awaitIdx !== i) return false;
+      const before = JSON.stringify(pd);
+      const progressed = this.decidePending();
+      // Failsafe: if we couldn't resolve it, clear it rather than freeze
+      if (JSON.stringify(g.pending) === before) {
+        try { g.logMsg(`${this.me.name} couldn't decide — skipping.`); } catch (e) {}
+        g.pending = null;
+      }
+      return progressed || g.pending !== pd;
+    }
+
+    if (g.turn !== i) return false;
 
     // Draw phase
-    if (g.phase === 'draw' && g.turn === i) {
+    if (g.phase === 'draw') {
       this.doDraw();
+      return true;
     }
 
-    // Play phase
-    let guard = 0;
-    while (g.phase === 'play' && g.turn === i && !g.winner && guard++ < 20) {
-      if (g.pending) {
-        if (!this.decidePending()) break;
-        continue;
-      }
-      if (!this.doPlay()) break;
-    }
-
-    // Discard down to 7
-    while (this.me.hand.length > 7 && !g.winner) {
-      const n = this.me.hand.length - 7;
-      const ids = this.lowestCards(this.me.hand, n);
+    // Discard down to 7 (one at a time so each is visible)
+    if (this.me.hand.length > 7) {
+      const ids = this.lowestCards(this.me.hand, 1);
       g.discard(i, ids);
+      return true;
     }
 
-    // End turn
-    if (!g.pending && !g.winner && g.turn === i) {
+    // Play phase: single play
+    if (g.phase === 'play') {
+      if (g.plays < g.maxPlays(i) && this.doPlay()) return true;
+      // Nothing left to play — end turn
       const r = g.endTurn(i);
       if (r.needDiscard) {
         const ids = this.lowestCards(this.me.hand, r.needDiscard);
         g.discard(i, ids);
         g.endTurn(i);
       }
+      return true;
     }
+
+    return false;
+  }
+
+  takeTurn() {
+    // Legacy: run steps synchronously (used by simulations/tests)
+    let guard = 0;
+    while (guard++ < 40 && this.step()) {}
   }
 
   doDraw() {
@@ -103,11 +124,11 @@ class Bot {
     }
     if (g.signetActive(i) && signet === 'foresight') {
       const r = g.foresightDraw(i);
-      if (r.ok && g.pending?.kind === 'foresight') {
-        // Return lowest-value of the 3
+      if (r.ok && g.pending?.type === 'foresight') {
+        // Return lowest-value of the 3 (pending.cards are card IDs)
         const cards = g.pending.cards;
-        const ret = [...cards].sort((a, b) => a.value - b.value)[0];
-        g.answerForesight(i, ret.id);
+        const ret = [...cards].sort((a, b) => g.card(a).value - g.card(b).value)[0];
+        g.answerForesight(i, ret);
         return;
       }
     }
@@ -308,42 +329,35 @@ class Bot {
       return true;
     }
 
-    // Payment: pay lowest-value cards first
+    // Payment: pay lowest-value table properties first (engine reads resp.cards from table)
     if (pd.type === 'pay' && pd.from === i) {
-      const need = pd.amount || 0;
-      // Prefer hand cards (money/actions) over table properties
-      const handPayable = this.me.hand.filter(id => {
-        const c = this.card(id);
-        return c.kind === 'money' || c.kind === 'action';
-      });
-      const sorted = [...handPayable].sort((a, b) => this.card(a).value - this.card(b).value);
+      const need = pd.need || 0;
+      const me = this.me;
+      // Incomplete sets first (less painful to lose), then complete sets, lowest value first
+      const props = me.table
+        .filter(e => !this.card(e.card).everyColor)
+        .sort((a, b) => {
+          const aComp = g.isComplete(me, a.set) ? 1 : 0;
+          const bComp = g.isComplete(me, b.set) ? 1 : 0;
+          if (aComp !== bComp) return aComp - bComp;
+          return this.card(a.card).value - this.card(b.card).value;
+        });
       let total = 0;
-      const pay = [];
-      for (const id of sorted) {
+      const cards = [];
+      for (const e of props) {
         if (total >= need) break;
-        pay.push(id);
-        total += this.card(id).value;
+        cards.push(e.card);
+        total += this.card(e.card).value;
       }
-      // If not enough in hand, add table properties (lowest value first, avoid breaking complete sets)
-      if (total < need) {
-        const props = this.me.table
-          .filter(e => !g.isComplete(this.me, e.set))
-          .sort((a, b) => this.card(a.card).value - this.card(b.card).value);
-        for (const e of props) {
-          if (total >= need) break;
-          pay.push(e.card);
-          total += this.card(e.card).value;
-        }
-      }
-      g.answer(i, { pay });
+      g.answer(i, { cards });
       return true;
     }
 
-    // Foresight: return lowest value
+    // Foresight: return lowest value (pending.cards are card IDs)
     if (pd.type === 'foresight' && pd.by === i) {
       const cards = pd.cards || [];
-      const ret = [...cards].sort((a, b) => a.value - b.value)[0];
-      if (ret) g.answerForesight(i, ret.id);
+      const ret = [...cards].sort((a, b) => g.card(a).value - g.card(b).value)[0];
+      if (ret) g.answerForesight(i, ret);
       return true;
     }
 
