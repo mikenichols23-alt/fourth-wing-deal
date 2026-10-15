@@ -614,13 +614,13 @@ function _render() {
   // hide flow banner if no active flow
   if (!flow) { const fb = $('flowBanner'); if (fb) fb.classList.add('hidden'); }
 
-  // opponents as top banners
+  // opponents as columns (Business Deals style)
   const opp = $('opponents'); opp.innerHTML = '';
   let oi = 0;
   S.players.forEach((p, i) => {
     if (i === myIdx) return;
     const d = document.createElement('div');
-    d.className = 'opp' + (S.turn === i ? ' turn' : '');
+    d.className = 'oppcol' + (S.turn === i ? ' active-turn' : '');
     const av = AVATARS[oi % AVATARS.length]; oi++;
     d.innerHTML = `<div class="opp-banner c${oi % 4}">
         <div class="opp-avatar">${av}</div>
