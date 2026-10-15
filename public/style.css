@@ -111,10 +111,13 @@ body {
 /* smooth hand card fan */
 #hand .card { transition: transform .2s ease-out; }
 #hand .card:active { transform: translateY(-8px) scale(1.05); }
-/* Business Deals: generous breathing room, nothing cramped */
-#game { display: flex; flex-direction: column; gap: 14px; overflow-y: auto; overflow-x: hidden; padding: 10px 12px; max-height: 100dvh; }
-#opponents { gap: 14px; padding: 4px 2px; }
-.oppcol { gap: 6px; padding: 4px; }
+/* Business Deals: opponent columns with dividers, active player glow */
+#opponents { display: flex; gap: 0; padding: 0; }
+.oppcol { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 6px 8px; border-right: 1px solid rgba(255,255,255,.12); min-width: 0; }
+.oppcol:last-child { border-right: none; }
+.oppcol.active-turn .opp-avatar { box-shadow: 0 0 0 3px #ffd75f, 0 0 16px #ffd75f; }
+/* hand count next to money */
+.handcount { font-size: 14px; font-weight: 700; color: #fff; opacity: .9; }
 #playerRow { overflow: visible; margin-bottom: 0 !important; padding-bottom: 0 !important; }
 #myTable { overflow: visible; }
 #handbar { margin-top: 0 !important; padding-top: 4px; }
