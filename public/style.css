@@ -406,6 +406,13 @@ body {
 #myTable { min-height: 64px; padding: 6px; }
 /* bank row always fully visible */
 #myBankRow { display: flex; align-items: center; gap: 8px; margin-top: 6px; padding-bottom: 4px; font-size: 14px; font-weight: 700; min-height: 32px; }
+/* bank cards stack like a pile, off to the side — compact */
+#myBank { position: relative; width: 76px; height: 58px; flex-shrink: 0; }
+#myBank .card { position: absolute; top: 0; left: 0; width: 50px !important; height: 70px !important; }
+#myBank .card:nth-child(2) { transform: translate(7px, -4px) rotate(5deg); }
+#myBank .card:nth-child(3) { transform: translate(14px, -8px) rotate(-5deg); }
+#myBank .card:nth-child(n+4) { transform: translate(21px, -12px) rotate(9deg); }
+#myBank .card:nth-child(n+5) { display: none; }
 /* compact own table cards */
 #myTable .setgroup { margin: 2px; padding: 3px; }
 #myTable .setgroup .setname { font-size: 10px; margin-bottom: 2px; }
