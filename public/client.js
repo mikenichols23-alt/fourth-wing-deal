@@ -469,9 +469,8 @@ function focusCardEl(c) {
     const me = S.players[myIdx];
     const reqLines = c.sets.map(s => {
       const have = (me.sets[s] || []).length;
-      const need = SETMAP[s].size;
-      const ok = have >= need;
-      return `<div style="color:${ok ? '#7CFC00' : '#ff9a9a'};font-weight:700">${ok ? '✓' : '✗'} ${esc(SETMAP[s].name)}: ${have}/${need}</div>`;
+      const ok = have > 0;
+      return `<div style="color:${ok ? '#7CFC00' : '#ff9a9a'};font-weight:700">${ok ? '✓' : '✗'} ${esc(SETMAP[s].name)}: ${have} owned</div>`;
     }).join('');
     d.innerHTML = `${badge}
       <div class="fc-phead" style="background:${splitGrad(c.sets)}">CHALLENGE</div>
@@ -480,7 +479,7 @@ function focusCardEl(c) {
         <div class="fc-name">${esc(c.name.toUpperCase())}</div>
         <div class="fc-set">${esc(names)}</div>
         <div class="fc-desc" style="text-align:center">${esc(c.text || '')}</div>
-        <div class="fc-req" style="margin-top:8px;font-size:13px;text-align:center">Needs a complete set:<br>${reqLines}</div>
+        <div class="fc-req" style="margin-top:8px;font-size:13px;text-align:center">Charge rent on properties you own:<br>${reqLines}</div>
       </div>`;
   } else if (c.kind === 'money') {
     d.innerHTML = `${badge}
@@ -735,10 +734,11 @@ function renderFocus() {
   let playEnabled = canAct;
   let playLabel = 'Play';
   if (c.kind === 'rent' && canAct) {
-    const okSets = c.sets.filter(s => (me.sets[s] || []).length >= SETMAP[s].size);
+    // Challenge: playable if you own 1+ properties in any of its colors
+    const okSets = c.sets.filter(s => (me.sets[s] || []).length > 0);
     if (!okSets.length) {
       playEnabled = false;
-      playLabel = 'Need Set';
+      playLabel = 'No Props';
     }
   }
   if (c.kind !== 'money') mkBtn('play', '▶', playLabel, () => playSelected(c), playEnabled);
@@ -805,8 +805,8 @@ $('flowCancel').onclick = () => cancelFlow();
 
 function startRentFlow(c) {
   const me = S.players[myIdx];
-  const okSets = c.sets.filter(s => (me.sets[s] || []).length >= SETMAP[s].size);
-  if (!okSets.length) return toast('No complete set matches this Challenge card.');
+  const okSets = c.sets.filter(s => (me.sets[s] || []).length > 0);
+  if (!okSets.length) return toast('You own no properties in those colors.');
   selCard = null; render(); // close overlay before showing modal
   showModal(`<h3>⚔️ Issue Challenge</h3><div class="pickgrid">${
     okSets.map(s => `<button class="btn" data-s="${s}" style="border-color:${setColor(s)}">${esc(SETMAP[s].name)}</button>`).join('')
