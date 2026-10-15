@@ -314,6 +314,18 @@ function announceEvents() {
   if (S.turn === myIdx && (S.phase === 'play' || S.phase === 'draw') && !announcedTurn) {
     announcedTurn = true;
     AudioSys.speak("It's your turn!");
+    // hint at active signet power
+    const me = S.players[myIdx];
+    if (me && me.signet && !me.signetBlocked && !S.pending && !S.winner) {
+      const sid = me.signet.id;
+      if (sid === 'mending' && S.phase === 'draw' && S.needDraw) {
+        setTimeout(() => AudioSys.speak("Your Mending power is ready!"), 1200);
+      } else if (sid === 'foresight' && S.phase === 'draw' && S.needDraw) {
+        setTimeout(() => AudioSys.speak("Your Foresight power is ready!"), 1200);
+      } else if (sid === 'lightning' && S.phase === 'play') {
+        setTimeout(() => AudioSys.speak("Your Lightning power is ready!"), 1200);
+      }
+    }
   }
   if (S.turn !== myIdx) announcedTurn = false;
   // I owe money?
@@ -1066,20 +1078,24 @@ function renderSignets() {
     const myTurn = S.turn === myIdx && !S.pending && !S.winner;
     const inDraw = myTurn && S.phase === 'draw' && S.needDraw;
     const inPlay = myTurn && S.phase === 'play';
+    // Big obvious USE POWER button for active signets
     if (inDraw && !me.signetBlocked) {
       if (me.signet.id === 'mending') {
-        const b = document.createElement('button'); b.className = 'btn'; b.textContent = '🌿 Mending: give a card, draw 4';
-        b.onclick = () => startFlow({ kind: 'mendingPick', label: 'Mending: click one of your hand cards to give away' });
+        const b = document.createElement('button'); b.className = 'btn signet-power';
+        b.innerHTML = '🌿 <b>USE MENDING POWER</b><br><span style="font-size:12px;font-weight:400">Give 1 card to another rider → draw 4</span>';
+        b.onclick = () => startFlow({ kind: 'mendingPick', label: 'Mending: tap one of YOUR hand cards to give away' });
         bar.appendChild(b);
       }
       if (me.signet.id === 'foresight') {
-        const b = document.createElement('button'); b.className = 'btn'; b.textContent = '🔮 Foresight: draw 3, keep 2';
+        const b = document.createElement('button'); b.className = 'btn signet-power';
+        b.innerHTML = '🔮 <b>USE FORESIGHT POWER</b><br><span style="font-size:12px;font-weight:400">Draw 3, keep 2, return 1 to deck</span>';
         b.onclick = () => send({ t: 'foresightDraw' });
         bar.appendChild(b);
       }
     }
     if (inPlay && !me.signetBlocked && me.signet.id === 'lightning') {
-      const b = document.createElement('button'); b.className = 'btn'; b.textContent = '⚡ Place Lightning Wild (free)';
+      const b = document.createElement('button'); b.className = 'btn signet-power';
+      b.innerHTML = '⚡ <b>USE LIGHTNING POWER</b><br><span style="font-size:12px;font-weight:400">Place wild on any set — FREE, not a play</span>';
       b.onclick = () => showLightningModal();
       bar.appendChild(b);
     }
