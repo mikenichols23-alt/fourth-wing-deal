@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fourth Wing Deal</title>
+<link rel="stylesheet" href="style.css?v=1792083340">
+</head>
+<body>
+<div id="app">
+  <!-- LOBBY -->
+  <div id="lobby" class="screen">
+    <div class="addi-corner">
+      <img src="addi.jpg" alt="Addi playing">
+      <div class="addi-caption">⭐ Addi's Favorite Game ⭐</div>
+    </div>
+    <div class="lobby-card">
+      <div class="dragon">🐉</div>
+      <h1>Fourth Wing Deal</h1>
+      <div class="fw-sub">MONOPOLY DEAL EDITION</div>
+      <p class="sub">Ride. Fight. Win. Up to 4 riders.</p>
+      <input id="nameInput" maxlength="16" placeholder="Your name" autocomplete="off">
+      <div class="row">
+        <button id="createBtn" class="btn gold">Create Room</button>
+      </div>
+      <div class="row">
+        <input id="codeInput" maxlength="4" placeholder="CODE" autocomplete="off">
+        <button id="joinBtn" class="btn">Join Room</button>
+      </div>
+      <div id="lobbyErr" class="err"></div>
+      <div id="connStatus" style="color:#ffd75f;font-weight:700;margin:6px 0;min-height:20px"></div>
+      <div id="roomInfo" class="hidden">
+        <div class="roomcode">Room: <span id="roomCode"></span></div>
+        <div class="share-hint">Friends join at this server's address with this code.</div>
+        <ul id="playerList"></ul>
+        <div id="signetModeRow" class="hidden" style="margin:10px 0">
+          <span style="color:var(--dim);font-size:13px">Signets: </span>
+          <button id="modeRandom" class="btn gold" style="padding:8px 12px">🎲 Random</button>
+          <button id="modeDraft" class="btn" style="padding:8px 12px">✋ Draft picks</button>
+        </div>
+        <button id="addBotBtn" class="btn hidden" style="margin-bottom:8px">🤖 Add Bot Player</button>
+        <button id="startBtn" class="btn gold hidden">Start Game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGNET DRAFT -->
+  <div id="signetDraft" class="hidden">
+    <div id="signetBox">
+      <h2>🐉 Choose Your Signet</h2>
+      <p class="sub">Each signet grants a unique ability for the whole game.</p>
+      <div id="signetGrid" class="pickgrid"></div>
+      <div id="signetWait" class="hidden">Waiting for other riders to choose…</div>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div id="game" class="screen hidden">
+    <div class="snd-toggles">
+      <button id="sndBtn" title="Sound effects">🔊</button>
+      <button id="voiceBtn" title="Voice announcements">🗣️</button>
+    </div>
+    <div id="banner" class="hidden"></div>
+    <div id="opponents"></div>
+
+    <div id="flowBar" class="hidden"><span id="flowText"></span><button id="flowCancel" class="btn">✖ Cancel</button></div>
+
+    <div id="turnBar" class="hidden"><span id="turnAvatar"></span><span id="turnText"></span></div>
+
+    <div id="dealOverlay" class="hidden"><div id="dealTitle">🂠 Dealing…</div><div id="dealCards"></div></div>
+
+    <div id="midbar">
+      <div id="piles">
+        <div class="pile" id="drawPile" title="Draw pile">🂠<span id="deckCount"></span></div>
+        <div class="pile" id="discardPile" title="Discard pile"></div>
+      </div>
+      <div id="focusWrap">
+        <div id="focusEmpty">Tap a card<br>to play it</div>
+        <div id="focusCard" class="hidden"></div>
+        <div id="focusActions" class="hidden"></div>
+      </div>
+    </div>
+
+    <div id="signetBar"></div>
+
+    <div id="playerRow">
+      <div id="myAvatar">
+        <div class="ava">🐉</div>
+        <div class="pname" id="myName"></div>
+      </div>
+      <div id="myTable">
+        <div class="sect-label">Your Sets</div>
+        <div id="mySets"></div>
+        <div id="myBankRow"><span class="coin">⚔</span><span id="bankTotal"></span><div id="myBank"></div></div>
+      </div>
+    </div>
+
+    <div id="handbar">
+      <div id="handInfo">
+        <span class="coin">⚔</span><span id="bankTotal2"></span>
+        <span>🂠 ×<span id="handCount"></span></span>
+        <span id="turnInfo"></span>
+      </div>
+      <div id="hand-wrap">
+        <div id="hand"></div>
+        <div id="controls">
+          <button id="drawBtn" class="btn gold hidden">Draw</button>
+          <button id="endBtn" class="btn hidden">End Turn</button>
+          <button id="discardBtn" class="btn danger hidden">Discard Selected</button>
+        </div>
+      </div>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="modal" class="hidden">
+    <div id="modalBox"></div>
+  </div>
+</div>
+<script src="/deck.js"></script>
+<script src="client.js?v=1792083340"></script>
+</body>
+</html>
