@@ -82,6 +82,13 @@ body {
   50% { transform: scale(1.08); box-shadow: 0 0 20px rgba(255,215,95,1); }
 }
 .opp.flow-target { border: 3px solid #ffd75f !important; }
+/* Business Deals payment: tappable cards inside the modal */
+.paygrid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-height: 40vh; overflow-y: auto; padding: 4px; }
+.paycard { width: 72px; min-height: 88px; border-radius: 10px; background: #1e293b; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 6px; cursor: pointer; transition: transform .15s; }
+.paycard:active { transform: scale(.94); }
+.paycard-val { font-size: 18px; font-weight: 800; }
+.paycard-name { font-size: 10px; opacity: .8; text-align: center; line-height: 1.2; }
+.paycard.sel { transform: translateY(-4px); }
 /* Business Deals smooth card popup - scales up from hand */
 #focusArea .focus-card {
   animation: popupIn .28s cubic-bezier(.34, 1.4, .64, 1);
