@@ -429,9 +429,9 @@ body {
 .setgroup.stacked .setname { color: #7CFC00 !important; font-weight: 900; }
 .setgroup.complete {
   border: 2px solid #7CFC00;
-  border-radius: 8px;
-  background: rgba(124, 252, 0, .08);
-  padding: 2px;
+  border-radius: 6px;
+  background: rgba(124, 252, 0, .06);
+  padding: 1px;
   display: inline-block;
   width: auto;
 }
@@ -452,7 +452,8 @@ body {
 #hand-wrap { background: linear-gradient(180deg, transparent, #2e86e8 30%); padding-top: 8px; z-index: 20; flex-shrink: 0; }
 #turnBar { padding: 6px 10px; margin-bottom: 4px; flex-shrink: 0; }
 #turnBar .turn-action { display: none; }
-#signetBar { padding: 6px 10px; font-size: 12px; margin-bottom: 10px; flex-shrink: 0; }
+#signetBar { padding: 6px 10px; font-size: 12px; margin-bottom: 12px; flex-shrink: 0; clear: both; }
+#playerRow { display: flex; align-items: center; gap: 10px; margin-top: 12px; clear: both; }
 #signetBar .signet-desc { display: none; }
 #signetBar.expanded .signet-desc { display: block; }
 #log { display: none; }
