@@ -109,6 +109,21 @@ body {
 /* smooth hand card fan */
 #hand .card { transition: transform .2s ease-out; }
 #hand .card:active { transform: translateY(-8px) scale(1.05); }
+/* Business Deals: open middle, compact indicators */
+#turnBar { padding: 4px 12px; font-size: 13px; margin: 2px 0; border-radius: 8px; }
+#turnBar.mine { background: rgba(22,163,74,.25); border: 1px solid #16a34a; }
+#turnBar:not(.mine) { background: rgba(0,0,0,.2); }
+/* signet bar: single compact row */
+#signetBar { display: flex; gap: 6px; align-items: center; justify-content: center; padding: 2px; min-height: 0; }
+#signetBar:empty { display: none; }
+#signetBar .my-signet { font-size: 12px; padding: 4px 8px; }
+#signetBar .btn.signet-power { font-size: 12px; padding: 6px 12px; }
+/* player row: no big panel, just cards like Business Deals */
+#playerRow { background: none; border: none; padding: 2px; }
+#myTable .sect-label { display: none; }
+#myBankRow { padding: 2px; }
+/* middle area: open space */
+#midbar { flex: 1 1 auto; min-height: 40px; }
 /* Business Deals top bar: back button left, icons right */
 #topbar { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; flex-shrink: 0; }
 #backBtn { width: 44px; height: 44px; border-radius: 12px; background: #ea580c; color: #fff; font-size: 28px; font-weight: 800; border: none; cursor: pointer; line-height: 1; }
