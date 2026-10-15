@@ -6,7 +6,7 @@
 const SETS = [
   { id: 'darkblue',  name: 'Dark Blue',   size: 2, value: 4, rent: [3, 8],       color: '#1f2f6e', glow: '#8a9ae0',
     cards: ['Athebyne Outpost', 'Aretia'] },
-  { id: 'darkgreen', name: 'Dark Green',  size: 3, value: 4, rent: [2, 4, 7],    color: '#1e4d2b', glow: '#7fc48a',
+  { id: 'darkgreen', name: 'Green',  size: 3, value: 4, rent: [2, 4, 7],    color: '#1e4d2b', glow: '#7fc48a',
     cards: ['The Flight Field', 'The Threshing Field', 'The Gauntlet'] },
   { id: 'red',       name: 'Red',         size: 3, value: 3, rent: [2, 3, 6],    color: '#c22f2f', glow: '#f08a8a',
     cards: ['The Archives', 'The Healer Quadrant', "General Sorrengail's Office"] },
