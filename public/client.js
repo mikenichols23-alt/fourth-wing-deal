@@ -1094,7 +1094,9 @@ window.onload = () => {
   $('modeDraft').onclick = () => setMode('draft');
   $('startBtn').onclick = () => send({ t: 'start', opts: { signetMode } });
   $('addBotBtn').onclick = () => send({ t: 'addBot' });
-  $('drawBtn').onclick = () => { AudioSys.deal(); send({ t: 'draw' }); };
+  const drawPick = (e) => { e.preventDefault(); AudioSys.deal(); send({ t: 'draw' }); };
+  $('drawBtn').onclick = drawPick;
+  $('drawBtn').ontouchend = drawPick;
   $('endBtn').onclick = () => { AudioSys.tap(); endTurnTapped = true; send({ t: 'end' }); };
   $('drawPile').onclick = () => { if (myIdx != null && S && S.turn === myIdx && S.phase === 'draw') { AudioSys.deal(); send({ t: 'draw' }); } };
   $('focusOverlayClose').onclick = () => { selCard = null; selTableWild = null; render(); };
