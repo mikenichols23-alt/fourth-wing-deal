@@ -82,6 +82,19 @@ body {
   50% { transform: scale(1.08); box-shadow: 0 0 20px rgba(255,215,95,1); }
 }
 .opp.flow-target { border: 3px solid #ffd75f !important; }
+/* Business Deals smooth card animations */
+.card.simple, .setgroup.bd {
+  transition: transform .25s ease-out, opacity .25s ease-out;
+  animation: cardIn .3s ease-out;
+}
+@keyframes cardIn {
+  from { transform: translateY(12px) scale(.9); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+.setgroup.bd .card-wrap { transition: margin .2s ease-out; }
+/* smooth hand card fan */
+#hand .card { transition: transform .2s ease-out; }
+#hand .card:active { transform: translateY(-8px) scale(1.05); }
 /* Business Deals proportions: small cards, generous spacing */
 #game { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; overflow-x: hidden; padding: 8px; max-height: 100dvh; }
 #playerRow { overflow: visible; margin-bottom: 0 !important; padding-bottom: 0 !important; }
