@@ -180,8 +180,8 @@ class Game {
   isComplete(p, setId) {
     const g = this.tableSets(p)[setId] || [];
     if (g.length < SET_BY_ID[setId].size) return false;
-    // every-color wilds cannot complete a set on their own
-    if (g.every(e => this.card(e.card).everyColor)) return false;
+    // wilds cannot complete a set on their own — need at least 1 real property
+    if (g.every(e => this.card(e.card).kind === 'wild')) return false;
     return true;
   }
   completeSets(p) {
@@ -285,8 +285,10 @@ class Game {
     }
     if (c.kind === 'rent') {
       const set = opts.set;
-      if (!set || !c.sets.includes(set) || !this.isComplete(p, set))
-        return { ok: false, need: 'chooseRentSet', sets: c.sets.filter(s => this.isComplete(p, s)) };
+      // Challenge = charge rent: just need 1+ properties in that color, no complete set required
+      const owned = (this.tableSets(p)[set] || []).length;
+      if (!set || !c.sets.includes(set) || owned < 1)
+        return { ok: false, need: 'chooseRentSet', sets: c.sets.filter(s => (this.tableSets(p)[s] || []).length > 0) };
       this.removeFromHand(p, cardId); this.discardPile.push(cardId); this.plays++;
       const amount = this.rentFor(p, set);
       this.logMsg(`${p.name} issues a Challenge on ${SET_BY_ID[set].name}: ${amount} Blades.`);
