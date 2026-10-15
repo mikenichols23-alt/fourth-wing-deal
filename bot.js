@@ -41,7 +41,7 @@ class Bot {
   // one discard, or end turn. Returns true if it did something.
   step() {
     const g = this.g, i = this.i;
-    if (g.winner) return false;
+    if (g.winner != null) return false;
 
     // Signet draft
     if (g.phase === 'signet') {
