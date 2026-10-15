@@ -329,9 +329,15 @@ body {
 }
 /* compact game screen — everything fits in viewport, hand pinned to bottom */
 #game { height: 100dvh; max-height: 100dvh; display: flex; flex-direction: column; overflow: hidden; padding-top: max(8px, env(safe-area-inset-top)); padding-bottom: max(4px, env(safe-area-inset-bottom)); }
-#opponents { margin-bottom: 2px; flex-shrink: 0; max-height: 28dvh; overflow-y: auto; }
+#opponents { margin-bottom: 2px; flex-shrink: 0; max-height: 22dvh; overflow-y: auto; }
 .opp-area { min-height: 80px; padding: 4px; }
 .opp-area .card.fw { width: 56px; min-height: 78px; font-size: 10px; } /* readable mini cards */
+/* compact opponent table cards */
+.opp-area .setgroup { margin: 2px; padding: 3px; }
+.opp-area .setgroup .setname { font-size: 10px; margin-bottom: 2px; }
+.opp-area .setgroup .cards { gap: 2px; }
+.opp-area .setgroup .card.fw.mini { width: 44px; height: 62px; }
+.opp-area .setgroup .card.fw.mini .vbadge { width: 14px; height: 14px; font-size: 8px; }
 #handbar { flex-shrink: 0; margin-top: auto; }
 #hand-wrap { background: linear-gradient(180deg, transparent, #2e86e8 30%); padding-top: 8px; z-index: 20; flex-shrink: 0; }
 #turnBar { padding: 6px 10px; margin-bottom: 4px; flex-shrink: 0; }
@@ -344,9 +350,16 @@ body {
 #midbar { margin: 2px 0; flex: 1 1 auto; min-height: 0; }
 #focusWrap { min-height: 0; }
 #flowBar { flex-shrink: 0; }
-#playerRow { margin-top: 2px; flex-shrink: 0; max-height: 20dvh; overflow-y: auto; }
+#playerRow { margin-top: 2px; flex-shrink: 0; max-height: 16dvh; overflow-y: auto; }
 #myTable { min-height: 64px; padding: 6px; }
+/* compact own table cards */
+#myTable .setgroup { margin: 2px; padding: 3px; }
+#myTable .setgroup .setname { font-size: 10px; margin-bottom: 2px; }
+#myTable .setgroup .cards { gap: 2px; }
 #hand { min-height: 100px; flex-shrink: 0; }
+/* smaller hand cards to fit */
+#hand .card.fw { width: 72px; height: 100px; }
+#hand .card.fw.mini .vbadge { width: 16px; height: 16px; font-size: 9px; }
 #controls { margin: 4px 0 0; flex-shrink: 0; }
 
 /* wild flip animation — rotates like turning the physical card over */
