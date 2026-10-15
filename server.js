@@ -87,15 +87,17 @@ wss.on('connection', ws => {
         const gi = room.game.players.findIndex(p => p.name === name);
         if (gi >= 0) {
           const id = nextId++;
-          // replace the disconnected placeholder or add back
+          // restore at ORIGINAL game index, not at end
           const existing = room.players.find(p => p.name === name);
           if (existing) {
-            existing.ws = ws; existing.id = id;
+            existing.ws = ws; existing.id = id; existing.idx = gi;
             ws._pid = id; ws._room = c;
           } else {
-            room.players.push({ ws, id, name, idx: room.players.length });
+            room.players.push({ ws, id, name, idx: gi });
             ws._pid = id; ws._room = c;
           }
+          // sort players by idx so broadcast order matches game order
+          room.players.sort((a, b) => a.idx - b.idx);
           send(ws, { t: 'rejoined', code: c });
           broadcast(room);
           return;
