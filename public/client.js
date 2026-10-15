@@ -699,38 +699,7 @@ function renderFocus() {
   const c = selCard && me.hand.find(x => x.id === selCard);
   const canAct = S && S.turn === myIdx && S.phase === 'play' && !S.winner && !S.pending && S.playsLeft > 0;
   // table wild flip mode: show popup for free flipping
-  if (selTableWild && !c) {
-    const wc = (S.cardMap && S.cardMap[selTableWild.cardId]);
-    if (wc) {
-      fw.classList.add('overlay');
-      fe.classList.add('hidden'); fc.classList.remove('hidden'); fa.classList.remove('hidden');
-      fc.innerHTML = ''; fc.appendChild(focusCardEl(wc));
-      fa.innerHTML = '';
-      const mkBtn = (cls, icon, label, fn) => {
-        const b = document.createElement('div');
-        b.className = 'act-btn ' + cls;
-        b.innerHTML = `<div class="circle">${icon}</div><div class="lbl">${label}</div>`;
-        b.onclick = fn;
-        fa.appendChild(b);
-      };
-      mkBtn('move', '🎯', 'Move', () => {
-        // enter move mode: tap a destination set
-        selTableWild = null;
-        startFlow({ kind: 'moveWild', card: wc.id, sets: wc.sets, label: 'Tap one of YOUR sets to move the wild there' });
-      });
-      mkBtn('flip', '🔄', 'Flip', () => {
-        // cycle to next color and send recolor (free, doesn't burn a turn)
-        const idx = wc.sets.indexOf(wc.asSet || wc.sets[0]);
-        const newSet = wc.sets[(idx + 1) % wc.sets.length];
-        send({ t: 'recolor', card: wc.id, set: newSet });
-        selTableWild = null;
-        render();
-      });
-      mkBtn('pass', '⏭', 'Close', () => { selTableWild = null; render(); });
-      return;
-    }
-    selTableWild = null;
-  }
+  // (selTableWild popup removed — tapping a wild goes straight to move mode)
   // overlay mode: card pops up large when selected, closes when deselected
   fw.classList.toggle('overlay', !!c);
   if (!c) {
@@ -906,10 +875,12 @@ function tableCardClick(entry, setId) {
     const isMine = S.turn === myIdx && !S.winner;
     const card = (S.cardMap && S.cardMap[entry.card]) || entry;
     if (isMine && card.kind === 'wild') {
-      // only my table wilds
+      // only my table wilds: tap wild → tap destination set (no popup)
       const myTable = me.table || [];
       if (myTable.some(e => e.card === entry.card)) {
-        selTableWild = { cardId: entry.card, setId };
+        const wc = (S.cardMap && S.cardMap[entry.card]) || card;
+        startFlow({ kind: 'moveWild', card: entry.card, sets: wc.sets || [],
+          label: 'Tap one of YOUR sets to move the wild there' });
         selCard = null;
         render();
         return;
