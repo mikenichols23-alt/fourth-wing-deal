@@ -226,8 +226,10 @@ function handle(m) {
     roomCode = m.code; myId = m.you; isHost = m.you === m.host;
     $('roomCode').textContent = m.code;
     $('roomInfo').classList.remove('hidden');
-    $('playerList').innerHTML = m.players.map(p =>
-      `<li>${esc(p.name)}${p.id === m.host ? ' 👑' : ''}${p.isBot ? ' <button class="btn" style="padding:2px 8px;font-size:12px" data-rmbot="${p.id}">✖</button>' : ''}</li>`).join('');
+    $('lobbyCount').textContent = m.players.length;
+    const avatars = ['🐉', '🔥', '⚡', '🌿'];
+    $('playerList').innerHTML = m.players.map((p, i) =>
+      `<li class="lobby-player"><span class="lp-avatar">${avatars[i % 4]}</span><span class="lp-name">${esc(p.name)}</span>${p.id === m.host ? ' <span class="lp-host">👑 HOST</span>' : ''}${p.isBot ? ' <span class="lp-bot">🤖 BOT</span> <button class="btn" style="padding:2px 8px;font-size:12px" data-rmbot="${p.id}">✖</button>' : ''}</li>`).join('');
     $('startBtn').classList.toggle('hidden', !isHost);
     $('signetModeRow').classList.toggle('hidden', !isHost);
     $('addBotBtn').classList.toggle('hidden', !isHost || m.players.length >= 4);
