@@ -270,7 +270,9 @@ body {
   display: inline-flex; align-items: center; justify-content: center;
 }
 #myBank { display: flex; gap: 4px; overflow-x: auto; flex: 1; }
-.sect-label { font-size: 11px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.sect-label { font-size: 11px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; padding-top: 2px; }
+/* ensure the label isn't clipped by the scroll container */
+#myTable .sect-label { position: sticky; top: 0; background: inherit; z-index: 1; }
 
 .setgroup {
   border: 1px solid rgba(255,255,255,.2); border-radius: 8px;
