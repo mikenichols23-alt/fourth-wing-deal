@@ -379,7 +379,7 @@ function cardEl(c, mini, extra) {
     inner = `${badge}<div class="wface" style="background:${wildGrad(c.sets)}"><div class="wwild">WILD</div></div>${cur}` +
       `<div class="pbody"><div class="pset">${esc(c.sets.map(s => SETMAP[s].name).join(' / '))}</div></div>`;
   } else if (c.kind === 'rent') {
-    inner = `${badge}<div class="whead" style="background:${splitGrad(c.sets)}">CHALLENGE</div>` +
+    inner = `${badge}<div class="whead" style="background:${splitGrad(c.sets)}">⚔️ CHALLENGE</div>` +
       `<div class="pbody"><div class="pset">${esc(c.sets.map(s => SETMAP[s].name).join(' / '))}</div></div>`;
   } else if (c.kind === 'money') {
     inner = `${badge}<div class="mnum">${c.value}</div><div class="mlabel">BLADES</div>`;
@@ -408,7 +408,7 @@ function focusCardEl(c) {
       <div class="fc-phead" style="background:${setColor(c.set)}">${esc(c.name.toUpperCase())}</div>
       <div class="fc-pbody">
         <div class="fc-set">${esc(s.name)} SET</div>
-        <div class="fc-rent"><div class="fc-rent-title">CHALLENGE</div>${tiers}</div>
+        <div class="fc-rent"><div class="fc-rent-title">⚔️ CHALLENGE</div>${tiers}</div>
       </div>`;
   } else if (c.kind === 'wild') {
     const names = c.sets.map(s => SETMAP[s].name).join(' / ');
@@ -431,7 +431,7 @@ function focusCardEl(c) {
       return `<div style="color:${ok ? '#7CFC00' : '#ff9a9a'};font-weight:700">${ok ? '✓' : '✗'} ${esc(SETMAP[s].name)}: ${have}/${need}</div>`;
     }).join('');
     d.innerHTML = `${badge}
-      <div class="fc-phead" style="background:${splitGrad(c.sets)}">CHALLENGE</div>
+      <div class="fc-phead" style="background:${splitGrad(c.sets)}">⚔️ CHALLENGE</div>
       <div class="fc-pbody">
         <div class="fc-name">${esc(c.name.toUpperCase())}</div>
         <div class="fc-set">${esc(names)}</div>
