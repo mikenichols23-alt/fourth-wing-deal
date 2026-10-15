@@ -350,8 +350,10 @@ function announceEvents() {
     }
     if (/wins!/i.test(line)) {
       const w = line.match(/^(.+?) /);
-      AudioSys.speak((w ? w[1] : 'Someone') + ' wins the game!');
+      const winnerName = w ? w[1] : 'Someone';
+      AudioSys.speak(winnerName + ' wins the game!');
       AudioSys.fanfare();
+      showWinnerOverlay(winnerName);
     }
     if (/issues a Challenge/i.test(line)) AudioSys.speak('Challenge!');
   }
@@ -775,17 +777,7 @@ function renderFocus() {
   fa.appendChild(dots);
 }
 
-function showFlipModal(c) {
-  const colors = [['darkblue','Dark Blue'],['darkgreen','Dark Green'],['red','Red'],['yellow','Yellow'],['orange','Orange'],['pink','Pink'],['lightblue','Light Blue'],['brown','Brown'],['black','Black'],['lightgreen','Light Green']];
-  const sets = c.sets.filter(s => colors.some(([id]) => id === s));
-  showModal(`<h3>🔄 Flip Wild</h3><p style="font-size:13px;opacity:.75">Choose which color this wild counts as.</p><div class="pickgrid">${
-    sets.map(s => `<button class="btn" data-s="${s}" style="background:${setColor(s)};border-color:#fff;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)">${esc(SETMAP[s].name)}</button>`).join('')
-  }</div><div><button class="btn" id="mCancel">Cancel</button></div>`);
-  $('modalBox').querySelectorAll('[data-s]').forEach(b => b.onclick = () => {
-    hideModal(); send({ t: 'recolor', card: c.id, set: b.dataset.s }); selCard = null;
-  });
-  $('mCancel').onclick = hideModal;
-}
+// (showFlipModal removed — tap wild, tap destination set)
 
 function playSelected(c) {
   if (c.kind === 'property') { send({ t: 'play', card: c.id, opts: {} }); selCard = null; }
@@ -1291,4 +1283,36 @@ function showSearchModal(c) {
     grid.appendChild(d);
   });
   $('mCancel').onclick = hideModal;
+}
+
+// big winner overlay with confetti
+function showWinnerOverlay(name) {
+  let ov = $('winnerOverlay');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.id = 'winnerOverlay';
+    ov.innerHTML = `
+      <div class="winner-confetti"></div>
+      <div class="winner-box">
+        <div class="winner-trophy">🏆</div>
+        <div class="winner-name"></div>
+        <div class="winner-sub">Three complete sets!</div>
+        <button class="btn gold" id="winnerAgain">🔄 Play Again</button>
+      </div>`;
+    document.body.appendChild(ov);
+    const conf = ov.querySelector('.winner-confetti');
+    const colors = ['#ffd75f','#ff6b6b','#4ecdc4','#45b7d1','#f9ca24','#6c5ce7'];
+    for (let i = 0; i < 60; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.background = colors[i % 6];
+      p.style.animationDelay = (Math.random() * 2) + 's';
+      p.style.animationDuration = (2 + Math.random() * 2) + 's';
+      conf.appendChild(p);
+    }
+  }
+  ov.querySelector('.winner-name').textContent = name + ' WINS!';
+  ov.classList.remove('hidden');
+  $('winnerAgain').onclick = () => location.reload();
 }
