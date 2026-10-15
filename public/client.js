@@ -160,6 +160,26 @@ const AudioSys = {
     g.gain.setValueAtTime(0.18, t); g.gain.exponentialRampToValueAtTime(0.01, t + 0.07);
     o.connect(g); g.connect(this.ctx.destination); o.start(t); o.stop(t + 0.08);
   },
+  // Business Deals style: satisfying "pop" when selecting a card
+  pop() {
+    if (!soundOn) return; this.ensure(); if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = 'sine';
+    o.frequency.setValueAtTime(300, t); o.frequency.exponentialRampToValueAtTime(800, t + 0.08);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.25, t); g.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
+    o.connect(g); g.connect(this.ctx.destination); o.start(t); o.stop(t + 0.13);
+  },
+  // Business Deals style: "whoosh" when playing a card
+  whoosh() {
+    if (!soundOn) return; this.ensure(); if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = 'sine';
+    o.frequency.setValueAtTime(900, t); o.frequency.exponentialRampToValueAtTime(200, t + 0.18);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.2, t); g.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+    o.connect(g); g.connect(this.ctx.destination); o.start(t); o.stop(t + 0.22);
+  },
   // human voice announcement
   speak(text) {
     if (!voiceOn || !('speechSynthesis' in window)) return;
@@ -822,6 +842,7 @@ function renderFocus() {
 // (showFlipModal removed — tap wild, tap destination set)
 
 function playSelected(c) {
+  AudioSys.whoosh();
   if (c.kind === 'property') { send({ t: 'play', card: c.id, opts: {} }); selCard = null; }
   else if (c.kind === 'wild') {
     // play directly on the flipped color — no extra modal needed
@@ -1021,7 +1042,7 @@ function tableCardClick(entry, setId) {
 }
 
 function selectCard(c) {
-  AudioSys.tap();
+  AudioSys.pop();
   if (flow && flow.kind === 'mendingPick') {
     startFlow({ kind: 'mendingTarget', card: c.id, label: 'Mending: now click a rider to give this card to' });
     render(); return;
