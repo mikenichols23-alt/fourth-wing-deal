@@ -109,6 +109,21 @@ body {
 /* smooth hand card fan */
 #hand .card { transition: transform .2s ease-out; }
 #hand .card:active { transform: translateY(-8px) scale(1.05); }
+/* my avatar glows on my turn (like Business Deals active player) */
+#myAvatar .ava.my-turn { box-shadow: 0 0 0 3px #ffd75f, 0 0 16px #ffd75f; border-color: #ffd75f; }
+/* Business Deals EXACT: no turn banner (glowing avatar shows turn), no clutter */
+#turnBar { display: none !important; }
+/* signet bar: tiny floating button, not a panel */
+#signetBar { position: absolute; bottom: 140px; right: 8px; z-index: 20; background: none; padding: 0; }
+#signetBar:empty { display: none; }
+#signetBar .my-signet { display: none; }
+#signetBar .btn.signet-power { font-size: 11px; padding: 8px 10px; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+/* player row: Business Deals style - no label, no panel, just cards */
+#playerRow { background: none !important; border: none !important; box-shadow: none !important; padding: 0; }
+#myTable .sect-label { display: none !important; }
+#myBankRow { display: none !important; }
+/* middle: open empty space like Business Deals */
+#midbar { flex: 1 1 auto; min-height: 60px; }
 /* Business Deals: open middle, compact indicators */
 #turnBar { padding: 4px 12px; font-size: 13px; margin: 2px 0; border-radius: 8px; }
 #turnBar.mine { background: rgba(22,163,74,.25); border: 1px solid #16a34a; }
