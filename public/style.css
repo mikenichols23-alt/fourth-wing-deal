@@ -82,6 +82,15 @@ body {
   50% { transform: scale(1.08); box-shadow: 0 0 20px rgba(255,215,95,1); }
 }
 .opp.flow-target { border: 3px solid #ffd75f !important; }
+/* Business Deals smooth card popup - scales up from hand */
+#focusArea .focus-card {
+  animation: popupIn .28s cubic-bezier(.34, 1.4, .64, 1);
+  transform-origin: bottom center;
+}
+@keyframes popupIn {
+  from { transform: scale(.6) translateY(40px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
 /* Business Deals smooth card animations */
 .card.simple, .setgroup.bd {
   transition: transform .25s ease-out, opacity .25s ease-out;
@@ -95,8 +104,10 @@ body {
 /* smooth hand card fan */
 #hand .card { transition: transform .2s ease-out; }
 #hand .card:active { transform: translateY(-8px) scale(1.05); }
-/* Business Deals proportions: small cards, generous spacing */
-#game { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; overflow-x: hidden; padding: 8px; max-height: 100dvh; }
+/* Business Deals: generous breathing room, nothing cramped */
+#game { display: flex; flex-direction: column; gap: 14px; overflow-y: auto; overflow-x: hidden; padding: 10px 12px; max-height: 100dvh; }
+#opponents { gap: 14px; padding: 4px 2px; }
+.oppcol { gap: 6px; padding: 4px; }
 #playerRow { overflow: visible; margin-bottom: 0 !important; padding-bottom: 0 !important; }
 #myTable { overflow: visible; }
 #handbar { margin-top: 0 !important; padding-top: 4px; }
