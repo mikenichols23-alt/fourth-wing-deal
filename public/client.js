@@ -659,7 +659,8 @@ function _render() {
     ms.appendChild(g);
   }
   const mb = $('myBank'); mb.innerHTML = '';
-  me.bank.forEach(c => mb.appendChild(cardEl(c, true)));
+  // Business Deals style: just show total, not individual cards
+  // (individual cards clutter the UI - total is what matters)
   $('bankTotal').textContent = me.bankTotal + '⚔️';
   $('bankTotal2').textContent = me.bankTotal + '⚔️';
   $('handCount').textContent = me.hand.length;
@@ -1063,21 +1064,23 @@ let modalPinned = false;
 // Pay UI is a non-blocking banner (not a modal) so table cards stay tappable
 function renderPayModal() {
   const pd = S.pending;
-  if (!pd || pd.kind !== 'pay') { flow = null; selSet = []; return; }
+  if (!pd || pd.kind !== 'pay') { flow = null; selSet = []; hideModal(); return; }
   const me = S.players[myIdx];
   const sum = selSet.reduce((t, id) => t + (me.table.find(e => e.id === id)?.value || 0), 0);
-  const allVal = me.table.reduce((t, e) => t + e.value, 0);
   const canPay = sum >= pd.need || (selSet.length === me.table.length && me.table.length > 0);
-  const fb = $('flowBar');
-  fb.classList.remove('hidden');
-  fb.innerHTML = `<span id="flowText">👉 ⚔️ Pay ${pd.amount} to ${esc(S.players[pd.to].name)} — ${pd.bankTaken}⚔️ from Armory, tap properties covering <b>${pd.need}⚔️</b> more. Selected: <b>${sum}⚔️</b> ${canPay ? '✅' : ''}</span>
-    <span style="display:flex;gap:8px;flex-shrink:0">
-      <button class="btn gold" id="payOk" ${canPay ? '' : 'disabled'}>Pay</button>
-      <button class="btn" id="payCancel">✖</button>
-    </span>`;
-  $('payOk').onclick = () => { send({ t: 'answer', resp: { cards: selSet } }); flow = null; selSet = []; render(); };
-  $('payCancel').onclick = () => { flow = null; selSet = []; render(); };
-  // highlight own tappable properties
+  // CENTER MODAL - bright and obvious, not a top banner
+  showModal(`<h3 style="font-size:22px">⚔️ PAY ${pd.amount} BLADES</h3>
+    <p style="font-size:16px">To: <b>${esc(S.players[pd.to].name)}</b></p>
+    <p style="font-size:14px;color:var(--dim)">${pd.bankTaken}⚔️ taken from your Armory automatically.</p>
+    <p style="font-size:18px;font-weight:800">Tap your properties below to cover <span style="color:#ffd75f">${pd.need}⚔️</span> more:</p>
+    <p style="font-size:16px">Selected: <b>${sum}⚔️</b> ${canPay ? '✅' : ''}</p>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
+      <button class="btn gold" id="payOk" style="font-size:18px;padding:14px 32px" ${canPay ? '' : 'disabled'}>💰 PAY</button>
+    </div>
+    <p style="font-size:12px;color:var(--dim);margin-top:12px">Tap the glowing properties on your board, then hit PAY</p>`, true);
+  const okBtn = $('payOk');
+  if (okBtn) okBtn.onclick = () => { hideModal(); send({ t: 'answer', resp: { cards: selSet } }); flow = null; selSet = []; render(); };
+  // highlight own tappable properties (pulsating)
   document.querySelectorAll('#mySets .card').forEach(el => el.classList.add('flow-target'));
 }
 
