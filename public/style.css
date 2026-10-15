@@ -81,7 +81,7 @@ body {
 /* ---------- lobby ---------- */
 #lobby { justify-content: center; align-items: center; position: relative; }
 .addi-corner {
-  position: absolute; top: 70px; right: 12px;
+  position: absolute; top: 70px; right: 32px;
   width: 170px; text-align: center; z-index: 5;
 }
 .addi-corner img {
