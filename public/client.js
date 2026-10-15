@@ -737,8 +737,14 @@ function _render() {
     });
     h.style.transform = '';
   });
-  $('turnInfo').textContent = S.winner ? `🏆 ${esc(S.winner.name)} wins!`
-    : myTurn ? `Your turn (${S.playsLeft} left)` : `${esc(S.players[S.turn].name)}'s turn`;
+  let turnText;
+  if (S.winner) turnText = `🏆 ${esc(S.winner.name)} wins!`;
+  else if (S.pending && S.pending.awaits !== myIdx && S.pending.from !== myIdx) {
+    const waiter = S.players[S.pending.awaits] ? S.players[S.pending.awaits].name : 'opponent';
+    turnText = `⏳ Waiting for ${esc(waiter)}…`;
+  }
+  else turnText = myTurn ? `Your turn (${S.playsLeft} left)` : `${esc(S.players[S.turn].name)}'s turn`;
+  $('turnInfo').textContent = turnText;
 
   // controls
   $('drawBtn').classList.toggle('hidden', !(myTurn && S.needDraw));
