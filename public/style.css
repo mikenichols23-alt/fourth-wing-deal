@@ -33,21 +33,30 @@ body {
 .screen { max-width: 560px; margin: 0 auto; padding: 8px; min-height: 100dvh; display: flex; flex-direction: column; }
 
 /* ---------- opponent columns (Business Deals style) ---------- */
-#opponents { display: flex; gap: 8px; margin-bottom: 4px; }
+#opponents { display: flex; gap: 6px; margin-bottom: 4px; }
 .opp {
   flex: 1; display: flex; flex-direction: column;
-  background: rgba(10, 30, 110, .35); border-radius: 12px;
+  background: rgba(10, 30, 110, .35); border-radius: 10px;
   overflow: hidden; min-width: 0;
   border: 2px solid transparent;
 }
-.opp.turn { border-color: #ffd75f; box-shadow: 0 0 16px rgba(255,215,95,.5); }
+.opp.turn { border-color: #ffd75f; box-shadow: 0 0 12px rgba(255,215,95,.5); }
 .opp-banner {
-  display: flex; align-items: center; gap: 6px;
-  padding: 6px 8px; color: #fff; font-weight: 800; font-size: 13px;
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 6px; color: #fff; font-weight: 800; font-size: 11px;
 }
 .opp-banner.c0 { background: linear-gradient(100deg, #16a34a, #22c55e); }
 .opp-banner.c1 { background: linear-gradient(100deg, #2563eb, #3b82f6); }
 .opp-banner.c2 { background: linear-gradient(100deg, #dc2626, #ef4444); }
+/* opponent sets: tiny grid like Business Deals */
+.opp-area { padding: 4px; display: flex; flex-wrap: wrap; gap: 3px; }
+.opp .setgroup { padding: 2px; margin: 0; border-radius: 6px; }
+.opp .setgroup .setname { font-size: 8px; margin-bottom: 2px; }
+.opp .setgroup .cards { gap: 2px; }
+.opp .card.fw { width: 32px !important; height: 44px !important; font-size: 8px; }
+.opp .card.fw .vbadge { width: 14px; height: 14px; font-size: 8px; }
+.opp .card.fw .pbody { display: none; } /* hide body on tiny opp cards */
+.opp .card.fw .whead { font-size: 7px; padding: 2px; }
 .opp-banner.c3 { background: linear-gradient(100deg, #9333ea, #a855f7); }
 .opp-avatar { font-size: 22px; background: rgba(255,255,255,.25); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .opp-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
