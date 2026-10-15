@@ -335,7 +335,15 @@ body {
 #hand { min-height: 100px; flex-shrink: 0; }
 #controls { margin: 4px 0 0; flex-shrink: 0; }
 
-/* flying card animation for plays */
+/* wild flip animation — rotates like turning the physical card over */
+@keyframes wild-flip {
+  0% { transform: rotateX(0); }
+  50% { transform: rotateX(90deg); }
+  100% { transform: rotateX(0); }
+}
+.focus-card.fw .fc-wface.flipping, .card.fw .wface.flipping {
+  animation: wild-flip 0.5s ease-in-out;
+}
 .fly-card {
   position: fixed; z-index: 200; pointer-events: none;
   width: 56px; height: 78px; border-radius: 8px;
