@@ -57,12 +57,14 @@
 
   <!-- GAME -->
   <div id="game" class="screen hidden">
-    <div class="snd-toggles">
-      <button id="sndBtn" title="Sound effects">🔊</button>
-      <button id="voiceBtn" title="Voice announcements">🗣️</button>
+    <div id="topbar">
+      <button id="backBtn" title="Leave game">‹</button>
+      <div class="snd-toggles">
+        <button id="sndBtn" title="Sound effects">🔊</button>
+        <button id="voiceBtn" title="Voice announcements">🗣️</button>
+      </div>
     </div>
     <div id="banner" class="hidden"></div>
-    <div id="flowBanner" class="hidden"></div>
     <div id="opponents"></div>
 
     <div id="flowBar" class="hidden"><span id="flowText"></span><button id="flowCancel" class="btn">✖ Cancel</button></div>
@@ -100,7 +102,7 @@
 
     <div id="handbar">
       <div id="handInfo">
-        <span class="coin">⚔</span><span id="bankTotal2"></span>
+        <span class="mcoin">M</span><span id="bankTotal2"></span>
         <span>🂠 ×<span id="handCount"></span></span>
         <span id="turnInfo"></span>
       </div>
