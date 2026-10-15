@@ -743,10 +743,10 @@ function tableCardClick(entry, setId) {
     const complete = (S.players[flow.target].sets[setId] || []).length >= SETMAP[setId].size;
     if (complete) return toast('Cannot take from a complete set.');
     if (flow.action === 'dragons_fire') {
-      send({ t: 'play', card: flow.card, opts: { target: flow.target, card: entry.id } });
+      send({ t: 'play', card: flow.card, opts: { target: flow.target, card: entry.card } });
       flow = null; selCard = null;
     } else { // leighorrel: now pick mine
-      flow.theirCard = entry.id; flow.kind = 'myCard';
+      flow.theirCard = entry.card; flow.kind = 'myCard';
       flow.label = 'Step 2/2: now tap one of YOUR glowing properties to swap it with';
       render(); toast(flow.label);
     }
@@ -754,7 +754,7 @@ function tableCardClick(entry, setId) {
     // clicked own table
     const complete = (me.sets[setId] || []).length >= SETMAP[setId].size;
     if (complete) return toast('Cannot leighorrel from a complete set.');
-    send({ t: 'play', card: flow.card, opts: { target: flow.target, theirCard: flow.theirCard, myCard: entry.id } });
+    send({ t: 'play', card: flow.card, opts: { target: flow.target, theirCard: flow.theirCard, myCard: entry.card } });
     flow = null; selCard = null;
   } else if (flow.kind === 'payProps') {
     const cid = entry.card;
@@ -807,7 +807,6 @@ function renderPending() {
   } else if (pd.kind === 'pay') {
     flow = { kind: 'payProps', need: pd.need, label: 'pay' };
     selSet = [];
-    render();
     renderPayModal();
   } else if (pd.kind === 'foresight') {
     showModal(`<h3>🔮 Battle Foresight</h3><p>Choose <b>1 card to return</b> to the top of the deck — you keep the other 2.</p>
@@ -827,7 +826,7 @@ function renderPayModal() {
   const pd = S.pending;
   if (!pd || pd.kind !== 'pay') { flow = null; selSet = []; return; }
   const me = S.players[myIdx];
-  const sum = selSet.reduce((t, id) => t + (me.table.find(e => e.card === id)?.value || 0), 0);
+  const sum = selSet.reduce((t, id) => t + (me.table.find(e => e.id === id)?.value || 0), 0);
   const allVal = me.table.reduce((t, e) => t + e.value, 0);
   const canPay = sum >= pd.need || (selSet.length === me.table.length && me.table.length > 0);
   const fb = $('flowBar');
@@ -1027,7 +1026,7 @@ document.addEventListener('click', e => {
   const ce = e.target.closest('.card');
   if (!ce || !S || S.turn !== myIdx || S.phase !== 'play' || S.pending || S.winner) return;
   const me = S.players[myIdx];
-  const entry = me.table.find(x => x.card === ce.dataset.cid);
+  const entry = me.table.find(x => x.id === ce.dataset.cid);
   if (!entry) return;
   const now = Date.now();
   if (lastTapCard === ce.dataset.cid && now - lastTap < 400) {
