@@ -452,8 +452,18 @@ body {
 #hand-wrap { background: linear-gradient(180deg, transparent, #2e86e8 30%); padding-top: 8px; z-index: 20; flex-shrink: 0; }
 #turnBar { padding: 6px 10px; margin-bottom: 4px; flex-shrink: 0; }
 #turnBar .turn-action { display: none; }
-#signetBar { padding: 6px 10px; font-size: 12px; margin-bottom: 12px; flex-shrink: 0; clear: both; }
-#playerRow { display: flex; align-items: center; gap: 10px; margin-top: 12px; clear: both; }
+#signetBar {
+  padding: 8px 10px; font-size: 12px; flex-shrink: 0;
+  margin: 0 0 16px 0 !important;
+  position: relative; z-index: 1;
+  background: rgba(0,0,0,.3); border-radius: 10px;
+}
+#playerRow {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-top: 0 !important; padding-top: 8px;
+  position: relative; z-index: 2;
+  background: rgba(10, 30, 110, .5); border-radius: 12px;
+}
 #signetBar .signet-desc { display: none; }
 #signetBar.expanded .signet-desc { display: block; }
 #log { display: none; }
