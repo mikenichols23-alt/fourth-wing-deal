@@ -12,7 +12,11 @@
   --orange: #f97316;
   --card-bg: #ffffff;
 }
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+/* all interactive elements get pointer cursor and no text selection */
+button, .btn, .card, .signet-card, .act-btn, .setgroup.move-target, [onclick] {
+  cursor: pointer; user-select: none; -webkit-user-select: none;
+}
 html, body { margin: 0; padding: 0; }
 body {
   background: linear-gradient(180deg, #123a9e 0%, #1a5fd0 35%, #2e86e8 70%, #4da3f5 100%);
