@@ -603,10 +603,12 @@ function render() {
 
 // focus card + circular action buttons (Business-Deals style)
 function renderFocus() {
-  const fc = $('focusCard'), fa = $('focusActions'), fe = $('focusEmpty');
+  const fc = $('focusCard'), fa = $('focusActions'), fe = $('focusEmpty'), fw = $('focusWrap');
   const me = S.players[myIdx];
   const c = selCard && me.hand.find(x => x.id === selCard);
   const canAct = S && S.turn === myIdx && S.phase === 'play' && !S.winner && !S.pending && S.playsLeft > 0;
+  // overlay mode: card pops up large when selected, closes when deselected
+  fw.classList.toggle('overlay', !!c);
   if (!c) {
     fc.classList.add('hidden'); fa.classList.add('hidden'); fe.classList.remove('hidden');
     fc.innerHTML = ''; fa.innerHTML = '';
@@ -931,6 +933,8 @@ window.onload = () => {
   $('drawBtn').onclick = () => { AudioSys.deal(); send({ t: 'draw' }); };
   $('endBtn').onclick = () => { AudioSys.tap(); endTurnTapped = true; send({ t: 'end' }); };
   $('drawPile').onclick = () => { if (myIdx != null && S && S.turn === myIdx && S.phase === 'draw') { AudioSys.deal(); send({ t: 'draw' }); } };
+  $('focusOverlayClose').onclick = () => { selCard = null; render(); };
+  $('focusWrap').onclick = (e) => { if (e.target.id === 'focusWrap') { selCard = null; render(); } };
   $('discardBtn').onclick = () => {
     if (!S || S.needDiscard <= 0) return;
     if (!discardMode) {
