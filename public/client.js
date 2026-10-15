@@ -379,8 +379,8 @@ function cardEl(c, mini, extra) {
     inner = `${badge}<div class="wface" style="background:${wildGrad(c.sets)}"><div class="wwild">WILD</div></div>${cur}` +
       `<div class="pbody"><div class="pset">${esc(c.sets.map(s => SETMAP[s].name).join(' / '))}</div></div>`;
   } else if (c.kind === 'rent') {
-    inner = `${badge}<div class="whead" style="background:${splitGrad(c.sets)}">⚔️ CHALLENGE</div>` +
-      `<div class="pbody"><div class="pset">${esc(c.sets.map(s => SETMAP[s].name).join(' / '))}</div></div>`;
+    inner = `${badge}<div class="whead" style="background:${splitGrad(c.sets)}">CHALLENGE</div>` +
+      `<div class="pbody rent-body"><div class="rent-circle">⚔️</div><div class="pset">${esc(c.sets.map(s => SETMAP[s].name).join(' / '))}</div></div>`;
   } else if (c.kind === 'money') {
     inner = `${badge}<div class="mnum">${c.value}</div><div class="mlabel">BLADES</div>`;
   } else {
@@ -431,12 +431,13 @@ function focusCardEl(c) {
       return `<div style="color:${ok ? '#7CFC00' : '#ff9a9a'};font-weight:700">${ok ? '✓' : '✗'} ${esc(SETMAP[s].name)}: ${have}/${need}</div>`;
     }).join('');
     d.innerHTML = `${badge}
-      <div class="fc-phead" style="background:${splitGrad(c.sets)}">⚔️ CHALLENGE</div>
-      <div class="fc-pbody">
+      <div class="fc-phead" style="background:${splitGrad(c.sets)}">CHALLENGE</div>
+      <div class="fc-pbody" style="align-items:center">
+        <div class="fc-rent-circle">⚔️</div>
         <div class="fc-name">${esc(c.name.toUpperCase())}</div>
         <div class="fc-set">${esc(names)}</div>
-        <div class="fc-desc">${esc(c.text || '')}</div>
-        <div class="fc-req" style="margin-top:8px;font-size:13px">Needs a complete set:<br>${reqLines}</div>
+        <div class="fc-desc" style="text-align:center">${esc(c.text || '')}</div>
+        <div class="fc-req" style="margin-top:8px;font-size:13px;text-align:center">Needs a complete set:<br>${reqLines}</div>
       </div>`;
   } else if (c.kind === 'money') {
     d.innerHTML = `${badge}
