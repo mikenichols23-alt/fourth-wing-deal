@@ -711,6 +711,7 @@ function _render() {
   $('bankTotal').textContent = me.bankTotal + 'M';
   $('bankTotal2').textContent = me.bankTotal + 'M';
   $('handCount').textContent = me.hand.length;
+  const mhc = $('myHandCount'); if (mhc) mhc.textContent = me.hand.length;
 
   // hand
   const h = $('hand'); h.innerHTML = '';
