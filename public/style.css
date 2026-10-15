@@ -378,6 +378,18 @@ body {
   border-radius: 12px;
   background: rgba(124, 252, 0, .08);
 }
+/* valid wild move destinations glow */
+.setgroup.move-target {
+  border: 3px dashed #ffd75f;
+  border-radius: 12px;
+  background: rgba(255, 215, 95, .15);
+  cursor: pointer;
+  animation: move-pulse 1s ease-in-out infinite;
+}
+@keyframes move-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 215, 95, .4); }
+  50% { box-shadow: 0 0 20px rgba(255, 215, 95, .8); }
+}
 #handbar { flex-shrink: 0; margin-top: auto; }
 #hand-wrap { background: linear-gradient(180deg, transparent, #2e86e8 30%); padding-top: 8px; z-index: 20; flex-shrink: 0; }
 #turnBar { padding: 6px 10px; margin-bottom: 4px; flex-shrink: 0; }
