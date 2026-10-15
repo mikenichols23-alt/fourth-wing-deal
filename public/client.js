@@ -952,11 +952,74 @@ function flowTarget(playerIdx) {
     return;
   }
   // dragons_fire / leighorrel / dagger_acro need card picks
-  flow.kind = 'theirCard'; flow.target = playerIdx;
-  flow.label = a === 'dragons_fire' ? `Step 2/2: tap one of ${S.players[playerIdx].name}'s glowing properties to discard it`
-    : a === 'dagger_acro' ? `Step 2/2: tap one of ${S.players[playerIdx].name}'s glowing properties to steal it`
-    : `Step 2/2: tap one of ${S.players[playerIdx].name}'s glowing properties to swap with`;
-  render(); toast(flow.label);
+  // Business Deals style: show target's properties as full-size cards in a clean panel
+  showStealPanel(playerIdx, a);
+  return;
+}
+
+// Business Deals steal panel: target's properties as full-size tappable cards
+function showStealPanel(playerIdx, actionId) {
+  const target = S.players[playerIdx];
+  const actionName = actionId === 'dragons_fire' ? 'DRAGONS FIRE' : actionId === 'dagger_acro' ? 'DAGGER ACROBATICS' : 'MUSHROOM SWAP';
+  const actionDesc = actionId === 'dragons_fire' ? 'Discard a property from the player of your choice.'
+    : actionId === 'dagger_acro' ? 'Steal a property from the player of your choice.'
+    : 'Swap one of your properties with an opponent\'s.';
+  const btnLabel = actionId === 'dragons_fire' ? 'Discard' : actionId === 'dagger_acro' ? 'Steal' : 'Swap';
+  // collect all target's property cards
+  const cards = [];
+  for (const [setId, entries] of Object.entries(target.sets || {})) {
+    for (const e of entries) {
+      const entry = typeof e === 'object' ? e : { card: e };
+      const cardId = entry.card || entry.id;
+      const cdef = typeof e === 'object' && e.name ? e : null;
+      cards.push({ id: cardId, setId, name: cdef?.name || cardId, color: setId, value: cdef?.value || 0 });
+    }
+  }
+  const cardBtns = cards.map(c =>
+    `<button class="stealcard" data-id="${c.id}" data-set="${c.setId}" style="border:3px solid ${setColor(c.color)}">
+      <span class="stealcard-val">${c.value}⚔️</span>
+      <span class="stealcard-name">${esc(c.name)}</span>
+    </button>`).join('');
+  showModal(`<div style="background:#7c3aed;border-radius:12px;padding:10px;margin:-8px -8px 12px">
+      <h3 style="font-size:18px;margin:0;color:#fff">Now select the Property.</h3>
+    </div>
+    <div class="paygrid">${cardBtns || '<p>No properties to target!</p>'}</div>
+    <div style="background:#dc2626;border-radius:12px;padding:12px;margin:12px -8px">
+      <h3 style="font-size:22px;margin:0;color:#fff">${actionName}</h3>
+      <p style="font-size:14px;margin:4px 0 0;color:#fecaca">${actionDesc}</p>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:8px">
+      <button class="btn" id="stealCancel" style="font-size:16px;padding:12px 24px;background:#475569">Cancel</button>
+      <button class="btn" id="stealGo" style="font-size:18px;padding:12px 32px;background:#ea580c" disabled>${btnLabel}</button>
+    </div>`, true);
+  let selected = null;
+  const goBtn = $('stealGo');
+  $('modalBox').querySelectorAll('.stealcard').forEach(b => b.onclick = (ev) => {
+    ev.stopPropagation();
+    $('modalBox').querySelectorAll('.stealcard').forEach(x => { x.style.boxShadow = ''; x.style.transform = ''; });
+    b.style.boxShadow = '0 0 16px #ffd75f'; b.style.transform = 'translateY(-4px)';
+    selected = { id: b.dataset.id, set: b.dataset.set };
+    goBtn.disabled = false;
+    AudioSys.pop();
+  });
+  if (goBtn) goBtn.onclick = () => {
+    if (!selected) return;
+    hideModal(); AudioSys.whoosh();
+    if (actionId === 'dagger_acro') {
+      send({ t: 'play', card: flow.card, opts: { target: playerIdx, theirCard: selected.id } });
+    } else if (actionId === 'dragons_fire') {
+      send({ t: 'play', card: flow.card, opts: { target: playerIdx, theirCard: selected.id } });
+    } else {
+      // mushroom swap: now pick my card
+      flow.kind = 'myCard'; flow.target = playerIdx; flow.theirCard = selected.id;
+      flow.label = `Step 3/3: tap one of YOUR glowing properties to swap`;
+      render(); toast(flow.label);
+      return;
+    }
+    flow = null; selCard = null; render();
+  };
+  const cancelBtn = $('stealCancel');
+  if (cancelBtn) cancelBtn.onclick = () => { hideModal(); cancelFlow(); };
 }
 
 function tableCardClick(entry, setId) {
