@@ -153,12 +153,15 @@ body {
 /* ===== CLEAN LAYOUT - no overlaps ===== */
 #game { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; overflow-x: hidden; }
 #game > * { flex-shrink: 0; }
+#midbar { flex: 1 1 auto; min-height: 0; flex-shrink: 1 !important; overflow: hidden; }
 #opponents { order: 1; }
 #payBanner, .pay-banner { order: 2; }
 #turnBar { order: 3; }
 #tableArea, #centerArea { order: 4; }
 #signetBar { order: 5; margin: 0 !important; }
-#playerRow { order: 6; margin: 0 !important; align-items: flex-start !important; }
+/* compact signet bar - hide the big panel, just show buttons */
+#signetBar .signet-panel { display: none; }
+#playerRow { order: 6; margin: 0 !important; align-items: flex-start !important; max-height: 28vh; overflow: hidden; }
 #handbar { order: 7; margin: 0 !important; }
 /* opponent banner: no overlap */
 .opp-banner { position: relative; overflow: hidden; }
