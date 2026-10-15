@@ -1089,22 +1089,40 @@ function renderPayModal() {
   const pd = S.pending;
   if (!pd || pd.kind !== 'pay') { flow = null; selSet = []; hideModal(); return; }
   const me = S.players[myIdx];
+  const fromName = S.players[pd.by] ? S.players[pd.by].name : 'Someone';
   const sum = selSet.reduce((t, id) => t + (me.table.find(e => e.id === id)?.value || 0), 0);
   const canPay = sum >= pd.need || (selSet.length === me.table.length && me.table.length > 0);
-  // CENTER MODAL - bright and obvious, not a top banner
-  showModal(`<h3 style="font-size:22px">⚔️ PAY ${pd.amount} BLADES</h3>
-    <p style="font-size:16px">To: <b>${esc(S.players[pd.to].name)}</b></p>
-    <p style="font-size:14px;color:var(--dim)">${pd.bankTaken}⚔️ taken from your Armory automatically.</p>
-    <p style="font-size:18px;font-weight:800">Tap your properties below to cover <span style="color:#ffd75f">${pd.need}⚔️</span> more:</p>
-    <p style="font-size:16px">Selected: <b>${sum}⚔️</b> ${canPay ? '✅' : ''}</p>
-    <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
-      <button class="btn gold" id="payOk" style="font-size:18px;padding:14px 32px" ${canPay ? '' : 'disabled'}>💰 PAY</button>
+  // Business Deals style: red demand banner + panel with YOUR cards inside to tap
+  const cardBtns = me.table.map(e => {
+    const sel = selSet.includes(e.id);
+    return `<button class="paycard ${sel ? 'sel' : ''}" data-id="${e.id}" style="border:3px solid ${sel ? '#4ade80' : setColor(e.color)};${sel ? 'box-shadow:0 0 12px #4ade80;' : ''}">
+      <span class="paycard-val">${e.value}⚔️</span>
+      <span class="paycard-name">${esc(e.name || '')}</span>
+    </button>`;
+  }).join('');
+  showModal(`<div style="background:#dc2626;border-radius:12px;padding:12px;margin:-8px -8px 12px">
+      <h3 style="font-size:20px;margin:0;color:#fff">⚔️ ${esc(fromName)} is demanding ${pd.amount} blades!</h3>
+      <p style="font-size:14px;margin:4px 0 0;color:#fecaca">Tap your cards below to pay ${pd.need}⚔️ more${pd.bankTaken ? ` (${pd.bankTaken}⚔️ taken from Armory)` : ''}</p>
     </div>
-    <p style="font-size:12px;color:var(--dim);margin-top:12px">Tap the glowing properties on your board, then hit PAY</p>`, true);
+    <p style="font-size:20px;font-weight:800;margin:8px 0">Selected: <span style="color:#ffd75f">${sum}⚔️</span> ${canPay ? '✅' : ''}</p>
+    <div class="paygrid">${cardBtns || '<p>No cards to pay with!</p>'}</div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
+      <button class="btn" id="payClear" style="font-size:16px;padding:12px 24px;background:#475569">Clear</button>
+      <button class="btn" id="payOk" style="font-size:18px;padding:12px 32px;background:#16a34a" ${canPay ? '' : 'disabled'}>💰 PAY</button>
+    </div>`, true);
+  // tap cards inside the modal to select/deselect
+  $('modalBox').querySelectorAll('.paycard').forEach(b => b.onclick = (ev) => {
+    ev.stopPropagation();
+    const id = b.dataset.id;
+    const i = selSet.indexOf(id);
+    if (i >= 0) selSet.splice(i, 1); else selSet.push(id);
+    AudioSys.tap();
+    renderPayModal(); // re-render to update selection
+  });
   const okBtn = $('payOk');
   if (okBtn) okBtn.onclick = () => { hideModal(); send({ t: 'answer', resp: { cards: selSet } }); flow = null; selSet = []; render(); };
-  // highlight own tappable properties (pulsating)
-  document.querySelectorAll('#mySets .card').forEach(el => el.classList.add('flow-target'));
+  const clearBtn = $('payClear');
+  if (clearBtn) clearBtn.onclick = () => { selSet = []; renderPayModal(); };
 }
 
 function handleNak(m) {
