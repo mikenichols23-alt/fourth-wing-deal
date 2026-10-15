@@ -282,6 +282,16 @@ function handle(m) {
     $('lobbyErr').textContent = m.msg;
     setTimeout(() => $('lobbyErr').textContent = '', 4000);
     toast(m.msg);
+    // if rejoin failed because the room is gone, don't leave them on a dead screen
+    if (m.msg === 'Room not found.' && roomCode) {
+      try { sessionStorage.removeItem('fw_room'); } catch {}
+      roomCode = null; S = null;
+      setTimeout(() => {
+        $('game').classList.add('hidden');
+        $('lobby').classList.remove('hidden');
+        toast('That game ended. Start a new one!');
+      }, 1500);
+    }
   } else if (m.t === 'nak') {
     handleNak(m);
   }
