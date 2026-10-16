@@ -1119,3 +1119,11 @@ body {
 #playerRow { order: 5; }
 #handbar { order: 6; }
 #controls { order: 7; }
+
+/* NUCLEAR: hide game UI on home screen */
+#playerRow { display: none !important; }
+#handbar { display: none !important; }
+#controls { display: none !important; }
+#game:not(.hidden) #playerRow { display: flex !important; }
+#game:not(.hidden) #handbar { display: block !important; }
+#game:not(.hidden) #controls { display: block !important; }
