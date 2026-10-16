@@ -292,7 +292,7 @@ async function pumpBots(room) {
         if (bot && g.turn === bot.i && bot.step()) {
           acted = true;
           broadcast(room); // broadcast after EACH move so client sees them one at a time
-          await sleep(1800); // 1.8s pause - enough to see the card before next move
+          await sleep(3500); // 3.5s pause - matches banner duration, no overlap
         }
         else break;
       }
