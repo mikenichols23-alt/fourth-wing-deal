@@ -935,3 +935,12 @@ html, body {
   max-height: 100dvh !important;
   -webkit-overflow-scrolling: touch !important;
 }
+
+/* Readable caption */
+.addi-caption {
+  background: rgba(0,0,0,0.7) !important;
+  border-radius: 12px !important;
+  padding: 4px 12px !important;
+  display: inline-block !important;
+  margin-top: 8px !important;
+}
