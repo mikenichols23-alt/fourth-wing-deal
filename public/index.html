@@ -125,6 +125,16 @@
     <div id="modalBox"></div>
   </div>
 </div>
+<script>
+// Force-hide game div on load (backup for CSS issues)
+(function() {
+  var g = document.getElementById('game');
+  if (g && !window.location.search.includes('game=')) {
+    g.style.display = 'none';
+    g.classList.add('hidden');
+  }
+})();
+</script>
 <script src="/deck.js"></script>
 <script src="client.js?v=1792083340"></script>
 </body>
