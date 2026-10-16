@@ -1056,17 +1056,17 @@ body {
    conflicting rules above this line.
    ============================================================ */
 
-/* Game container: fixed viewport, no scroll */
+/* Game container: fixed viewport, no scroll - only when visible */
 #game:not(.hidden) {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100dvh !important;
-  max-height: 100dvh !important;
-  overflow: hidden !important;
-  padding: 4px 6px !important;
-  padding-top: max(4px, env(safe-area-inset-top)) !important;
-  padding-bottom: max(4px, env(safe-area-inset-bottom)) !important;
-  gap: 4px !important;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding: 4px 6px;
+  padding-top: max(4px, env(safe-area-inset-top));
+  padding-bottom: max(4px, env(safe-area-inset-bottom));
+  gap: 4px;
 }
 
 /* Top bar: fixed */
