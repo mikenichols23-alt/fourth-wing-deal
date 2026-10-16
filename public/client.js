@@ -1235,32 +1235,33 @@ function renderPayModal() {
   const fromName = S.players[pd.by] ? S.players[pd.by].name : 'Someone';
   const sum = selSet.reduce((t, id) => t + (me.table.find(e => e.id === id)?.value || 0), 0);
   const canPay = sum >= pd.need || (selSet.length === me.table.length && me.table.length > 0);
-  // Business Deals style: red demand banner + panel with YOUR cards inside to tap
-  const cardBtns = me.table.map(e => {
-    const sel = selSet.includes(e.id);
-    return `<button class="paycard ${sel ? 'sel' : ''}" data-id="${e.id}" style="border:3px solid ${sel ? '#4ade80' : setColor(e.color)};${sel ? 'box-shadow:0 0 12px #4ade80;' : ''}">
-      <span class="paycard-val">${e.value}⚔️</span>
-      <span class="paycard-name">${esc(e.name || '')}</span>
-    </button>`;
-  }).join('');
+  // Show YOUR actual table cards (visual, tappable) — not generic buttons
   showModal(`<div style="background:#dc2626;border-radius:12px;padding:12px;margin:-8px -8px 12px">
       <h3 style="font-size:20px;margin:0;color:#fff">⚔️ ${esc(fromName)} is demanding ${pd.amount} blades!</h3>
       <p style="font-size:14px;margin:4px 0 0;color:#fecaca">Tap your cards below to pay ${pd.need}⚔️ more${pd.bankTaken ? ` (${pd.bankTaken}⚔️ taken from Armory)` : ''}</p>
     </div>
     <p style="font-size:20px;font-weight:800;margin:8px 0">Selected: <span style="color:#ffd75f">${sum}⚔️</span> ${canPay ? '✅' : ''}</p>
-    <div class="paygrid">${cardBtns || '<p>No cards to pay with!</p>'}</div>
+    <div class="paygrid" id="payCardGrid" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center"></div>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
       <button class="btn" id="payClear" style="font-size:16px;padding:12px 24px;background:#475569">Clear</button>
       <button class="btn" id="payOk" style="font-size:18px;padding:12px 32px;background:#16a34a" ${canPay ? '' : 'disabled'}>💰 PAY</button>
     </div>`, true);
-  // tap cards inside the modal to select/deselect
-  $('modalBox').querySelectorAll('.paycard').forEach(b => b.onclick = (ev) => {
-    ev.stopPropagation();
-    const id = b.dataset.id;
-    const i = selSet.indexOf(id);
-    if (i >= 0) selSet.splice(i, 1); else selSet.push(id);
-    AudioSys.tap();
-    renderPayModal(); // re-render to update selection
+  // Populate with ACTUAL visual cards from table
+  const grid = $('payCardGrid');
+  me.table.forEach(e => {
+    const card = cardEl(e.card, { sel: selSet.includes(e.id), show: 'mini' });
+    card.style.cursor = 'pointer';
+    card.style.border = selSet.includes(e.id) ? '3px solid #4ade80' : '3px solid transparent';
+    if (selSet.includes(e.id)) card.style.boxShadow = '0 0 12px #4ade80';
+    card.onclick = (ev) => {
+      ev.stopPropagation();
+      const id = e.id;
+      const i = selSet.indexOf(id);
+      if (i >= 0) selSet.splice(i, 1); else selSet.push(id);
+      AudioSys.tap();
+      renderPayModal(); // re-render to update selection
+    };
+    grid.appendChild(card);
   });
   const okBtn = $('payOk');
   if (okBtn) okBtn.onclick = () => { hideModal(); send({ t: 'answer', resp: { cards: selSet } }); flow = null; selSet = []; render(); };
