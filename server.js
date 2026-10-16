@@ -258,12 +258,14 @@ async function pumpBots(room) {
       } else {
         // 2. Bot's turn: single step
         const bot = room.botObjs.find(b => b.i === g.turn);
-        if (bot && g.turn === bot.i && bot.step()) acted = true;
+        if (bot && g.turn === bot.i && bot.step()) {
+          acted = true;
+          broadcast(room); // broadcast after EACH move so client sees them one at a time
+          await sleep(1800); // 1.8s pause - enough to see the card before next move
+        }
         else break;
       }
       if (!acted) break;
-      broadcast(room);
-      await sleep(750); // let the move be seen before the next one
     }
     broadcast(room);
   } finally {
