@@ -278,7 +278,11 @@ function animatePlays() {
 const AudioSys = {
   ctx: null,
   ensure() {
-    if (!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch {} }
+    try {
+      if (!this.ctx || this.ctx.state === 'closed') {
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    } catch {}
     if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
   },
   noiseBuf(dur) {
@@ -403,9 +407,17 @@ const AudioSys = {
   speak(text) {
     if (!voiceOn || !('speechSynthesis' in window)) return;
     try {
+      // iOS fix: if speech is stuck (speaking for >10s), force reset
+      const now = Date.now();
+      if (speechSynthesis.speaking && this._speakStart && (now - this._speakStart > 10000)) {
+        speechSynthesis.cancel();
+      }
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.rate = 1.05; u.pitch = 1.0; u.volume = 0.9;
+      this._speakStart = now;
+      u.onend = () => { this._speakStart = 0; };
+      u.onerror = () => { this._speakStart = 0; };
       speechSynthesis.speak(u);
     } catch {}
   },
@@ -623,6 +635,12 @@ function announceEvents() {
       // if it targets me, say so
       if (myName && line.includes(myName)) AudioSys.speak('Someone challenges you!');
     }
+    // Dragonscale Armor block: banner + voice announcement
+    if (/blocked by Dragonscale Armor/i.test(line)) {
+      const msg = 'Dragonscale Armor blocked the move!';
+      AudioSys.speak(msg);
+      toast('🛡️ ' + msg);
+    }
     // action card targeting me: "X played [card] on Y" or "X stole from Y"
     if (myName && line.includes(myName)) {
       const acted = line.match(/^(.+?) (played|stole|took|discarded|swapped)/i);
@@ -703,10 +721,11 @@ function cardEl(c, mini, extra, simple) {
       `<div class="pbody"><div class="pset">${esc(s.name)}</div><div class="ptiers">${s.rent.join(' · ')}</div></div>`;
   } else if (c.kind === 'wild') {
     const active = c.asSet || c.sets[0];
-    const cur = c.asSet ? `<div class="wcur" style="background:${setColor(active)}">${esc(SETMAP[active].name).toUpperCase()}</div>` : '';
+    // Active color banner at TOP when flipped (prominent)
+    const topBanner = c.asSet ? `<div class="wtop" style="background:${setColor(active)}">${esc(SETMAP[active].name).toUpperCase()}</div>` : '';
     // lightning signet wild: big ⚡️ to tell it apart
     const wildLabel = c.signetCard ? '⚡️' : 'WILD';
-    inner = `${badge}<div class="wface" style="background:${wildGrad(c.sets)}"><div class="wwild">${wildLabel}</div></div>${cur}` +
+    inner = `${badge}${topBanner}<div class="wface" style="background:${wildGrad(c.sets)}"><div class="wwild">${wildLabel}</div></div>` +
       `<div class="pbody"><div class="pset">${c.signetCard ? '⚡️ Lightning Wild' : esc(c.sets.map(s => SETMAP[s].name).join(' / '))}</div></div>`;
   } else if (c.kind === 'rent') {
     inner = `${badge}<div class="whead" style="background:${splitGrad(c.sets)}">CHALLENGE</div>` +
@@ -1256,10 +1275,10 @@ function showMyCardPanel(playerIdx, theirCardId) {
       cards.push({ id: cardId, setId, name: cdef?.name || cardId, color: setId, value: cdef?.value || 0 });
     }
   }
-  // Filter out cards that are part of a complete set (monopoly) - can't steal those
+  // Filter out cards that are part of a complete set (monopoly) - can't swap those
   const availCards = cards.filter(c => {
     const setId = c.setId;
-    const setEntries = target.sets[setId] || [];
+    const setEntries = me.sets[setId] || [];
     const maxSize = SETMAP[setId]?.size || 99;
     return setEntries.length < maxSize;
   });
@@ -1298,6 +1317,52 @@ function showMyCardPanel(playerIdx, theirCardId) {
   };
   const cancelBtn = $('myCardCancel');
   if (cancelBtn) cancelBtn.onclick = () => { hideModal(); cancelFlow(); };
+}
+
+// Wild move: show YOUR sets as LARGE cards to pick destination (not tiny panel)
+function showWildMovePanel(cardId, validSets) {
+  const me = S.players[myIdx];
+  const mySets = me.sets || {};
+  // Build large set cards for each valid destination
+  const setBtns = validSets.map(setId => {
+    const entries = mySets[setId] || [];
+    const sname = SETMAP[setId] ? SETMAP[setId].name : setId;
+    const scolor = setColor(setId);
+    // Show a representative card from the set, or a placeholder
+    let preview = '';
+    if (entries.length) {
+      const e = entries[0];
+      const cid = typeof e === 'object' ? (e.card || e.id) : e;
+      const full = (S.cardMap && S.cardMap[cid]) || {};
+      preview = `<div style="font-size:11px;color:#fff;background:${scolor};border-radius:6px;padding:4px 8px;margin-top:6px">${esc(sname)} (${entries.length})</div>`;
+    } else {
+      preview = `<div style="font-size:11px;color:#fff;background:${scolor};border-radius:6px;padding:4px 8px;margin-top:6px">New ${esc(sname)} set</div>`;
+    }
+    return `<div class="wildset-card" data-set="${setId}" style="cursor:pointer;background:#1e293b;border:3px solid ${scolor};border-radius:12px;padding:16px 12px;text-align:center;min-width:110px">
+      <div style="font-size:32px">${scolor === '#000' ? '⬛' : '🃏'}</div>
+      <div style="font-size:14px;font-weight:800;color:#fff;margin-top:4px">${esc(sname).toUpperCase()}</div>
+      ${preview}
+    </div>`;
+  }).join('');
+  showModal(`<div style="background:#7c3aed;border-radius:12px;padding:10px;margin:-8px -8px 12px">
+      <h3 style="font-size:18px;margin:0;color:#fff">👉 Move wild to which set?</h3>
+      <p style="font-size:13px;margin:4px 0 0;color:#e9d5ff">Tap a set below — all your sets are shown large.</p>
+    </div>
+    <div class="paygrid" style="max-height:50vh;overflow-y:auto">${setBtns || '<p>No valid sets!</p>'}</div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
+      <button class="btn" id="wildMoveCancel" style="font-size:16px;padding:12px 24px;background:#475569">✖ Cancel</button>
+    </div>`, true);
+  $('modalBox').querySelectorAll('.wildset-card').forEach(el => {
+    el.onclick = (ev) => {
+      ev.stopPropagation();
+      const setId = el.dataset.set;
+      hideModal();
+      AudioSys.tap();
+      send({ t: 'recolor', card: cardId, set: setId });
+      render();
+    };
+  });
+  $('wildMoveCancel').onclick = () => { hideModal(); };
 }
 
 // Business Deals steal panel: target's properties as full-size tappable cards
@@ -1385,36 +1450,20 @@ function tableCardClick(entry, setId) {
     const cardId = entry.card || entry.id;
     const card = (S.cardMap && S.cardMap[cardId]) || entry;
     if (isMine && card.kind === 'wild') {
-      // only my table wilds: tap wild → tap destination set (no popup)
+      // only my table wilds: tap wild → show LARGE set selection modal
       const myTable = me.table || [];
       // me.table has spread cards with .id
       if (myTable.some(e => (e.id === cardId) || (e.card === cardId))) {
         const sets = card.sets || (card.signetCard ? Object.keys(SETMAP) : []) || [];
-        startFlow({ kind: 'moveWild', card: cardId, sets,
-          label: 'Tap one of YOUR sets to move the wild there' });
+        showWildMovePanel(cardId, sets);
         selCard = null;
-        render();
         return;
       }
     }
     return;
   }
   const me = S.players[myIdx];
-  // moveWild: tap a destination set to move the wild there
-  if (flow.kind === 'moveWild') {
-    // only my own sets
-    const mySets = me.sets || {};
-    if (!mySets[setId]) return;
-    // check the wild supports this color
-    if (!flow.sets.includes(setId)) {
-      toast(`This wild can't be ${SETMAP[setId].name}.`);
-      return;
-    }
-    send({ t: 'recolor', card: flow.card, set: setId });
-    flow = null;
-    render();
-    return;
-  }
+  // (moveWild now uses showWildMovePanel modal, not flow)
   // tapping an opponent's card directly during "choose a rider" skips straight to that rider
   if (flow.kind === 'targetPlayer') {
     for (let pi = 0; pi < S.players.length; pi++) {
@@ -1508,8 +1557,12 @@ function renderPending() {
     $('wNo').onclick = () => { send({ t: 'answer', resp: { use: false } }); hideModal(); };
     const y = $('wYes'); if (y) y.onclick = () => { send({ t: 'answer', resp: { use: true } }); hideModal(); };
   } else if (pd.kind === 'pay') {
-    flow = { kind: 'payProps', need: pd.need, label: 'pay' };
-    selSet = [];
+    // Only reset selection if this is a new payment (not a re-render of the same one)
+    const payKey = pd.by + ':' + pd.amount + ':' + pd.from;
+    if (flow?.kind !== 'payProps' || flow.payKey !== payKey) {
+      flow = { kind: 'payProps', need: pd.need, label: 'pay', payKey };
+      selSet = [];
+    }
     renderPayModal();
   } else if (pd.kind === 'foresight') {
     showModal(`<h3>🔮 Battle Foresight</h3><p>Choose <b>1 card to return</b> to the top of the deck — you keep the other 2.</p>
@@ -1530,38 +1583,73 @@ function renderPayModal() {
   if (!pd || pd.kind !== 'pay') { flow = null; selSet = []; hideModal(); return; }
   const me = S.players[myIdx];
   const fromName = S.players[pd.by] ? S.players[pd.by].name : 'Someone';
-  const sum = selSet.reduce((t, id) => t + (me.table.find(e => e.id === id)?.value || 0), 0);
-  const canPay = sum >= pd.need || (selSet.length === me.table.length && me.table.length > 0);
-  // Show YOUR actual table cards (visual, tappable) — not generic buttons
+  // Sum from both bank and table selections
+  const cardValue = (id) => {
+    const b = (pd.bankCards || []).find(x => x.card === id);
+    if (b) return b.value;
+    const t = me.table.find(e => (e.id || e.card) === id);
+    return t ? (t.value || 0) : 0;
+  };
+  const sum = selSet.reduce((t, id) => t + cardValue(id), 0);
+  const totalBank = (pd.bankCards || []).reduce((t, x) => t + x.value, 0);
+  const totalTable = me.table.reduce((t, e) => t + (e.value || 0), 0);
+  const canPay = sum >= pd.need || (sum > 0 && sum >= totalBank + totalTable);
+  const bankSelected = selSet.filter(id => (pd.bankCards || []).some(x => x.card === id));
+  const bankSum = bankSelected.reduce((t, id) => t + cardValue(id), 0);
+  // Show bank cards first (large), then properties if bank isn't enough
+  const showProps = bankSum < pd.need;
   showModal(`<div style="background:#dc2626;border-radius:12px;padding:12px;margin:-8px -8px 12px">
       <h3 style="font-size:20px;margin:0;color:#fff">⚔️ ${esc(fromName)} is demanding ${pd.amount} blades!</h3>
-      <p style="font-size:14px;margin:4px 0 0;color:#fecaca">Tap your cards below to pay ${pd.need}⚔️ more${pd.bankTaken ? ` (${pd.bankTaken}⚔️ taken from Armory)` : ''}</p>
+      <p style="font-size:14px;margin:4px 0 0;color:#fecaca">Tap your money cards to pay. ${showProps ? 'Not enough — select properties too.' : ''}</p>
     </div>
-    <p style="font-size:20px;font-weight:800;margin:8px 0">Selected: <span style="color:#ffd75f">${sum}⚔️</span> ${canPay ? '✅' : ''}</p>
-    <div class="paygrid" id="payCardGrid" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center"></div>
+    <p style="font-size:20px;font-weight:800;margin:8px 0">Selected: <span style="color:#ffd75f">${sum}⚔️</span> / ${pd.need}⚔️ ${canPay ? '✅' : ''}</p>
+    <h4 style="color:#ffd75f;margin:8px 0 4px">💰 Your Blades (${totalBank}M)</h4>
+    <div class="paygrid" id="payBankGrid" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:12px"></div>
+    ${showProps ? `<h4 style="color:#fbbf24;margin:8px 0 4px">🏠 Properties (if needed)</h4><div class="paygrid" id="payPropGrid" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center"></div>` : ''}
     <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
       <button class="btn" id="payClear" style="font-size:16px;padding:12px 24px;background:#475569">Clear</button>
-      <button class="btn" id="payOk" style="font-size:18px;padding:12px 32px;background:#16a34a" ${canPay ? '' : 'disabled'}>💰 PAY</button>
+      <button class="btn" id="payOk" style="font-size:18px;padding:12px 32px;background:#16a34a" ${canPay ? '' : 'disabled'}>💰 PAY ${sum}⚔️</button>
     </div>`, true);
-  // Populate with ACTUAL visual cards from table
-  const grid = $('payCardGrid');
-  me.table.forEach(e => {
-    const cardId = e.id || e.card;
-    const full = (S.cardMap && S.cardMap[cardId]) || e.card || e;
-    const card = cardEl(full, true, '', true);
+  // Bank cards: LARGE
+  const bankGrid = $('payBankGrid');
+  (pd.bankCards || []).forEach(bc => {
+    const full = (S.cardMap && S.cardMap[bc.card]) || bc;
+    const card = cardEl(full, false, '', false); // large, not mini
     card.style.cursor = 'pointer';
-    card.style.border = selSet.includes(e.id) ? '3px solid #4ade80' : '3px solid transparent';
-    if (selSet.includes(e.id)) card.style.boxShadow = '0 0 12px #4ade80';
+    card.style.width = '90px'; card.style.height = '126px';
+    const isSel = selSet.includes(bc.card);
+    card.style.border = isSel ? '4px solid #4ade80' : '3px solid transparent';
+    if (isSel) card.style.boxShadow = '0 0 16px #4ade80';
     card.onclick = (ev) => {
       ev.stopPropagation();
-      const id = e.id;
-      const i = selSet.indexOf(id);
-      if (i >= 0) selSet.splice(i, 1); else selSet.push(id);
+      const i = selSet.indexOf(bc.card);
+      if (i >= 0) selSet.splice(i, 1); else selSet.push(bc.card);
       AudioSys.tap();
-      renderPayModal(); // re-render to update selection
+      renderPayModal();
     };
-    grid.appendChild(card);
+    bankGrid.appendChild(card);
   });
+  // Properties: only if bank isn't enough
+  if (showProps) {
+    const propGrid = $('payPropGrid');
+    me.table.forEach(e => {
+      const cardId = e.id || e.card;
+      const full = (S.cardMap && S.cardMap[cardId]) || e.card || e;
+      const card = cardEl(full, true, '', true);
+      card.style.cursor = 'pointer';
+      const isSel = selSet.includes(cardId);
+      card.style.border = isSel ? '3px solid #4ade80' : '3px solid transparent';
+      if (isSel) card.style.boxShadow = '0 0 12px #4ade80';
+      card.onclick = (ev) => {
+        ev.stopPropagation();
+        const i = selSet.indexOf(cardId);
+        if (i >= 0) selSet.splice(i, 1); else selSet.push(cardId);
+        AudioSys.tap();
+        renderPayModal();
+      };
+      propGrid.appendChild(card);
+    });
+  }
   const okBtn = $('payOk');
   if (okBtn) okBtn.onclick = () => { hideModal(); send({ t: 'answer', resp: { cards: selSet } }); flow = null; selSet = []; render(); };
   const clearBtn = $('payClear');
@@ -1855,10 +1943,34 @@ function showWinnerOverlay(name) {
   }
   ov.querySelector('.winner-name').textContent = name + ' WINS!';
   ov.classList.remove('hidden');
-  // After 5 seconds, hide celebration but keep the final board visible for review
+  ov.classList.remove('compact');
+  // Reset celebration elements (in case of re-show)
+  ov.querySelector('.winner-confetti').style.display = '';
+  ov.querySelector('.winner-trophy').style.display = '';
+  ov.querySelector('.winner-medal').style.display = '';
+  ov.querySelector('.winner-sub').style.display = '';
+  // After 5 seconds, hide celebration but show Play Again / Quit buttons
   clearTimeout(ov._hideT);
   ov._hideT = setTimeout(() => {
-    ov.classList.add('hidden');
+    ov.classList.add('compact');
+    ov.querySelector('.winner-confetti').style.display = 'none';
+    ov.querySelector('.winner-trophy').style.display = 'none';
+    ov.querySelector('.winner-medal').style.display = 'none';
+    ov.querySelector('.winner-sub').style.display = 'none';
+    // Replace Play Again with Play Again + Quit buttons
+    const box = ov.querySelector('.winner-box');
+    if (!box.querySelector('#winnerQuit')) {
+      const quitBtn = document.createElement('button');
+      quitBtn.className = 'btn';
+      quitBtn.id = 'winnerQuit';
+      quitBtn.textContent = '🏠 Quit';
+      quitBtn.style.marginLeft = '12px';
+      quitBtn.onclick = () => {
+        try { sessionStorage.removeItem('fw_room'); sessionStorage.removeItem('fw_name'); } catch {}
+        location.reload();
+      };
+      box.appendChild(quitBtn);
+    }
   }, 5000);
   $('winnerAgain').onclick = () => { try { sessionStorage.removeItem('fw_room'); sessionStorage.removeItem('fw_name'); } catch {} location.reload(); };
 }
