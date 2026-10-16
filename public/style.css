@@ -1417,3 +1417,16 @@ html, body {
 .card-played-anim {
   animation: cardSlideIn .5s ease-out !important;
 }
+
+/* Property selector shows real cards */
+.paygrid .stealcard {
+  cursor: pointer !important;
+  transition: transform .15s, box-shadow .15s !important;
+}
+.paygrid {
+  display: flex !important;
+  gap: 10px !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  padding: 8px !important;
+}
