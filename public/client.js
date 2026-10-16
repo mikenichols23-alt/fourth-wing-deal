@@ -857,7 +857,7 @@ function _render() {
     const bg = bannerColors[oi % bannerColors.length]; oi++;
     d.innerHTML = `<div class="opp-banner" style="background:${bg}">
         <div class="opp-avatar">${av}</div>
-        <div class="opp-name">${esc(p.name)}</div>
+        <div class="opp-name">${esc(p.name.replace(' \u{1F916}', ''))}</div>
         <div class="opp-bank"><span class="mcoin">M</span>${p.bankTotal}M</div>
       </div><div class="opp-area"><div class="opp-handcount">🂠 ×${p.handCount}</div></div>`;
     const area = d.querySelector('.opp-area');
