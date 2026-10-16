@@ -221,20 +221,24 @@ function animatePlays() {
     const pp = prevS.players[i];
     if (!pp || i === myIdx) return; // skip me (handled above)
     if (p.bankTotal > pp.bankTotal) {
-      // Self-bank, not a payment: their hand shrank (card moved hand -> bank).
-      // A real payment doesn't reduce the receiver's hand.
-      // Show a subtle bank animation (no payment banner).
-      if (p.hand.length < pp.hand.length) {
+      // Find who actually PAID: bank decreased OR table shrank (paid with property).
+      // A self-bank has no payer — only show the payment banner for real payments.
+      const payerIdx = S.players.findIndex((q, j) => {
+        if (j === i || !prevS.players[j]) return false;
+        const pq = prevS.players[j];
+        return q.bankTotal < pq.bankTotal || q.table.length < pq.table.length;
+      });
+      const amount = p.bankTotal - pp.bankTotal;
+      // No payer found → self-bank, not a payment. Subtle bank animation only.
+      if (payerIdx < 0) {
         const oppEls2 = document.querySelectorAll('#opponents .oppcol');
         const bankEl = i < myIdx ? oppEls2[i]?.querySelector('.opp-bank') : oppEls2[i - 1]?.querySelector('.opp-bank');
         if (bankEl) { flyMoney($('midbar'), bankEl); AudioSys.clink(); }
         return;
       }
-      // This opponent RECEIVED money - find who paid (bank decreased)
-      const payerIdx = S.players.findIndex((q, j) => j !== i && prevS.players[j] && q.bankTotal < prevS.players[j].bankTotal);
-      const amount = p.bankTotal - pp.bankTotal;
+      // Real payment: show banner
       const receiverName = p.name;
-      const payerName = payerIdx >= 0 ? S.players[payerIdx].name : 'Someone';
+      const payerName = S.players[payerIdx].name;
       // Show payment banner
       showPaymentBanner(payerName, receiverName, amount);
       // Fly coins from payer to receiver (slower, multiple coins)
