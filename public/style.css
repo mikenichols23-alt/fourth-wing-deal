@@ -1304,3 +1304,8 @@ html, body {
   justify-content: center !important;
   width: 100% !important;
 }
+
+/* Blue homepage background */
+#lobby {
+  background: linear-gradient(180deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%) !important;
+}
