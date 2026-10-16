@@ -1309,3 +1309,40 @@ html, body {
 #lobby {
   background: linear-gradient(180deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%) !important;
 }
+
+/* Draw pile looks like a real card deck */
+#drawPile {
+  width: 72px !important; height: 102px !important;
+  border-radius: 10px !important;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+  border: 2px solid #fbbf24 !important;
+  box-shadow: 3px 3px 0 #b45309, 6px 6px 0 rgba(0,0,0,.3), 0 4px 12px rgba(0,0,0,.4) !important;
+  display: flex !important; flex-direction: column !important;
+  align-items: center !important; justify-content: center !important;
+  font-size: 32px !important;
+  color: #fff !important;
+  position: relative !important;
+}
+#drawPile::before {
+  content: '🐉' !important;
+  font-size: 36px !important;
+}
+#drawPile #deckCount {
+  position: absolute !important;
+  bottom: 4px !important; right: 6px !important;
+  background: #fbbf24 !important; color: #000 !important;
+  font-size: 12px !important; font-weight: 800 !important;
+  border-radius: 10px !important; padding: 1px 7px !important;
+}
+/* Discard pile - subtle */
+#discardPile {
+  width: 72px !important; height: 102px !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,.08) !important;
+  border: 2px dashed rgba(255,255,255,.25) !important;
+}
+#discardPile:not(:empty) {
+  border-style: solid !important;
+  border-color: rgba(255,255,255,.4) !important;
+  background: #fff !important;
+}
