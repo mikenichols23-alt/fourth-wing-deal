@@ -1987,3 +1987,18 @@ html, body {
   flex-wrap: nowrap !important;
   margin-right: 6px !important;
 }
+
+/* Last move indicator - small white text in middle */
+#lastMove {
+  text-align: center !important;
+  color: rgba(255,255,255,.85) !important;
+  font-size: 13px !important;
+  font-style: italic !important;
+  padding: 4px 8px !important;
+  margin-top: 4px !important;
+  max-width: 90% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+#lastMove:not(.hidden) { display: block !important; }
