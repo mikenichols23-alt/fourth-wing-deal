@@ -1752,3 +1752,32 @@ html, body {
   max-height: 120px !important;
   align-content: flex-start !important;
 }
+
+/* Focus overlay - Business Deals style: card left, buttons vertical on right */
+#focusWrap.overlay {
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+#focusWrap.overlay .focus-card.fw {
+  width: min(260px, 65vw) !important;
+  max-height: 60vh !important;
+  flex-shrink: 0 !important;
+}
+#focusWrap.overlay #focusActions {
+  flex-direction: column !important;
+  gap: 12px !important;
+  align-items: center !important;
+}
+#focusWrap.overlay #focusActions .btn {
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  font-size: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
