@@ -39,6 +39,41 @@ function flyCard(fromEl, toEl, faceText, color) {
   AudioSys.deal();
   setTimeout(() => el.remove(), 600);
 }
+// Money fly animation - slower, golden coins
+function flyMoney(fromEl, toEl) {
+  const a = elCenter(fromEl), b = elCenter(toEl);
+  if (!a || !b) return;
+  const el = document.createElement('div');
+  el.className = 'fly-money';
+  el.textContent = '🪙';
+  el.style.left = (a.x - 16) + 'px'; el.style.top = (a.y - 16) + 'px';
+  el.style.position = 'fixed'; el.style.zIndex = '999';
+  el.style.fontSize = '32px'; el.style.pointerEvents = 'none';
+  el.style.transition = 'transform 0.8s ease-in-out, opacity 0.8s';
+  document.body.appendChild(el);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    el.style.transform = `translate(${b.x - a.x}px, ${b.y - a.y}px)`;
+    el.style.opacity = '0.3';
+  }));
+  setTimeout(() => el.remove(), 900);
+}
+// Payment banner - shows who paid whom
+function showPaymentBanner(from, to, amount) {
+  let banner = $('paymentBanner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'paymentBanner';
+    document.body.appendChild(banner);
+  }
+  banner.innerHTML = `💰 <b>${esc(from)}</b> pays <b>${esc(to)}</b> ${amount}M`;
+  banner.classList.remove('hidden');
+  banner.classList.add('show');
+  clearTimeout(banner._t);
+  banner._t = setTimeout(() => {
+    banner.classList.remove('show');
+    setTimeout(() => banner.classList.add('hidden'), 500);
+  }, 2500);
+}
 function tableIds(p) { return (p.table || []).map(e => e.id || e.card); }
 function animatePlays() {
   if (!prevS || !S) return;
@@ -82,6 +117,46 @@ function animatePlays() {
   if (pm && me.bankTotal > pm.bankTotal && me.hand.length < pm.hand.length) {
     flyCard($('hand'), $('myBankRow'), '', '');
     AudioSys.clink();
+  }
+  // PAYMENT ANIMATION: detect any player's bank change (rent/money transfers)
+  // Slow, visible, with audio - show money going to the correct person
+  S.players.forEach((p, i) => {
+    const pp = prevS.players[i];
+    if (!pp || i === myIdx) return; // skip me (handled above)
+    if (p.bankTotal > pp.bankTotal) {
+      // This opponent RECEIVED money - find who paid (bank decreased)
+      const payerIdx = S.players.findIndex((q, j) => j !== i && prevS.players[j] && q.bankTotal < prevS.players[j].bankTotal);
+      const amount = p.bankTotal - pp.bankTotal;
+      const receiverName = p.name;
+      const payerName = payerIdx >= 0 ? S.players[payerIdx].name : 'Someone';
+      // Show payment banner
+      showPaymentBanner(payerName, receiverName, amount);
+      // Fly coins from payer to receiver (slower, multiple coins)
+      const oppEls = document.querySelectorAll('#opponents .oppcol');
+      const toEl = i < myIdx ? oppEls[i] : oppEls[i - 1];
+      const fromEl = payerIdx === myIdx ? $('handInfo') : (payerIdx >= 0 ? (payerIdx < myIdx ? oppEls[payerIdx] : oppEls[payerIdx - 1]) : $('midbar'));
+      for (let k = 0; k < Math.min(5, amount); k++) {
+        setTimeout(() => {
+          flyMoney(fromEl, toEl);
+          AudioSys.clink();
+        }, k * 300); // slower - 300ms between coins
+      }
+    }
+  });
+  // I RECEIVED money from someone
+  if (pm && me.bankTotal > pm.bankTotal && me.hand.length >= pm.hand.length) {
+    const amount = me.bankTotal - pm.bankTotal;
+    const payerIdx = S.players.findIndex((q, j) => j !== myIdx && prevS.players[j] && q.bankTotal < prevS.players[j].bankTotal);
+    const payerName = payerIdx >= 0 ? S.players[payerIdx].name : 'Someone';
+    showPaymentBanner(payerName, 'You', amount);
+    const oppEls = document.querySelectorAll('#opponents .oppcol');
+    const fromEl = payerIdx >= 0 ? (payerIdx < myIdx ? oppEls[payerIdx] : oppEls[payerIdx - 1]) : $('midbar');
+    for (let k = 0; k < Math.min(5, amount); k++) {
+      setTimeout(() => {
+        flyMoney(fromEl, $('handInfo'));
+        AudioSys.clink();
+      }, k * 300);
+    }
   }
   // discards: hand shrank, table didn't grow, bank didn't grow -> fly to discard pile
   else if (pm && me.hand.length < pm.hand.length && me.table.length <= pm.table.length) {
