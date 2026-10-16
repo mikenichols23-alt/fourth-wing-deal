@@ -50,7 +50,7 @@ function animatePlays() {
     const newOnTable = (p.table || []).filter(e => !prevTable.has(e.id || e.card));
     if (!newOnTable.length) return;
     const isMe = i === myIdx;
-    const oppEls = document.querySelectorAll('#opponents .opp');
+    const oppEls = document.querySelectorAll('#opponents .oppcol');
     const oppEl = oppEls[i < myIdx ? i : i - 1];
     const fromEl = isMe ? $('hand') : oppEl;
     newOnTable.slice(0, 3).forEach((e, k) => {
@@ -66,7 +66,7 @@ function animatePlays() {
     });
   });
   // draws: hands grew -> cards fly from the deck
-  const oppEls = document.querySelectorAll('#opponents .opp');
+  const oppEls = document.querySelectorAll('#opponents .oppcol');
   S.players.forEach((p, i) => {
     const pp = prevS.players[i];
     if (!pp || p.hand.length <= pp.hand.length) return;
@@ -667,7 +667,7 @@ function _render() {
     : `<b>${esc(tp.name)}'s turn</b>${miniCard}${lastAction ? ` <span class="turn-action">· ${esc(lastAction.slice(0, 50))}</span>` : ''}`;
   tb.onclick = () => {
     if (S.turn === myIdx) return;
-    const oppEls = document.querySelectorAll('#opponents .opp');
+    const oppEls = document.querySelectorAll('#opponents .oppcol');
     const el = oppEls[S.turn < myIdx ? S.turn : S.turn - 1];
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
