@@ -1745,3 +1745,10 @@ html, body {
 .opp-area {
   overflow-x: hidden !important;
 }
+
+/* If too many sets, wrap to second row (still no scroll) */
+#mySets {
+  flex-wrap: wrap !important;
+  max-height: 120px !important;
+  align-content: flex-start !important;
+}
