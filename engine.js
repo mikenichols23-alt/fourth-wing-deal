@@ -433,6 +433,8 @@ class Game {
     }
     // declined
     if (pd.lastWardsBy === null) {
+      // For charges (rent), continue to collection instead of _resolveAction
+      if (pd.afterWards) return this._afterWardsContinue();
       return this._resolveAction(); // no wards used -> proceed
     }
     // Wards chain: if the last wards was played by the action owner (a counter),
