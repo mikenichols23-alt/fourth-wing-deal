@@ -1208,3 +1208,34 @@ body {
 /* NUCLEAR OPTION: hide player row by default, only show when game is active */
 #playerRow { display: none !important; }
 #game:not(.hidden) #playerRow { display: flex !important; }
+
+/* FIX: Opponent cards in tight row, not spread out */
+.opp-area {
+  justify-content: flex-start !important;
+}
+.opp-area .setgroup.bd {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* FIX: Signet bar compact */
+#signetBar .btn.signet-power {
+  font-size: 11px !important;
+  padding: 4px 10px !important;
+  border-radius: 12px !important;
+  white-space: nowrap !important;
+}
+
+/* FIX: Ensure no scrolling - strict height limits */
+#game:not(.hidden) {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+}
+#opponents {
+  max-height: 24vh !important;
+}
+#midbar {
+  max-height: 20vh !important;
+  min-height: 80px !important;
+}
