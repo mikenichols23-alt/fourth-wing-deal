@@ -1188,3 +1188,19 @@ body {
 #handbar { padding: 2px 0 !important; }
 #controls .btn { padding: 10px !important; font-size: 15px !important; }
 #signetBar .signet-btn { font-size: 12px !important; padding: 6px 8px !important; }
+
+/* Business Deals: tiny table cards */
+.table-card {
+  width: 36px !important;
+  height: 50px !important;
+  border-radius: 4px !important;
+}
+.table-card .tc-head { height: 14px !important; }
+.table-card .tc-val { font-size: 10px !important; }
+.table-card .tc-name { display: none !important; }
+.table-card .tc-rent { display: none !important; }
+#mySets .table-card {
+  width: 40px !important;
+  height: 56px !important;
+}
+.opp-area { gap: 3px !important; padding: 2px !important; }
