@@ -1350,3 +1350,26 @@ html, body {
   border-color: rgba(255,255,255,.4) !important;
   background: #fff !important;
 }
+
+/* Hand cards fit on screen - no horizontal scroll */
+#hand {
+  display: flex !important;
+  gap: 0 !important;
+  padding: 8px 4px !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  justify-content: center !important;
+  flex-wrap: nowrap !important;
+}
+#hand .card {
+  flex: 0 0 auto !important;
+  width: 68px !important;
+  min-width: 68px !important;
+  margin-left: -28px !important;
+  transition: transform .15s !important;
+}
+#hand .card:first-child { margin-left: 0 !important; }
+#hand .card:active { transform: translateY(-8px) !important; }
+/* Scale down card internals for smaller size */
+#hand .card .cval { font-size: 14px !important; }
+#hand .card .cname { font-size: 9px !important; }
