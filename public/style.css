@@ -927,3 +927,11 @@ html, body {
 #handInfo { display: flex; gap: 12px; align-items: center; padding: 2px 4px; }
 #hand { display: flex; gap: 6px; padding: 6px 4px; overflow-x: auto; overflow-y: hidden; }
 #controls { flex: 0 0 auto; padding: 4px; display: flex; gap: 8px; }
+
+/* Lobby must scroll */
+#lobby {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: 100dvh !important;
+  -webkit-overflow-scrolling: touch !important;
+}
