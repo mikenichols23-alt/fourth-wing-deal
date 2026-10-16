@@ -1965,3 +1965,25 @@ html, body {
 #winnerOverlay.compact {
   background: rgba(0,0,0,.7) !important;
 }
+
+/* Opponent cards: all visible, no cutoff (2026-10-16) */
+.opp-area {
+  flex-wrap: wrap !important;
+  overflow: hidden !important;
+  max-height: 110px !important;
+  align-content: flex-start !important;
+}
+.opp-area .card, .opp-area .table-card {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 48px !important;
+  margin-left: 0 !important;
+  margin-right: 3px !important;
+  margin-bottom: 3px !important;
+  flex-shrink: 0 !important;
+}
+.opp-area .set-group {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  margin-right: 6px !important;
+}
