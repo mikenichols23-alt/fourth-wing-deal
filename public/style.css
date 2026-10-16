@@ -1204,3 +1204,7 @@ body {
   justify-content: center !important; align-items: center !important;
   gap: 16px !important; padding: 20px !important;
 }
+
+/* NUCLEAR OPTION: hide player row by default, only show when game is active */
+#playerRow { display: none !important; }
+#game:not(.hidden) #playerRow { display: flex !important; }
