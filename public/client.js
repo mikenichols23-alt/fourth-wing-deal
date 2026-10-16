@@ -127,15 +127,11 @@ function showCenterCardNow(card, playerName, isMe) {
     stage.id = 'centerStage';
     document.body.appendChild(stage);
   }
-  // Render the actual card large
+  // Render the actual card large (banner already announces who played what — no duplicate label)
   const el = cardEl(card, false, '', false);
   el.style.width = '140px';
   el.style.height = '200px';
   stage.innerHTML = '';
-  const label = document.createElement('div');
-  label.className = 'center-label';
-  label.innerHTML = `<b>${esc(playerName)}</b> plays`;
-  stage.appendChild(label);
   stage.appendChild(el);
   stage.classList.remove('hidden');
   stage.classList.add('show');
