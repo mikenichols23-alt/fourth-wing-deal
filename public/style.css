@@ -1119,3 +1119,35 @@ body {
 #playerRow { order: 5; }
 #handbar { order: 6; }
 #controls { order: 7; }
+
+/* TIGHTEN: everything fits without scrolling */
+#game {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+}
+#opponents {
+  max-height: 20vh !important;
+}
+#midbar {
+  flex: 0 1 auto !important;
+  min-height: 80px !important;
+  max-height: 25vh !important;
+}
+#playerRow {
+  padding: 2px !important;
+}
+#handbar {
+  padding: 2px 0 !important;
+}
+#hand .card {
+  width: 56px !important;
+  height: 78px !important;
+}
+#controls {
+  padding: 2px !important;
+}
+#controls .btn {
+  padding: 8px !important;
+  font-size: 14px !important;
+}
