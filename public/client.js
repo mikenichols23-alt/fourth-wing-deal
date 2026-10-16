@@ -452,11 +452,13 @@ function connect() {
   ws = new WebSocket(proto + '://' + location.host);
   ws.onopen = () => {
     $('connStatus').textContent = '';
-    // auto-rejoin after disconnect: restore room without refresh
+    // auto-rejoin after disconnect or page refresh: restore room/game seat.
+    // (uses sessionStorage, not the in-memory roomCode, so it survives reloads)
     try {
       const rc = sessionStorage.getItem('fw_room');
       const nm = sessionStorage.getItem('fw_name');
-      if (rc && nm && roomCode) {
+      if (rc && nm) {
+        roomCode = rc;
         send({ t: 'rejoin', code: rc, name: nm });
       }
     } catch {}
@@ -471,7 +473,16 @@ function rememberRoom(code, name) {
     sessionStorage.setItem('fw_name', name);
   } catch {}
 }
-function send(m) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(m)); }
+let lastSendWarn = 0;
+function send(m) {
+  if (ws && ws.readyState === 1) { ws.send(JSON.stringify(m)); return; }
+  // socket not open: don't silently drop the tap — say so (throttled)
+  const now = Date.now();
+  if (now - lastSendWarn > 4000) {
+    lastSendWarn = now;
+    toast('Reconnecting to server… one sec');
+  }
+}
 
 function handle(m) {
   if (m.t === 'lobby') {
@@ -1572,7 +1583,7 @@ window.onload = () => {
   $('voiceBtn').onclick = () => { voiceOn = !voiceOn; $('voiceBtn').classList.toggle('off', !voiceOn); if (voiceOn) AudioSys.speak('Voice on'); else speechSynthesis.cancel(); };
   // back button: leave game to lobby
   const bb = $('backBtn');
-  if (bb) bb.onclick = () => { if (confirm('Leave this game?')) location.reload(); };
+  if (bb) bb.onclick = () => { if (confirm('Leave this game?')) { try { sessionStorage.removeItem('fw_room'); sessionStorage.removeItem('fw_name'); } catch {} location.reload(); } };
   // unlock audio on first touch (mobile browsers require a gesture)
   const unlock = () => { AudioSys.ensure(); document.removeEventListener('touchstart', unlock); };
   document.addEventListener('touchstart', unlock);
@@ -1813,5 +1824,5 @@ function showWinnerOverlay(name) {
   ov._hideT = setTimeout(() => {
     ov.classList.add('hidden');
   }, 5000);
-  $('winnerAgain').onclick = () => location.reload();
+  $('winnerAgain').onclick = () => { try { sessionStorage.removeItem('fw_room'); sessionStorage.removeItem('fw_name'); } catch {} location.reload(); };
 }
