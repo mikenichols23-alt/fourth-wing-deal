@@ -1392,7 +1392,9 @@ function renderPayModal() {
   // Populate with ACTUAL visual cards from table
   const grid = $('payCardGrid');
   me.table.forEach(e => {
-    const card = cardEl(e.card, { sel: selSet.includes(e.id), show: 'mini' });
+    const cardId = e.id || e.card;
+    const full = (S.cardMap && S.cardMap[cardId]) || e.card || e;
+    const card = cardEl(full, true, '', true);
     card.style.cursor = 'pointer';
     card.style.border = selSet.includes(e.id) ? '3px solid #4ade80' : '3px solid transparent';
     if (selSet.includes(e.id)) card.style.boxShadow = '0 0 12px #4ade80';
