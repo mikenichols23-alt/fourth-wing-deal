@@ -1607,3 +1607,34 @@ html, body {
   width: 56px !important; height: 56px !important;
   font-size: 32px !important;
 }
+
+/* Center-stage card reveal */
+#centerStage {
+  position: fixed !important;
+  top: 50% !important; left: 50% !important;
+  transform: translate(-50%, -50%) scale(.7) !important;
+  z-index: 600 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+  opacity: 0 !important;
+  transition: opacity .3s, transform .3s !important;
+  pointer-events: none !important;
+}
+#centerStage.show {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+#centerStage.hidden { display: none !important; }
+#centerStage .center-label {
+  background: rgba(0,0,0,.7) !important;
+  color: #fff !important;
+  padding: 6px 16px !important;
+  border-radius: 20px !important;
+  font-size: 16px !important;
+}
+#centerStage .center-label b { color: #ffd75f !important; }
+#centerStage .card {
+  box-shadow: 0 12px 40px rgba(0,0,0,.6) !important;
+}
