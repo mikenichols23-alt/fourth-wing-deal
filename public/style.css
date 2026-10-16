@@ -1831,3 +1831,12 @@ html, body {
   height: 56px !important;
   font-size: 11px !important;
 }
+
+/* Opponent banner: compact so full names fit without ellipsis */
+.opp-banner { gap: 4px !important; padding: 4px 6px !important; }
+.opp-avatar { width: 24px !important; height: 24px !important; font-size: 14px !important; }
+.opp-name { font-size: 11.5px !important; }
+.opp-bank { font-size: 11px !important; padding: 1px 6px !important; gap: 3px !important; }
+.opp-bank .mcoin { width: 15px !important; height: 15px !important; font-size: 9px !important; line-height: 15px !important; }
+/* Player avatar: keep clear of the panel edge */
+#myAvatar { margin-left: 2px !important; }
