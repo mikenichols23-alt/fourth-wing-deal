@@ -187,15 +187,7 @@ body {
 
 /* ---------- lobby ---------- */
 #lobby { justify-content: center; align-items: center; position: relative; }
-.addi-corner {
-  position: absolute; top: 16px; right: 16px;
-  width: 110px; text-align: center; z-index: 5;
-}
-.addi-corner img {
-  width: 110px; height: 110px; object-fit: cover; object-position: center 35%;
-  border-radius: 50%; border: 3px solid var(--gold, #fbbf24);
-  box-shadow: 0 4px 16px rgba(0,0,0,.45);
-}
+
 .addi-corner img {
   width: 170px; height: 170px; object-fit: cover; object-position: center 35%;
   border-radius: 50%; border: 3px solid var(--gold);
@@ -203,7 +195,7 @@ body {
 }
 .addi-corner .addi-label { font-size: 12px; }
 /* clear space so the photo never covers the title */
-#lobby .lobby-card { padding-top: 24px; padding-right: 140px; }
+#lobby .lobby-card { padding-top: 260px; }
 .addi-caption {
   margin-top: 6px; font-size: 12px; font-weight: 800; color: var(--gold);
   text-shadow: 0 1px 4px rgba(0,0,0,.6); line-height: 1.3;
