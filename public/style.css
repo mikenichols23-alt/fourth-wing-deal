@@ -1238,3 +1238,69 @@ html, body {
   color: #fff !important;
 }
 #log { display: none !important; }
+
+/* Compact signet bar - single line, no clutter */
+#signetBar {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 4px 8px !important;
+  min-height: 0 !important;
+  max-height: 40px !important;
+  overflow: hidden !important;
+}
+#signetBar:empty { display: none !important; }
+.my-signet {
+  font-size: 13px !important;
+  color: #fff !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 60% !important;
+}
+.my-signet .signet-desc { display: none !important; }
+#signetBar.expanded .signet-desc { display: inline !important; }
+#signetBar.expanded { max-height: none !important; }
+.btn.signet-power {
+  padding: 6px 12px !important;
+  font-size: 13px !important;
+  border-radius: 8px !important;
+  background: #f59e0b !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+  border: none !important;
+  flex-shrink: 0 !important;
+}
+
+/* Fix focus overlay - proper size, no cutoff */
+#focusWrap.overlay:not(.hidden) {
+  position: fixed !important;
+  top: 50% !important; left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 200 !important;
+  background: rgba(10,15,30,.95) !important;
+  border-radius: 20px !important;
+  padding: 20px !important;
+  width: 85vw !important;
+  max-width: 340px !important;
+  max-height: 75vh !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 12px !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,.6) !important;
+}
+#focusWrap.overlay #focusCard {
+  width: 100% !important;
+  max-width: 280px !important;
+}
+#focusWrap.overlay #focusActions {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 12px !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
