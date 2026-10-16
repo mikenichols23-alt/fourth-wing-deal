@@ -94,6 +94,7 @@ function showPaymentBanner(from, to, amount) {
 function showPlayBanner(playerName, cardName) {
   queueBanner(`🃏 <b>${esc(playerName)}</b> plays <b>${esc(cardName)}</b>`, 3000);
   AudioSys.pop();
+  AudioSys.deal(); // card swoosh on every play
 }
 // Center-stage card reveal - shows played card large, then flies to destination
 // Queue for center-stage card reveals - show one at a time, no overlap
@@ -185,6 +186,10 @@ function animatePlays() {
         if (!isMe) {
           const cardName = c ? c.name : 'a card';
           showPlayBanner(p.name, cardName);
+        } else {
+          // Still play the card sound for your own plays
+          AudioSys.pop();
+          AudioSys.deal();
         }
       }
       setTimeout(() => {
