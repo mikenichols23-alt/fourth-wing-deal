@@ -1468,3 +1468,34 @@ html, body {
 .confetti-piece {
   width: 12px !important; height: 20px !important;
 }
+
+/* Payment banner - who paid whom */
+#paymentBanner {
+  position: fixed !important;
+  top: 35% !important; left: 50% !important;
+  transform: translate(-50%, -50%) scale(.8) !important;
+  background: linear-gradient(180deg, #1a2a6c, #0a1a5c) !important;
+  border: 3px solid #ffd75f !important;
+  border-radius: 16px !important;
+  padding: 16px 28px !important;
+  font-size: 20px !important;
+  color: #fff !important;
+  z-index: 500 !important;
+  opacity: 0 !important;
+  transition: opacity .3s, transform .3s !important;
+  pointer-events: none !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5) !important;
+  white-space: nowrap !important;
+}
+#paymentBanner.show {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+#paymentBanner.hidden { display: none !important; }
+#paymentBanner b { color: #ffd75f !important; }
+
+/* Slower, more visible card fly */
+.fly-card {
+  transition: transform 0.9s ease-in-out, opacity 0.9s !important;
+  z-index: 999 !important;
+}
