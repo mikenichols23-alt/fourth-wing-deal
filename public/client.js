@@ -1182,7 +1182,14 @@ function showMyCardPanel(playerIdx, theirCardId) {
       cards.push({ id: cardId, setId, name: cdef?.name || cardId, color: setId, value: cdef?.value || 0 });
     }
   }
-  const cardBtns = cards.map(c => {
+  // Filter out cards that are part of a complete set (monopoly) - can't steal those
+  const availCards = cards.filter(c => {
+    const setId = c.setId;
+    const setEntries = target.sets[setId] || [];
+    const maxSize = SETMAP[setId]?.size || 99;
+    return setEntries.length < maxSize;
+  });
+  const cardBtns = (availCards.length ? availCards : cards).map(c => {
     const full = (S.cardMap && S.cardMap[c.id]) || c;
     const el = cardEl(full, false, '', false);
     el.classList.add('stealcard');
@@ -1237,7 +1244,14 @@ function showStealPanel(playerIdx, actionId) {
       cards.push({ id: cardId, setId, name: cdef?.name || cardId, color: setId, value: cdef?.value || 0 });
     }
   }
-  const cardBtns = cards.map(c => {
+  // Filter out cards that are part of a complete set (monopoly) - can't steal those
+  const availCards = cards.filter(c => {
+    const setId = c.setId;
+    const setEntries = target.sets[setId] || [];
+    const maxSize = SETMAP[setId]?.size || 99;
+    return setEntries.length < maxSize;
+  });
+  const cardBtns = (availCards.length ? availCards : cards).map(c => {
     const full = (S.cardMap && S.cardMap[c.id]) || c;
     const el = cardEl(full, false, '', false);
     el.classList.add('stealcard');
@@ -1510,6 +1524,19 @@ window.onload = () => {
     // deck.js sets globals when loaded as script; also parse SETS here
   });
   connect();
+  // Warn if lobby doesn't connect within 10 seconds
+  setTimeout(() => {
+    if (!S && !roomCode) {
+      const lobby = $('lobby');
+      if (lobby && !$('connWarn')) {
+        const w = document.createElement('div');
+        w.id = 'connWarn';
+        w.innerHTML = '‼️ <b>Connection issue</b> - trying to reach the game server...<br><span style="font-size:13px">Check your internet, then refresh the page.</span>';
+        w.style.cssText = 'background:#dc2626;color:#fff;padding:12px;border-radius:12px;margin:12px;text-align:center;font-size:15px;';
+        lobby.prepend(w);
+      }
+    }
+  }, 10000);
   // SETMAP filled from deck.js script tag (loaded before client.js)
   if (typeof SETS !== 'undefined') SETS.forEach(s => SETMAP[s.id] = s);
   // sound + voice toggles
@@ -1753,5 +1780,10 @@ function showWinnerOverlay(name) {
   }
   ov.querySelector('.winner-name').textContent = name + ' WINS!';
   ov.classList.remove('hidden');
+  // After 5 seconds, hide celebration but keep the final board visible for review
+  clearTimeout(ov._hideT);
+  ov._hideT = setTimeout(() => {
+    ov.classList.add('hidden');
+  }, 5000);
   $('winnerAgain').onclick = () => location.reload();
 }
