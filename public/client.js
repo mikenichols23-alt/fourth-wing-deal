@@ -845,9 +845,28 @@ function render() {
   renderQueued = true;
   requestAnimationFrame(() => {
     renderQueued = false;
-    _render();
+    try { _render(); } catch (e) {
+      console.error('render failed:', e);
+      // Fail-safe: if it's my turn, force buttons visible
+      try {
+        if (S && myIdx != null && S.turn === myIdx && !S.winner) {
+          if (S.phase === 'draw') $('drawBtn').classList.remove('hidden');
+          if (S.phase === 'play') $('endBtn').classList.remove('hidden');
+        }
+      } catch {}
+    }
   });
 }
+// Independent watchdog: every 2s, ensure buttons match turn state (bypasses render path)
+setInterval(() => {
+  try {
+    if (!S || myIdx == null || S.winner) return;
+    const mine = S.turn === myIdx;
+    if (mine && S.phase === 'draw') $('drawBtn').classList.remove('hidden');
+    if (mine && S.phase === 'play') $('endBtn').classList.remove('hidden');
+    if (!mine) { $('drawBtn').classList.add('hidden'); $('endBtn').classList.add('hidden'); }
+  } catch {}
+}, 2000);
 function _render() {
   const me = S.players[myIdx];
   const myTurn = S.turn === myIdx && !S.winner;
