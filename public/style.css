@@ -1499,3 +1499,31 @@ html, body {
   transition: transform 0.9s ease-in-out, opacity 0.9s !important;
   z-index: 999 !important;
 }
+
+/* Play announcement banner */
+#playBanner {
+  position: fixed !important;
+  top: 25% !important; left: 50% !important;
+  transform: translate(-50%, -50%) scale(.8) !important;
+  background: linear-gradient(180deg, #2d1a6c, #1a0a5c) !important;
+  border: 3px solid #a78bfa !important;
+  border-radius: 16px !important;
+  padding: 14px 24px !important;
+  font-size: 18px !important;
+  color: #fff !important;
+  z-index: 500 !important;
+  opacity: 0 !important;
+  transition: opacity .3s, transform .3s !important;
+  pointer-events: none !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5) !important;
+  white-space: nowrap !important;
+  max-width: 90vw !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+#playBanner.show {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+#playBanner.hidden { display: none !important; }
+#playBanner b { color: #a78bfa !important; }
