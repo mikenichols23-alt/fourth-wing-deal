@@ -1712,3 +1712,15 @@ html, body {
 .setgroup-split .setgroup {
   flex-shrink: 0 !important;
 }
+
+/* Opponent area - taller so cards don't get hidden */
+#opponents {
+  max-height: 32vh !important;
+}
+.oppcol {
+  min-height: 110px !important;
+}
+.opp-area {
+  max-height: 120px !important;
+  min-height: 70px !important;
+}
