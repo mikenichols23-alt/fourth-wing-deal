@@ -221,6 +221,9 @@ function animatePlays() {
     const pp = prevS.players[i];
     if (!pp || i === myIdx) return; // skip me (handled above)
     if (p.bankTotal > pp.bankTotal) {
+      // Self-bank, not a payment: their hand shrank (card moved hand -> bank).
+      // A real payment doesn't reduce the receiver's hand.
+      if (p.hand.length < pp.hand.length) return;
       // This opponent RECEIVED money - find who paid (bank decreased)
       const payerIdx = S.players.findIndex((q, j) => j !== i && prevS.players[j] && q.bankTotal < prevS.players[j].bankTotal);
       const amount = p.bankTotal - pp.bankTotal;
