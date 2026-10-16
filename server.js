@@ -17,15 +17,17 @@ const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css
 const server = http.createServer((req, res) => {
   let p = req.url.split('?')[0];
   if (p === '/') p = '/index.html';
+  // Prevent aggressive caching - always get fresh files
+  const noCache = { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0' };
   if (p === '/deck.js') {
-    res.writeHead(200, { 'Content-Type': 'text/javascript' });
+    res.writeHead(200, { 'Content-Type': 'text/javascript', ...noCache });
     return res.end(fs.readFileSync(path.join(__dirname, 'deck.js')));
   }
   const f = path.join(PUBLIC, p);
   if (!f.startsWith(PUBLIC) || !fs.existsSync(f)) {
     res.writeHead(404); return res.end('not found');
   }
-  res.writeHead(200, { 'Content-Type': MIME[path.extname(f)] || 'application/octet-stream' });
+  res.writeHead(200, { 'Content-Type': MIME[path.extname(f)] || 'application/octet-stream', ...noCache });
   res.end(fs.readFileSync(f));
 });
 
