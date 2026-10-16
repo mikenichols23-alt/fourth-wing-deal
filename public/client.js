@@ -1551,9 +1551,10 @@ window.onload = () => {
     // deck.js sets globals when loaded as script; also parse SETS here
   });
   connect();
-  // Warn if lobby doesn't connect within 10 seconds
+  // Warn if lobby doesn't connect within 10 seconds (only when the socket
+  // itself isn't open — an idle-but-connected lobby is not a connection issue)
   setTimeout(() => {
-    if (!S && !roomCode) {
+    if (!S && !roomCode && (!ws || ws.readyState !== 1)) {
       const lobby = $('lobby');
       if (lobby && !$('connWarn')) {
         const w = document.createElement('div');
