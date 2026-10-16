@@ -1938,3 +1938,12 @@ html, body {
   flex-shrink: 0 !important;
 }
 #focusWrap.overlay:not(.hidden) #focusActions .act-btn .lbl { font-size: 14px !important; }
+
+/* === LAYOUT FIX: prevent buttons from being clipped off-screen (2026-10-16) ===
+   Middle sections shrink when needed; handbar (with buttons) never shrinks. */
+#opponents { flex: 0 1 auto !important; min-height: 0 !important; overflow: hidden !important; max-height: 24vh !important; }
+#midbar { flex: 0 1 auto !important; min-height: 0 !important; overflow: hidden !important; }
+#playerRow { flex: 0 1 auto !important; min-height: 0 !important; overflow: hidden !important; }
+#handbar { flex: 0 0 auto !important; }
+#signetBar { flex: 0 0 auto !important; }
+#topbar { flex: 0 0 auto !important; }
