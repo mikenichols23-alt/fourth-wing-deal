@@ -94,6 +94,7 @@ function showPlayBanner(playerName, cardName) {
 }
 // Center-stage card reveal - shows played card large, then flies to destination
 function showCenterCard(card, playerName, isMe) {
+  if (!card || !card.name) return; // guard against bad data
   let stage = $('centerStage');
   if (!stage) {
     stage = document.createElement('div');
