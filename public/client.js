@@ -649,6 +649,15 @@ function announceEvents() {
     }
   }
   lastLogLen = log.length;
+  // Update last-move indicator (small white text in middle)
+  if (log.length) {
+    const last = log[log.length - 1];
+    // Show meaningful moves: played, paid, stole, swapped, blocked, etc.
+    if (/played|paid|stole|swapped|blocked|discarded|drew|ended/i.test(last)) {
+      const lm = $('lastMove');
+      if (lm) { lm.textContent = last; lm.classList.remove('hidden'); }
+    }
+  }
   // my turn? announce on draw or play phase, including the very first turn
   if (S.turn === myIdx && (S.phase === 'play' || S.phase === 'draw') && !announcedTurn) {
     announcedTurn = true;
@@ -1545,6 +1554,8 @@ function renderPending() {
   }
   lastWaitingOn = null;
   if (pd.kind === 'wards') {
+    // Only show if this prompt is actually for ME (not waiting on someone else)
+    if (pd.waiting) return;
     if (!pd.hasWards) {
       // Don't even ask — auto-decline once per prompt
       if (lastAutoWards !== pd) { lastAutoWards = pd; send({ t: 'answer', resp: { use: false } }); }
@@ -1556,6 +1567,8 @@ function renderPending() {
     $('wNo').onclick = () => { send({ t: 'answer', resp: { use: false } }); hideModal(); };
     const y = $('wYes'); if (y) y.onclick = () => { send({ t: 'answer', resp: { use: true } }); hideModal(); };
   } else if (pd.kind === 'pay') {
+    // Only show if this payment is actually for ME (not waiting on someone else)
+    if (pd.waiting) return;
     // Only reset selection if this is a new payment (not a re-render of the same one)
     const payKey = pd.by + ':' + pd.amount + ':' + pd.from;
     if (flow?.kind !== 'payProps' || flow.payKey !== payKey) {
@@ -1564,6 +1577,7 @@ function renderPending() {
     }
     renderPayModal();
   } else if (pd.kind === 'foresight') {
+    if (pd.waiting) return;
     showModal(`<h3>🔮 Battle Foresight</h3><p>Choose <b>1 card to return</b> to the top of the deck — you keep the other 2.</p>
       <div class="pickgrid" id="foresightGrid"></div>`, true);
     const grid = $('foresightGrid');
