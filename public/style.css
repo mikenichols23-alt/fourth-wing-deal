@@ -1232,3 +1232,24 @@ body {
 /* Hide scrollbars */
 #game::-webkit-scrollbar { display: none !important; }
 #game { scrollbar-width: none !important; }
+
+/* Smooth animations - no more blinking */
+.table-card, #hand .card, .opp-banner {
+  animation: cardIn 0.3s ease-out !important;
+  transition: transform 0.2s ease, opacity 0.2s ease !important;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: scale(0.8) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+#opponents, #playerRow, #handbar {
+  transition: opacity 0.3s ease !important;
+}
+/* Turn banner slide-in */
+#turnBar {
+  animation: slideDown 0.4s ease-out !important;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
