@@ -1269,3 +1269,16 @@ html, body {
   max-height: 100dvh !important;
   overflow: hidden !important;
 }
+
+/* Only lock scroll when game is active (not on homepage) */
+body:has(#game:not(.hidden)) {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100dvh !important;
+}
+body:has(#game.hidden), body:not(:has(#game)) {
+  overflow: auto !important;
+  position: static !important;
+  height: auto !important;
+}
