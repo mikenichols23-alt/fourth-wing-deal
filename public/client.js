@@ -1426,7 +1426,7 @@ function renderSignets() {
       const alreadyPlaced = (me.table || []).some(e => e.signetCard);
       if (!alreadyPlaced) {
         const b = document.createElement('button'); b.className = 'btn signet-power';
-        b.innerHTML = '⚡ <b>USE LIGHTNING POWER</b><br><span style="font-size:12px;font-weight:400">Place wild on any set — FREE, not a play</span>';
+        b.innerHTML = '⚡ Use Lightning';
         b.onclick = () => showLightningModal();
         bar.appendChild(b);
       }
