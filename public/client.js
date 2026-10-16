@@ -58,39 +58,42 @@ function flyMoney(fromEl, toEl) {
   setTimeout(() => el.remove(), 900);
 }
 // Payment banner - shows who paid whom
-function showPaymentBanner(from, to, amount) {
+// Banner queue - show one banner at a time, no overlap
+let bannerQueue = [];
+let bannerBusy = false;
+function queueBanner(html, duration) {
+  bannerQueue.push({ html, duration: duration || 2500 });
+  if (!bannerBusy) processBannerQueue();
+}
+function processBannerQueue() {
+  if (!bannerQueue.length) { bannerBusy = false; return; }
+  bannerBusy = true;
+  const { html, duration } = bannerQueue.shift();
   let banner = $('paymentBanner');
   if (!banner) {
     banner = document.createElement('div');
     banner.id = 'paymentBanner';
     document.body.appendChild(banner);
   }
-  banner.innerHTML = `💰 <b>${esc(from)}</b> pays <b>${esc(to)}</b> ${amount}M`;
+  banner.innerHTML = html;
   banner.classList.remove('hidden');
   banner.classList.add('show');
-  clearTimeout(banner._t);
-  banner._t = setTimeout(() => {
+  setTimeout(() => {
     banner.classList.remove('show');
-    setTimeout(() => banner.classList.add('hidden'), 500);
-  }, 2500);
+    setTimeout(() => {
+      banner.classList.add('hidden');
+      // Small gap before next banner
+      setTimeout(processBannerQueue, 300);
+    }, 500);
+  }, duration);
 }
-// Play announcement - shows what card an opponent played
+function showPaymentBanner(from, to, amount) {
+  queueBanner(`💰 <b>${esc(from)}</b> pays <b>${esc(to)}</b> ${amount}M`, 2500);
+}
+// Play announcement - shows what card an opponent played (queued, no overlap)
 function showPlayBanner(playerName, cardName) {
-  let banner = $('playBanner');
-  if (!banner) {
-    banner = document.createElement('div');
-    banner.id = 'playBanner';
-    document.body.appendChild(banner);
-  }
-  banner.innerHTML = `🃏 <b>${esc(playerName)}</b> plays <b>${esc(cardName)}</b>`;
-  banner.classList.remove('hidden');
-  banner.classList.add('show');
+  queueBanner(`🃏 <b>${esc(playerName)}</b> plays <b>${esc(cardName)}</b>`, 3000);
   AudioSys.pop();
-  clearTimeout(banner._t);
-  banner._t = setTimeout(() => {
-    banner.classList.remove('show');
-    setTimeout(() => banner.classList.add('hidden'), 500);
-  }, 3500);
 }
 // Center-stage card reveal - shows played card large, then flies to destination
 // Queue for center-stage card reveals - show one at a time, no overlap
