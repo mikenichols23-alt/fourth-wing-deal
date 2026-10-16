@@ -127,10 +127,31 @@ wss.on('connection', ws => {
       const c = String(m.code || '').toUpperCase().trim();
       const room = rooms[c];
       if (!room) return errTo(ws, 'Room not found.');
-      if (room.game) return errTo(ws, 'Game already started.');
+      const name = String(m.name || 'Player').slice(0, 16);
+      // Mid-game: if this name already has a seat, restore it (manual rejoin
+      // after sessionStorage was cleared — e.g. Safari tab was closed).
+      if (room.game) {
+        const gi = room.game.players.findIndex(p => p.name === name);
+        if (gi >= 0) {
+          const id = nextId++;
+          const existing = room.players.find(p => p.name === name);
+          if (existing) {
+            existing.ws = ws; existing.id = id; existing.idx = gi;
+            ws._pid = id; ws._room = c;
+          } else {
+            room.players.push({ ws, id, name, idx: gi });
+            ws._pid = id; ws._room = c;
+          }
+          room.players.sort((a, b) => a.idx - b.idx);
+          send(ws, { t: 'rejoined', code: c });
+          broadcast(room);
+          return;
+        }
+        return errTo(ws, 'Game already started.');
+      }
       if (room.players.length >= 4) return errTo(ws, 'Room is full (4 max).');
       const id = nextId++;
-      room.players.push({ ws, id, name: String(m.name || 'Player').slice(0, 16), idx: room.players.length });
+      room.players.push({ ws, id, name, idx: room.players.length });
       ws._pid = id; ws._room = c;
       broadcast(room);
       return;
