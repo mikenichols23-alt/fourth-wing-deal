@@ -489,6 +489,15 @@ class Game {
       const t = pd.targets[0], tp = this.me(t);
       const ei = tp.table.findIndex(e => e.card === pd.data.card);
       const [entry] = tp.table.splice(ei, 1);
+      // Unassign my wilds from this set first - stolen cards go by themselves
+      // (user can manually move wild back if they choose)
+      const setSize = SET_BY_ID[entry.set] ? SET_BY_ID[entry.set].size : 99;
+      const existingInSet = me.table.filter(e => e.set === entry.set);
+      const wildsInSet = existingInSet.filter(e => this.card(e.card).kind === 'wild');
+      if (wildsInSet.length > 0 && existingInSet.length + 1 > setSize) {
+        // Would overfill - move wilds out to make room for the stolen card alone
+        wildsInSet.forEach(w => { w.set = 'wild'; });
+      }
       me.table.push({ card: entry.card, set: entry.set });
       return finish(`${me.name}'s Dagger Acrobatics stole ${this.card(entry.card).name} from ${tp.name}!`);
     }
