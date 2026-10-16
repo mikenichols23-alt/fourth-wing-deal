@@ -1526,14 +1526,15 @@ function showWinnerOverlay(name) {
       <div class="winner-confetti"></div>
       <div class="winner-box">
         <div class="winner-trophy">🏆</div>
+        <div class="winner-medal">🥇</div>
         <div class="winner-name"></div>
-        <div class="winner-sub">Three complete sets!</div>
+        <div class="winner-sub">🎉 Three complete sets! 🎉</div>
         <button class="btn gold" id="winnerAgain">🔄 Play Again</button>
       </div>`;
     document.body.appendChild(ov);
     const conf = ov.querySelector('.winner-confetti');
     const colors = ['#ffd75f','#ff6b6b','#4ecdc4','#45b7d1','#f9ca24','#6c5ce7'];
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 120; i++) {
       const p = document.createElement('div');
       p.className = 'confetti-piece';
       p.style.left = Math.random() * 100 + '%';
