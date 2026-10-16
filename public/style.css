@@ -33,7 +33,6 @@ body {
 .screen { max-width: 560px; margin: 0 auto; padding: 8px; min-height: 100dvh; display: flex; flex-direction: column; }
 
 /* ---------- opponent columns (Business Deals style) ---------- */
-#opponents { display: flex; gap: 6px; margin-bottom: 4px; }
 .opp {
   flex: 1; display: flex; flex-direction: column;
   background: rgba(10, 30, 110, .35); border-radius: 10px;
@@ -42,7 +41,6 @@ body {
 }
 .opp.turn { border-color: #ffd75f; box-shadow: 0 0 12px rgba(255,215,95,.5); }
 /* opponent sets: tiny color chips like Business Deals - NO text, just color+value */
-.opp-area { padding: 4px; display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; }
 .opp .setgroup { padding: 3px; margin: 0; border-radius: 8px; background: rgba(0,0,0,.25); }
 .opp .setgroup .setname { font-size: 9px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
 .opp .setgroup .cards { display: flex; gap: 3px; }
@@ -107,93 +105,39 @@ body {
 }
 .setgroup.bd .card-wrap { transition: margin .2s ease-out; }
 /* smooth hand card fan */
-#hand .card { transition: transform .2s ease-out; }
-#hand .card:active { transform: translateY(-8px) scale(1.05); }
 /* my avatar glows on my turn (like Business Deals active player) */
-#myAvatar .ava.my-turn { box-shadow: 0 0 0 3px #ffd75f, 0 0 16px #ffd75f; border-color: #ffd75f; }
 /* Business Deals EXACT: no turn banner (glowing avatar shows turn), no clutter */
-#turnBar { display: none !important; }
 /* signet bar: in-flow small button, never overlapping */
-#signetBar { display: flex; gap: 6px; align-items: center; justify-content: center; padding: 2px; min-height: 0; position: static; }
-#signetBar:empty { display: none; }
-#signetBar .my-signet { display: none; }
-#signetBar .btn.signet-power { font-size: 12px; padding: 6px 14px; border-radius: 16px; }
-#signetBar .btn.gold { font-size: 12px; padding: 6px 14px; }
 /* my hand count next to name (Business Deals style) */
 .my-handcount { font-size: 12px; font-weight: 700; color: #fff; margin-top: 2px; }
 /* Business Deals: player's properties in dark navy rounded panel */
-#mySets { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
-#mySets:not(:empty) { background: rgba(0,0,0,.3); border-radius: 12px; padding: 10px; min-height: 80px; }
-#mySets:empty { display: none; }
-#mySets .setgroup.bd { display: flex; gap: 4px; }
-#mySets .setgroup.bd .card.simple { width: 52px !important; height: 72px !important; }
 /* player row: Business Deals style - no label, no panel, just cards */
-#playerRow { background: none !important; border: none !important; box-shadow: none !important; padding: 0; }
-#myTable .sect-label { display: none !important; }
-#myBankRow { display: none !important; }
 /* middle: open empty space like Business Deals */
-#midbar { flex: 1 1 auto; min-height: 60px; }
 /* Business Deals: open middle, compact indicators */
-#turnBar { padding: 4px 12px; font-size: 13px; margin: 2px 0; border-radius: 8px; }
-#turnBar.mine { background: rgba(22,163,74,.25); border: 1px solid #16a34a; }
-#turnBar:not(.mine) { background: rgba(0,0,0,.2); }
 /* signet bar: single compact row */
-#signetBar { display: flex; gap: 6px; align-items: center; justify-content: center; padding: 2px; min-height: 0; }
-#signetBar:empty { display: none; }
-#signetBar .my-signet { font-size: 12px; padding: 4px 8px; }
-#signetBar .btn.signet-power { font-size: 12px; padding: 6px 12px; }
 /* player row: no big panel, just cards like Business Deals */
-#playerRow { background: none; border: none; padding: 2px; }
-#myTable .sect-label { display: none; }
-#myBankRow { padding: 2px; }
 /* middle area: open space */
-#midbar { flex: 1 1 auto; min-height: 40px; }
 /* Business Deals top bar: back button left, icons right */
-#topbar { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; flex-shrink: 0; }
 #backBtn { width: 44px; height: 44px; border-radius: 12px; background: #ea580c; color: #fff; font-size: 28px; font-weight: 800; border: none; cursor: pointer; line-height: 1; }
-#topbar .snd-toggles { display: flex; gap: 8px; }
-#topbar .snd-toggles button { width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.35); border: none; font-size: 20px; cursor: pointer; }
 /* Business Deals: opponents pinned to top, compact, middle stays open */
-#opponents { display: flex; gap: 6px; padding: 0 2px; flex-shrink: 0; max-height: 32vh; overflow: hidden; }
-.oppcol { flex: 1; display: flex; flex-direction: column; min-width: 0; max-height: 100%; }
-.opp-area { flex: 1; overflow: hidden; max-height: 18vh; }
 /* middle: large open space for gameplay */
-#midbar { flex: 1 1 auto; min-height: 80px; display: flex; align-items: center; justify-content: center; }
 /* Business Deals: full-width colored opponent banners */
-#opponents { display: flex; gap: 6px; padding: 0 2px; flex-shrink: 0; }
-.oppcol { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-.opp-banner { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 10px; color: #fff; }
 .opp-avatar { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; border: 2px solid rgba(255,255,255,.5); }
-.oppcol.active-turn .opp-avatar { border-color: #ffd75f; box-shadow: 0 0 0 2px #ffd75f, 0 0 12px #ffd75f; }
 .opp-name { font-weight: 700; font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .opp-bank { display: flex; align-items: center; gap: 4px; font-weight: 800; font-size: 16px; }
 .mcoin { width: 22px; height: 22px; border-radius: 50%; background: #ffd75f; color: #7c4a00; font-size: 13px; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; }
 /* opponent card area: Business Deals style - white cards with color header */
-.opp-area { padding: 4px 2px; min-height: 20px; overflow: hidden; display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; max-width: 100%; }
-.opp-area .setgroup.bd { max-width: 100%; display: flex; gap: 4px; }
-.opp-area .setgroup.bd .card.simple { width: 48px !important; height: 68px !important; border-radius: 8px; background: #fff; position: relative; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,.3); }
-.opp-area .setgroup.bd .card.simple .shead { position: absolute; top: 0; left: 0; right: 0; height: 28px; }
-.opp-area .setgroup.bd .card.simple .sbody { position: absolute; top: 28px; left: 0; right: 0; bottom: 0; background: #fff; }
-.opp-area .setgroup.bd .card.simple .vbadge { position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: 50%; background: #ffd75f; color: #000; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; z-index: 2; }
-.opp-area .setgroup.bd .card-wrap { margin-left: 0; }
 .opp-handcount { font-size: 13px; color: #fff; opacity: .9; margin-bottom: 2px; }
 /* Business Deals: opponent columns with dividers, active player glow */
-#opponents { display: flex; gap: 0; padding: 0; }
 /* hand count next to money */
 .handcount { font-size: 14px; font-weight: 700; color: #fff; opacity: .9; }
-#playerRow { overflow: visible; margin-bottom: 0 !important; padding-bottom: 0 !important; }
-#myTable { overflow: visible; }
-#handbar { margin-top: 0 !important; padding-top: 4px; }
 .setgroup.bd .card.simple { width: 38px !important; height: 54px !important; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
 .setgroup.bd .card-wrap { margin-left: -14px; }
 .setgroup.bd { margin: 3px; padding: 3px; }
 /* opponent area compact */
-#opponents { gap: 6px; }
 .opp .setgroup.bd .card.simple { width: 34px !important; height: 48px !important; }
 /* player sets row */
-#mySets { gap: 8px; }
 /* hand cards slightly larger for tapping */
-#hand .card { width: 56px !important; height: 78px !important; }
 .complete-badge {
   position: absolute; top: -6px; right: -6px;
   width: 20px; height: 20px; border-radius: 50%;
@@ -203,28 +147,12 @@ body {
 }
 .setgroup.bd.complete { border: 2px solid #22c55e; border-radius: 8px; }
 /* ===== CLEAN LAYOUT - no overlaps ===== */
-#game { flex-direction: column; gap: 8px; overflow-y: auto; overflow-x: hidden; }
-#game > * { flex-shrink: 0; }
-#midbar { flex: 1 1 auto; min-height: 0; flex-shrink: 1 !important; overflow: hidden; }
-#opponents { order: 1; }
 #payBanner, .pay-banner { order: 2; }
-#turnBar { order: 3; }
 #tableArea, #centerArea { order: 4; }
-#signetBar { order: 5; margin: 0 !important; }
 /* compact signet bar - hide the big panel, just show buttons */
-#signetBar .signet-panel { display: none; }
-#playerRow { order: 6; margin: 0 !important; align-items: flex-start !important; max-height: 28vh; overflow: hidden; }
-#handbar { order: 7; margin: 0 !important; }
 /* opponent banner: no overlap */
-.opp-banner { position: relative; overflow: hidden; }
-.opp-banner .opp-avatar { flex-shrink: 0; }
-.opp-banner .opp-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
 /* my sets: allow wrapping, container grows */
-#myTable { min-width: 0; flex: 1; overflow: visible; }
-#mySets { display: flex; flex-wrap: wrap; gap: 6px; overflow: visible; align-items: flex-start; }
-#mySets .setgroup.bd { flex: 0 0 auto; }
 /* bank row below sets, not overlapping */
-#myBankRow { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.15); display: flex; align-items: center; gap: 8px; }
 /* hand: separate from sets */
 #hand-wrap { margin-top: 8px; border-top: 1px solid rgba(255,255,255,.1); padding-top: 8px; }
 .card.simple { overflow: hidden; }
@@ -244,28 +172,18 @@ body {
   width: 16px; height: 16px; font-size: 9px; line-height: 16px;
 }
 /* my sets: compact, no scroll, wrap */
-#playerRow { overflow: visible !important; }
-#myTable { overflow: visible !important; }
-#mySets { display: flex; flex-wrap: wrap; gap: 6px; overflow: visible !important; max-height: none !important; }
-#mySets .setgroup { flex: 0 1 auto; min-width: 0; }
-#mySets .setgroup .setname { font-size: 11px; white-space: nowrap; }
 /* opponent area: contained, no cutoff */
-#opponents { display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px; }
 .opp { flex: 1 0 120px; min-width: 120px; max-width: 160px; overflow: hidden; }
-.opp-area { overflow: hidden; display: flex; flex-wrap: wrap; gap: 3px; padding: 4px; }
 .opp .setgroup.bd { margin: 1px; padding: 1px; }
 .opp .setgroup.bd .card.simple { width: 30px !important; height: 42px !important; }
 .opp .setgroup.bd .card-wrap { margin-left: -10px; }
 /* bank: contained, not cut off */
-#myBankRow { overflow: visible; flex-wrap: wrap; }
 #myBank { display: flex; flex-wrap: wrap; gap: 4px; }
 #myBank .card { position: relative !important; width: 40px !important; height: 56px !important; }
-.opp-banner.c3 { background: linear-gradient(100deg, #9333ea, #a855f7); }
 .opp-avatar { font-size: 22px; background: rgba(255,255,255,.25); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .opp-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .opp-bank { background: rgba(0,0,0,.3); border-radius: 10px; padding: 2px 8px; font-size: 12px; display: flex; align-items: center; gap: 3px; }
 .opp-handcount { padding: 4px 8px; font-size: 12px; color: #fff; opacity: .9; }
-.opp-area { padding: 4px; display: flex; flex-direction: column; gap: 4px; min-height: 60px; }
 
 /* ---------- lobby ---------- */
 #lobby { justify-content: center; align-items: center; position: relative; }
@@ -373,17 +291,6 @@ body {
 
 /* ---------- game layout ---------- */
 /* game layout - single authoritative rule */
-#game:not(.hidden) { display: flex; flex-direction: column; height: 100dvh; max-height: 100dvh; overflow: hidden; padding: 4px 6px; padding-top: max(4px, env(safe-area-inset-top)); padding-bottom: max(4px, env(safe-area-inset-bottom)); gap: 4px; }
-#topbar { flex: 0 0 auto; }
-#opponents { flex: 0 0 auto; max-height: 28vh; overflow: hidden; }
-#midbar { flex: 0 1 auto; min-height: 60px; max-height: 30vh; overflow: hidden; }
-#playerRow { flex: 0 0 auto; }
-#handbar { flex: 0 0 auto; }
-#controls { flex: 0 0 auto; }
-#banner {
-  text-align: center; padding: 10px; font-size: 15px; font-weight: 600;
-  background: rgba(0,0,0,.4); border-radius: 12px; color: var(--gold);
-}
 
 /* (old opponent styles removed — using column layout above) */
 /* opponent turn glow */
@@ -395,15 +302,6 @@ body {
 .opp .setgroup { margin-bottom: 2px; }
 
 /* mid area: piles + focus card + actions */
-#midbar { display: flex; gap: 8px; align-items: flex-start; flex: 1 1 auto; min-height: 0; overflow: hidden; margin: 2px 0; }
-#piles { display: flex; flex-direction: column; gap: 8px; }
-.pile {
-  width: 56px; height: 76px; border-radius: 8px;
-  background: rgba(0,0,0,.3); border: 2px dashed rgba(255,255,255,.3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; color: var(--dim); position: relative; flex-shrink: 0;
-}
-.pile span { position: absolute; bottom: 2px; right: 5px; font-size: 11px; color: #fff; font-weight: 700; }
 /* the draw deck: a real stacked deck visual */
 #drawPile.has-cards {
   border: 3px solid #d4af37; cursor: pointer;
@@ -419,15 +317,7 @@ body {
 #drawPile.empty { opacity: .45; }
 /* Business Deals: everything fits on screen, no scrolling */
 /* removed duplicate #game rules - consolidated above */
-#opponents { flex-shrink: 0; }
-#midbar { flex: 1 1 auto; min-height: 40px; overflow: hidden; }
-#playerRow { flex-shrink: 0; }
-#handbar { flex-shrink: 0; }
-#controls { flex-shrink: 0; padding: 4px; }
 /* Business Deals: middle is open space, piles stacked on left */
-#midbar { flex: 1 1 auto; min-height: 100px; display: flex; align-items: flex-start; justify-content: flex-start; padding: 8px; }
-#piles { display: flex; flex-direction: column; gap: 12px; }
-.pile { width: 64px; height: 88px; border-radius: 10px; background: rgba(0,0,0,.25); border: 2px dashed rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-size: 28px; color: rgba(255,255,255,.5); }
 /* focusWrap is now an overlay only, not in the middle flow */
 #focusWrap:not(.overlay) { display: none !important; }
 #focusWrap { flex: 1; display: flex; gap: 8px; justify-content: center; align-items: center; min-height: 0; overflow: hidden; }
@@ -483,19 +373,6 @@ body {
 #playsLeft .dot.on { background: var(--gold); }
 
 /* player row */
-#playerRow { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-#myAvatar { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-#myAvatar .ava {
-  width: 52px; height: 52px; border-radius: 50%;
-  background: rgba(255,255,255,.2); border: 3px solid var(--gold);
-  display: flex; align-items: center; justify-content: center; font-size: 26px;
-  box-shadow: 0 0 14px rgba(255,215,95,.6);
-}
-#myAvatar .pname { font-size: 13px; font-weight: 700; }
-#myTable { flex: 1; background: var(--panel-dark); border-radius: 12px; padding: 8px; min-height: 96px; }
-#playerRow.turn #myAvatar .ava { animation: turnGlow 1.6s ease-in-out infinite; border-color: #ffd75f; }
-#playerRow.turn #myTable { outline: 2px solid var(--gold); box-shadow: 0 0 16px rgba(255,215,95,.35); }
-#mySets { display: flex; flex-wrap: wrap; gap: 6px; overflow-x: visible; padding-bottom: 4px; }
 /* winner overlay with confetti */
 #winnerOverlay {
   position: fixed; inset: 0; z-index: 1000;
@@ -521,13 +398,6 @@ body {
 @keyframes confetti-fall {
   to { transform: translateY(110vh) rotate(720deg); }
 }
-#myBankRow { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 14px; font-weight: 700; }
-#myBankRow .coin {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #ffe97a, #f5b301);
-  color: #5a3c00; font-size: 13px; font-weight: 900;
-  display: inline-flex; align-items: center; justify-content: center;
-}
 #myBank { display: flex; gap: 4px; overflow-x: auto; flex: 1; }
 .sect-label { font-size: 11px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; padding-top: 12px; }
 
@@ -541,18 +411,7 @@ body {
 .setgroup .boost { font-size: 10px; color: var(--gold); }
 
 /* hand */
-#handbar { margin-top: 2px; }
-#handInfo { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 14px; font-weight: 700; }
-#handInfo .coin {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #ffe97a, #f5b301);
-  color: #5a3c00; font-size: 13px; font-weight: 900;
-  display: inline-flex; align-items: center; justify-content: center;
-}
 #turnInfo { font-size: 13px; color: var(--dim); font-weight: 600; }
-#hand { display: flex; justify-content: center; align-items: flex-end; min-height: 120px; padding: 8px 2px 0; margin-top: 8px; position: relative; z-index: 1; background: transparent; }
-#controls { display: flex; gap: 8px; margin: 8px 0 0; }
-#controls .btn { flex: 1; }
 /* End Turn pops bright when all plays are used */
 #endBtn.end-ready {
   background: linear-gradient(100deg, #22c55e, #4ade80);
@@ -572,16 +431,7 @@ body {
 #log div { margin: 1px 0; }
 
 /* persistent action-flow banner */
-#flowBar {
-  margin: 6px 10px 0; padding: 10px 12px; border-radius: 12px;
-  background: linear-gradient(100deg, #b8860b, #d4af37); color: #2a1f00;
-  font-weight: 800; font-size: 14px; line-height: 1.35;
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  box-shadow: 0 4px 14px rgba(0,0,0,.4); z-index: 20;
-  animation: flowPulse 1.6s ease-in-out infinite;
-}
 @keyframes flowPulse { 0%,100% { box-shadow: 0 4px 14px rgba(0,0,0,.4); } 50% { box-shadow: 0 4px 22px rgba(255,215,95,.75); } }
-#flowBar .btn { background: #2a1f00; color: #ffd75f; border: none; padding: 6px 12px; font-size: 13px; flex-shrink: 0; }
 /* glowing tappable targets during a flow */
 .flow-target { animation: targetGlow 1.2s ease-in-out infinite; cursor: pointer !important; }
 @keyframes targetGlow {
@@ -590,53 +440,19 @@ body {
 }
 
 /* sticky turn/activity banner — always see what opponents are doing */
-#turnBar {
-  position: sticky; top: 0; z-index: 30;
-  margin: 6px 10px 0; padding: 9px 14px; border-radius: 12px;
-  background: linear-gradient(100deg, #1a2340, #2a3560);
-  border: 2px solid #d4af37; color: #fff;
-  font-weight: 700; font-size: 14px; line-height: 1.35;
-  display: flex; align-items: center; gap: 10px;
-  box-shadow: 0 4px 14px rgba(0,0,0,.45);
-}
-#turnBar #turnAvatar { font-size: 26px; }
-#turnBar.mine { border-color: #4ade80; background: linear-gradient(100deg, #14532d, #166534); }
-#turnBar .turn-action { color: #ffd75f; font-weight: 800; }
-#turnBar .turn-mini {
-  display: inline-block; padding: 3px 10px; margin: 0 4px; border-radius: 8px;
-  border: 2px solid #d4af37; color: #fff; font-size: 12px; font-weight: 800;
-  vertical-align: middle; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
 /* compact game screen — everything fits in viewport, hand pinned to bottom */
 /* removed duplicate #game rules - consolidated above */
 /* compact signet bar - single row, not a chunky panel */
-#signetBar { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
-#signetBar .btn.signet-power { font-size: 13px; padding: 6px 12px; }
-#signetBar .btn { font-size: 12px; padding: 5px 10px; }
 /* compact turn banner */
 #turnBanner, .turn-banner { padding: 6px 12px; font-size: 14px; margin: 0; }
 /* player row compact */
-#playerRow { padding: 4px; gap: 4px; }
 /* hand always visible at bottom */
-#handbar { margin-top: auto; padding: 4px 0; flex-shrink: 0; }
-#hand { max-height: 110px; }
 /* opponents compact */
-#opponents { flex-shrink: 0; }
-#opponents { margin-bottom: 2px; flex-shrink: 0; max-height: 22dvh; overflow-y: auto; }
-.opp-area { min-height: 80px; padding: 4px; }
-.opp-area .card.fw { width: 56px; min-height: 78px; font-size: 10px; } /* readable mini cards */
 /* compact opponent table cards */
-.opp-area .setgroup { margin: 2px; padding: 3px; }
-.opp-area .setgroup .setname { font-size: 10px; margin-bottom: 2px; }
-.opp-area .setgroup .cards { gap: 2px; }
-.opp-area .setgroup .card.fw.mini { width: 44px; height: 62px; }
 /* complete sets stack like a deck */
 .setgroup.stacked .cards {
   position: relative;
   min-height: 78px;
-}
-.opp-area .setgroup.stacked .cards {
-  min-height: 62px;
 }
 .setgroup.stacked .card-wrap {
   position: absolute;
@@ -670,16 +486,10 @@ body {
   0%, 100% { box-shadow: 0 0 8px rgba(255, 215, 95, .4); }
   50% { box-shadow: 0 0 20px rgba(255, 215, 95, .8); }
 }
-#handbar { flex-shrink: 0; margin-top: auto; }
 #hand-wrap { background: linear-gradient(180deg, transparent, #2e86e8 30%); padding-top: 8px; z-index: 20; flex-shrink: 0; }
-#turnBar { padding: 6px 10px; margin-bottom: 4px; flex-shrink: 0; }
-#turnBar .turn-action { display: none; }
 /* old signetBar/playerRow rules removed - see AUTHORITATIVE section at end */
 #log { display: none; }
-#playerRow { margin-top: 2px; flex-shrink: 0; max-height: 22dvh; overflow-y: auto; }
-#myTable { min-height: 64px; padding: 10px 6px 6px; }
 /* bank row always fully visible */
-#myBankRow { display: flex; align-items: center; gap: 8px; margin-top: 6px; padding-bottom: 4px; font-size: 14px; font-weight: 700; min-height: 32px; }
 /* bank cards stack like a pile, off to the side — compact */
 #myBank { position: relative; width: 76px; height: 58px; flex-shrink: 0; }
 #myBank .card { position: absolute; top: 0; left: 0; width: 50px !important; height: 70px !important; }
@@ -695,9 +505,6 @@ body {
   50% { transform: scale(1.08); box-shadow: 0 0 24px rgba(255, 215, 95, .9); }
 }
 /* compact own table cards */
-#myTable .setgroup { margin: 2px; padding: 3px; }
-#myTable .setgroup .setname { font-size: 10px; margin-bottom: 2px; }
-#myTable .setgroup .cards { gap: 2px; }
 /* smooth scrolling with hardware acceleration */
 #opponents, #playerRow, #mySets, #hand {
   -webkit-overflow-scrolling: touch;
@@ -713,9 +520,6 @@ body {
   .setgroup.complete { box-shadow: none; }
 }
 /* smaller hand cards to fit */
-#hand .card.fw { width: 72px; height: 100px; }
-#hand .card.fw.mini .vbadge { width: 16px; height: 16px; font-size: 9px; }
-#controls { margin: 4px 0 0; flex-shrink: 0; }
 
 /* Challenge cards: big swords circle in the middle like action cards */
 .card.fw .pbody.rent-body {
@@ -880,9 +684,6 @@ body {
 .card.fw .mlabel { font-size: 9px; color: #d4af37; text-align: center; letter-spacing: 2px; font-weight: 700; }
 .card.fw.selected { box-shadow: 0 0 16px rgba(255,215,95,.85); transform: translateY(-10px); }
 .card.fw.targetable { box-shadow: 0 0 12px rgba(127,224,216,.7); }
-#hand .card.fw { margin: 0 -7px; }
-#hand .card.fw:first-child { margin-left: 0; }
-#hand .card.fw:last-child { margin-right: 0; }
 
 /* focus card — large physical card, scales to fit available space */
 .focus-card.fw {
@@ -970,11 +771,8 @@ body {
 
 /* signet bar */
 /* old signetBar rule removed - see AUTHORITATIVE section at end */
-#signetBar .my-signet b { color: var(--gold); }
-#signetBar .blocked { color: #ff9a9a; }
 .opp-signet { font-size: 11px; color: var(--dim); }
 .opp-signet b { color: #fff; }
-#signetBar .btn { padding: 8px 12px; font-size: 13px; }
 
 /* modal */
 #modal {
@@ -1032,162 +830,28 @@ body {
 
 /* === CLEAN GAME LAYOUT (Business Deals) === */
 
-#game {
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-  max-height: 100dvh;
-  overflow: hidden;
-  padding: 4px 6px;
-  gap: 4px;
-}
-#game.hidden {
-  display: none;
-}
 
-#topbar { flex: 0 0 auto; }
 
-#opponents {
-  flex: 0 0 auto;
-  display: flex;
-  gap: 6px;
-  max-height: 26vh;
-  overflow: hidden;
-}
-.oppcol {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-.opp-area {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 4px 2px;
-  justify-content: flex-start;
-  overflow: hidden;
-}
 
-#midbar {
-  flex: 1 1 auto;
-  min-height: 60px;
-  display: flex;
-  align-items: flex-start;
-  padding: 8px;
-}
-#piles {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
 
-#signetBar {
-  flex: 0 0 auto;
-  display: flex;
-  justify-content: center;
-  padding: 2px;
-  min-height: 0;
-}
-#signetBar:empty { display: none; }
-#signetBar .my-signet { display: none; }
 
-#playerRow {
-  flex: 0 0 auto;
-  display: flex;
-  gap: 10px;
-  padding: 4px;
-  align-items: flex-start;
-}
-#playerRow.hidden { display: none; }
 
-#handbar { flex: 0 0 auto; padding: 4px 0; }
-#handbar.hidden { display: none; }
 
-#controls { flex: 0 0 auto; padding: 4px; }
-#controls.hidden { display: none; }
 
-#turnBar { display: none; }
 #focusWrap:not(.overlay) { display: none; }
 
 /* FORCE correct visual order */
-#game { display: flex; flex-direction: column; }
-#topbar { order: 1; }
-#opponents { order: 2; }
-#midbar { order: 3; }
-#signetBar { order: 4; }
-#playerRow { order: 5; }
-#handbar { order: 6; }
-#controls { order: 7; }
 
 /* TIGHTEN: everything fits without scrolling */
-#game {
-  height: 100dvh !important;
-  max-height: 100dvh !important;
-  overflow: hidden !important;
-}
-#opponents {
-  max-height: 20vh !important;
-}
-#midbar {
-  flex: 0 1 auto !important;
-  min-height: 80px !important;
-  max-height: 25vh !important;
-}
-#playerRow {
-  padding: 2px !important;
-}
-#handbar {
-  padding: 2px 0 !important;
-}
-#hand .card {
-  width: 56px !important;
-  height: 78px !important;
-}
-#controls {
-  padding: 2px !important;
-}
-#controls .btn {
-  padding: 8px !important;
-  font-size: 14px !important;
-}
 
 /* LOCK game to viewport - no scrolling ever */
-#game.hidden {
-  display: none !important;
-}
 
 /* === SIMPLE WORKING LAYOUT === */
-#game {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100dvh !important;
-  overflow: hidden !important;
-}
-#game.hidden { display: none !important; }
-#topbar { flex: 0 0 auto !important; }
-#opponents { flex: 0 0 auto !important; max-height: 22vh !important; overflow: hidden !important; }
-#midbar { flex: 1 1 auto !important; min-height: 0 !important; overflow: hidden !important; }
-#signetBar { flex: 0 0 auto !important; }
-#signetBar:empty { display: none !important; }
-#playerRow { flex: 0 0 auto !important; }
-#handbar { flex: 0 0 auto !important; }
-#controls { flex: 0 0 auto !important; }
 
 /* COMPACT: fit everything on one screen */
-.opp-banner { padding: 4px 6px !important; }
 .opp-avatar { width: 28px !important; height: 28px !important; font-size: 16px !important; }
-#topbar { padding: 4px !important; }
-#topbar .btn { width: 36px !important; height: 36px !important; font-size: 16px !important; }
 .table-card { width: 48px !important; height: 68px !important; }
-#mySets .table-card { width: 44px !important; height: 62px !important; }
-#hand .card { width: 52px !important; height: 74px !important; }
-#playerRow { padding: 2px 4px !important; gap: 6px !important; }
-#myAvatar .ava { width: 36px !important; height: 36px !important; font-size: 20px !important; }
 .pname { font-size: 12px !important; }
-#handbar { padding: 2px 0 !important; }
-#controls .btn { padding: 10px !important; font-size: 15px !important; }
-#signetBar .signet-btn { font-size: 12px !important; padding: 6px 8px !important; }
 
 /* Business Deals: tiny table cards */
 .table-card {
@@ -1199,39 +863,11 @@ body {
 .table-card .tc-val { font-size: 10px !important; }
 .table-card .tc-name { display: none !important; }
 .table-card .tc-rent { display: none !important; }
-#mySets .table-card {
-  width: 40px !important;
-  height: 56px !important;
-}
-.opp-area { gap: 3px !important; padding: 2px !important; }
 
 /* Fix opponent card alignment - straight rows */
-.opp-area {
-  display: flex !important;
-  flex-wrap: nowrap !important;
-  align-items: flex-start !important;
-  gap: 4px !important;
-  padding: 4px 2px !important;
-  justify-content: flex-start !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-}
-.opp-area .table-card {
-  flex: 0 0 auto !important;
-  margin: 0 !important;
-}
 
 /* STRICT height budget - must fit in 100dvh */
-#game { height: 100dvh !important; max-height: 100dvh !important; }
-#topbar { max-height: 50px !important; overflow: hidden !important; }
-#opponents { max-height: 140px !important; overflow: hidden !important; }
-#midbar { max-height: 120px !important; min-height: 80px !important; overflow: hidden !important; }
-#playerRow { max-height: 90px !important; overflow: hidden !important; }
-#handbar { max-height: 100px !important; overflow: hidden !important; }
-#controls { max-height: 60px !important; overflow: hidden !important; }
 /* Hide scrollbars */
-#game::-webkit-scrollbar { display: none !important; }
-#game { scrollbar-width: none !important; }
 
 /* Smooth animations - no more blinking */
 .table-card, #hand .card, .opp-banner {
@@ -1246,9 +882,6 @@ body {
   transition: opacity 0.3s ease !important;
 }
 /* Turn banner slide-in */
-#turnBar {
-  animation: slideDown 0.4s ease-out !important;
-}
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -1264,10 +897,33 @@ html, body {
   top: 0 !important;
   left: 0 !important;
 }
+
+
+
+/* === CLEAN GAME LAYOUT (Business Deals) === */
 #game {
-  height: 100dvh !important;
-  max-height: 100dvh !important;
-  overflow: hidden !important;
+  display: flex; flex-direction: column;
+  height: 100dvh; max-height: 100dvh; overflow: hidden;
+  background: linear-gradient(180deg, #1d4ed8, #3b82f6);
+  padding: 6px; gap: 4px;
 }
-
-
+#game.hidden { display: none !important; }
+#topbar { flex: 0 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 4px; }
+#banner, #flowBar, #turnBar { flex: 0 0 auto; }
+#banner:not(.hidden), #flowBar:not(.hidden), #turnBar:not(.hidden) {
+  padding: 8px; margin: 4px 0; border-radius: 8px; background: rgba(0,0,0,0.4);
+  text-align: center; font-weight: 700;
+}
+#opponents { flex: 0 0 auto; display: flex; gap: 6px; max-height: 24vh; overflow: hidden; }
+.oppcol { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.opp-banner { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 10px; color: #fff; font-weight: 700; }
+.opp-area { display: flex; flex-wrap: nowrap; gap: 4px; padding: 4px 2px; overflow-x: auto; overflow-y: hidden; align-items: flex-start; }
+#midbar { flex: 1 1 auto; min-height: 60px; display: flex; align-items: flex-start; padding: 8px; overflow: hidden; }
+#piles { display: flex; flex-direction: column; gap: 12px; }
+#signetBar { flex: 0 0 auto; display: flex; justify-content: center; padding: 2px; }
+#signetBar:empty { display: none; }
+#playerRow { flex: 0 0 auto; display: flex; gap: 8px; padding: 4px; align-items: flex-start; }
+#handbar { flex: 0 0 auto; padding: 4px 0; }
+#handInfo { display: flex; gap: 12px; align-items: center; padding: 2px 4px; }
+#hand { display: flex; gap: 6px; padding: 6px 4px; overflow-x: auto; overflow-y: hidden; }
+#controls { flex: 0 0 auto; padding: 4px; display: flex; gap: 8px; }
