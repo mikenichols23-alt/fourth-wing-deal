@@ -956,3 +956,30 @@ html, body {
 #controls { min-height: 44px; }
 #controls .btn:not(.hidden) { display: inline-block !important; }
 #endBtn:not(.hidden) { display: inline-block !important; background: #f59e0b; color: #000; font-weight: 800; padding: 12px 24px; border-radius: 12px; }
+
+/* Professional focus layout - stack vertically, no overlap */
+#focusWrap:not(.hidden) {
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  padding: 8px !important;
+  gap: 8px !important;
+}
+#focusCard {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+#focusActions {
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+#focusActions .btn {
+  flex: 0 1 auto !important;
+  min-width: 100px !important;
+  max-width: 160px !important;
+  padding: 10px 16px !important;
+  font-size: 14px !important;
+}
