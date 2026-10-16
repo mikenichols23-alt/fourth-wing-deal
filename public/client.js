@@ -998,6 +998,17 @@ function _render() {
   $('drawBtn').classList.toggle('end-ready', myTurn && S.needDraw);
   // Defensive: if it's my draw phase, Draw MUST be visible (needDraw flag is redundant)
   if (myTurn && S.phase === 'draw' && !S.winner) $('drawBtn').classList.remove('hidden');
+  // DIAGNOSTIC (temporary): if it's my turn with no buttons, show state on screen
+  if (myTurn && !S.winner && !S.pending) {
+    const drawHidden = $('drawBtn').classList.contains('hidden');
+    const endHidden = $('endBtn').classList.contains('hidden');
+    if (drawHidden && endHidden) {
+      const dbg = $('debugInfo') || (() => { const d = document.createElement('div'); d.id = 'debugInfo'; d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#f00;color:#fff;font-size:10px;padding:4px;z-index:9999;'; document.body.appendChild(d); return d; })();
+      dbg.textContent = `DIAG turn=${S.turn} myIdx=${myIdx} phase=${S.phase} needDraw=${S.needDraw} pending=${!!S.pending} winner=${!!S.winner}`;
+    } else {
+      const dbg = $('debugInfo'); if (dbg) dbg.remove();
+    }
+  }
   // clarify normal draw vs signet power
   const me2 = S.players[myIdx];
   if (myTurn && S.needDraw && me2.signet && (me2.signet.id === 'mending' || me2.signet.id === 'foresight') && !me2.signetBlocked) {
