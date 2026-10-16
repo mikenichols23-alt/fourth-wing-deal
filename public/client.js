@@ -1171,11 +1171,15 @@ function showStealPanel(playerIdx, actionId) {
       cards.push({ id: cardId, setId, name: cdef?.name || cardId, color: setId, value: cdef?.value || 0 });
     }
   }
-  const cardBtns = cards.map(c =>
-    `<button class="stealcard" data-id="${c.id}" data-set="${c.setId}" style="border:3px solid ${setColor(c.color)}">
-      <span class="stealcard-val">${c.value}⚔️</span>
-      <span class="stealcard-name">${esc(c.name)}</span>
-    </button>`).join('');
+  const cardBtns = cards.map(c => {
+    const full = (S.cardMap && S.cardMap[c.id]) || c;
+    const el = cardEl(full, false, '', false);
+    el.classList.add('stealcard');
+    el.dataset.id = c.id;
+    el.dataset.set = c.setId;
+    el.style.cursor = 'pointer';
+    return el.outerHTML;
+  }).join('');
   showModal(`<div style="background:#7c3aed;border-radius:12px;padding:10px;margin:-8px -8px 12px">
       <h3 style="font-size:18px;margin:0;color:#fff">Now select the Property.</h3>
     </div>
