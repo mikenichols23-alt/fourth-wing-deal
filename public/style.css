@@ -1025,11 +1025,13 @@ html, body {
 #banner, #turnBar { display: none !important; }
 #flowBar:not(.hidden) {
   flex: 0 0 auto !important;
-  padding: 8px !important; border-radius: 8px !important;
+  padding: 8px 10px !important; border-radius: 8px !important;
   background: rgba(0,0,0,.5) !important;
-  text-align: center !important; font-weight: 700 !important;
-  color: #fbbf24 !important;
+  display: flex !important; align-items: center !important; gap: 10px !important;
+  font-weight: 700 !important; color: #fbbf24 !important;
 }
+#flowBar #flowText { flex: 1 1 auto !important; text-align: left !important; }
+#flowBar #flowCancel { flex: 0 0 auto !important; white-space: nowrap !important; }
 
 /* Opponents - compact banners like Business Deals */
 #opponents {
@@ -1947,3 +1949,19 @@ html, body {
 #handbar { flex: 0 0 auto !important; }
 #signetBar { flex: 0 0 auto !important; }
 #topbar { flex: 0 0 auto !important; }
+
+/* Wild active-color banner at top (when flipped) */
+.card.fw .wtop {
+  margin: 0; border-radius: 7px 7px 0 0; text-align: center;
+  font-size: 11px; font-weight: 800; color: #fff; letter-spacing: 1px;
+  padding: 4px 6px; text-shadow: 0 1px 3px rgba(0,0,0,.6);
+}
+.card.fw.mini .wtop { font-size: 8px; padding: 2px 4px; }
+
+/* Winner overlay: compact mode after celebration (Play Again / Quit stay visible) */
+#winnerOverlay.compact .winner-box {
+  padding: 20px 30px !important;
+}
+#winnerOverlay.compact {
+  background: rgba(0,0,0,.7) !important;
+}
