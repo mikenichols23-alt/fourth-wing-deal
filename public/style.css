@@ -310,7 +310,7 @@ body {
 /* Business Deals: middle is open space, piles stacked on left */
 /* focusWrap is now an overlay only, not in the middle flow */
 #focusWrap:not(.overlay) { display: none !important; }
-#focusWrap { flex: 1; display: flex; gap: 8px; justify-content: center; align-items: center; min-height: 0; overflow: hidden; }
+#focusWrap { flex: 1 1 auto; display: flex; gap: 8px; justify-content: center; align-items: center; min-height: 0; max-height: 100%; overflow: hidden; }
 /* overlay mode: tapped card pops up large over the game, never squeezed */
 #focusWrap.overlay {
   position: fixed; inset: 0; z-index: 100;
@@ -908,12 +908,12 @@ html, body {
 .oppcol { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .opp-banner { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 10px; color: #fff; font-weight: 700; }
 .opp-area { display: flex; flex-wrap: nowrap; gap: 4px; padding: 4px 2px; overflow-x: auto; overflow-y: hidden; align-items: flex-start; }
-#midbar { flex: 1 1 auto; min-height: 60px; display: flex; align-items: flex-start; padding: 8px; overflow: hidden; }
+#midbar { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; padding: 4px; overflow: hidden; min-height: 50px; }
 #piles { display: flex; flex-direction: column; gap: 12px; }
 #signetBar { flex: 0 0 auto; display: flex; justify-content: center; padding: 2px; }
 #signetBar:empty { display: none; }
 #playerRow { flex: 0 0 auto; display: flex; gap: 8px; padding: 4px; align-items: flex-start; }
-#handbar { flex: 0 0 auto; padding: 4px 0; }
+#handbar { flex: 0 0 auto; padding: 4px 0; min-height: 0; }
 #handInfo { display: flex; gap: 12px; align-items: center; padding: 2px 4px; }
 #hand { display: flex; gap: 6px; padding: 6px 4px; overflow-x: auto; overflow-y: hidden; }
 #controls { flex: 0 0 auto; padding: 4px; display: flex; gap: 8px; }
@@ -951,3 +951,8 @@ html, body {
   letter-spacing: .5px;
 }
 #lobby .lobby-card { padding-top: 20px; }
+
+/* Ensure controls always visible */
+#controls { min-height: 44px; }
+#controls .btn:not(.hidden) { display: inline-block !important; }
+#endBtn:not(.hidden) { display: inline-block !important; background: #f59e0b; color: #000; font-weight: 800; padding: 12px 24px; border-radius: 12px; }
