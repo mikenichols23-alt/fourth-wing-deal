@@ -922,7 +922,15 @@ function _render() {
     h.style.transform = '';
   });
   let turnText;
-  if (S.winner) turnText = `🏆 ${esc(S.winner.name)} wins!`;
+  if (S.winner) {
+    turnText = `🏆 ${esc(S.winner.name)} wins!`;
+    // Show the epic winner overlay (direct check, not log parsing)
+    if (!$('winnerOverlay') || $('winnerOverlay').classList.contains('hidden')) {
+      AudioSys.speak(S.winner.name + ' wins the game!');
+      AudioSys.fanfare();
+      showWinnerOverlay(S.winner.name);
+    }
+  }
   else if (S.pending && S.pending.awaits !== myIdx && S.pending.from !== myIdx) {
     const waiter = S.players[S.pending.awaits] ? S.players[S.pending.awaits].name : 'opponent';
     turnText = `⏳ Waiting for ${esc(waiter)}…`;
