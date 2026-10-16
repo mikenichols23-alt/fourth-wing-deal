@@ -103,6 +103,12 @@ function queueCenterCard(card, playerName, isMe) {
 }
 function processCenterQueue() {
   if (!centerQueue.length) { centerBusy = false; return; }
+  // If a selection modal/panel is open, wait - don't overlap
+  const modalOpen = document.querySelector('#stealPanel:not(.hidden), #payModal:not(.hidden), .modal:not(.hidden)');
+  if (modalOpen) {
+    setTimeout(processCenterQueue, 500);
+    return;
+  }
   centerBusy = true;
   const { card, playerName, isMe } = centerQueue.shift();
   showCenterCardNow(card, playerName, isMe);
