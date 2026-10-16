@@ -935,3 +935,14 @@ html, body {
   max-height: 100dvh !important;
   -webkit-overflow-scrolling: touch !important;
 }
+
+/* Fix Addi photo overlap - smaller, no overlap */
+.addi-corner {
+  position: relative !important;
+  top: auto !important; right: auto !important;
+  width: 120px !important; margin: 0 auto 8px !important;
+}
+.addi-corner img {
+  width: 120px !important; height: 120px !important;
+}
+#lobby .lobby-card { padding-top: 20px !important; }
