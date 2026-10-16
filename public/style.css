@@ -1430,3 +1430,41 @@ html, body {
   flex-wrap: wrap !important;
   padding: 8px !important;
 }
+
+/* EPIC winner celebration */
+.winner-box {
+  padding: 40px 32px !important;
+  border-width: 6px !important;
+  animation: winnerPop .6s cubic-bezier(.2,1.4,.4,1) !important;
+}
+@keyframes winnerPop {
+  0% { transform: scale(.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.winner-trophy {
+  font-size: 120px !important;
+  animation: trophyBounce 1s ease-in-out infinite !important;
+}
+@keyframes trophyBounce {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-12px) rotate(5deg); }
+}
+.winner-medal { font-size: 64px !important; margin-top: -20px !important; }
+.winner-name {
+  font-size: 52px !important;
+  font-weight: 900 !important;
+  color: #ffd75f !important;
+  margin: 16px 0 !important;
+  text-shadow: 0 4px 12px rgba(0,0,0,.6), 0 0 30px rgba(255,215,95,.5) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  animation: nameGlow 1.5s ease-in-out infinite !important;
+}
+@keyframes nameGlow {
+  0%, 100% { text-shadow: 0 4px 12px rgba(0,0,0,.6), 0 0 20px rgba(255,215,95,.4); }
+  50% { text-shadow: 0 4px 12px rgba(0,0,0,.6), 0 0 40px rgba(255,215,95,.8); }
+}
+.winner-sub { font-size: 20px !important; }
+.confetti-piece {
+  width: 12px !important; height: 20px !important;
+}
