@@ -1173,3 +1173,18 @@ body {
 #playerRow { flex: 0 0 auto !important; }
 #handbar { flex: 0 0 auto !important; }
 #controls { flex: 0 0 auto !important; }
+
+/* COMPACT: fit everything on one screen */
+.opp-banner { padding: 4px 6px !important; }
+.opp-avatar { width: 28px !important; height: 28px !important; font-size: 16px !important; }
+#topbar { padding: 4px !important; }
+#topbar .btn { width: 36px !important; height: 36px !important; font-size: 16px !important; }
+.table-card { width: 48px !important; height: 68px !important; }
+#mySets .table-card { width: 44px !important; height: 62px !important; }
+#hand .card { width: 52px !important; height: 74px !important; }
+#playerRow { padding: 2px 4px !important; gap: 6px !important; }
+#myAvatar .ava { width: 36px !important; height: 36px !important; font-size: 20px !important; }
+.pname { font-size: 12px !important; }
+#handbar { padding: 2px 0 !important; }
+#controls .btn { padding: 10px !important; font-size: 15px !important; }
+#signetBar .signet-btn { font-size: 12px !important; padding: 6px 8px !important; }
