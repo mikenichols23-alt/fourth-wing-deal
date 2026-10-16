@@ -1,230 +1,272 @@
-/* === FOURTH WING DEAL - Clean Stylesheet === */
-
-/* Base */
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body {
-  margin: 0; padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #1e3a8a;
-  color: #fff;
-  overscroll-behavior: none;
+/* Fourth Wing Deal — Business Deals layout, Fourth Wing cards */
+:root {
+  --blue-dark: #0a1a5c;
+  --blue-mid: #1a4fc4;
+  --blue-light: #2e7de9;
+  --panel-dark: rgba(8, 20, 70, 0.55);
+  --panel: rgba(10, 30, 110, 0.45);
+  --text: #ffffff;
+  --dim: rgba(255,255,255,.65);
+  --gold: #ffd75f;
+  --green: #22c55e;
+  --orange: #f97316;
+  --card-bg: #ffffff;
 }
-#app { min-height: 100dvh; }
-.screen { min-height: 100dvh; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+/* all interactive elements get pointer cursor and no text selection */
+button, .btn, .card, .signet-card, .act-btn, .setgroup.move-target, [onclick] {
+  cursor: pointer; user-select: none; -webkit-user-select: none;
+}
+html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100vw; }
+body {
+  background: linear-gradient(180deg, #123a9e 0%, #1a5fd0 35%, #2e86e8 70%, #4da3f5 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
 .hidden { display: none !important; }
+.screen { max-width: 560px; margin: 0 auto; padding: 8px; min-height: 100dvh; display: flex; flex-direction: column; }
 
-/* Buttons */
-.btn {
-  background: #3b82f6; color: #fff; border: none; border-radius: 12px;
-  padding: 12px 20px; font-size: 16px; font-weight: 700; cursor: pointer;
+/* ---------- opponent columns (Business Deals style) ---------- */
+#opponents { display: flex; gap: 6px; margin-bottom: 4px; }
+.opp {
+  flex: 1; display: flex; flex-direction: column;
+  background: rgba(10, 30, 110, .35); border-radius: 10px;
+  overflow: hidden; min-width: 0;
+  border: 2px solid transparent;
 }
-.btn.gold { background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #1f2937; }
-.btn:disabled { opacity: 0.5; }
-.err { color: #fca5a5; font-size: 14px; }
-
-/* === LOBBY (home) - scrollable === */
-#lobby {
-  background: linear-gradient(180deg, #1e3a8a, #1e40af);
-  padding: 20px 16px 40px;
-  display: flex; flex-direction: column; align-items: center;
+.opp.turn { border-color: #ffd75f; box-shadow: 0 0 12px rgba(255,215,95,.5); }
+/* opponent sets: tiny color chips like Business Deals - NO text, just color+value */
+.opp-area { padding: 4px; display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; }
+.opp .setgroup { padding: 3px; margin: 0; border-radius: 8px; background: rgba(0,0,0,.25); }
+.opp .setgroup .setname { font-size: 9px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+.opp .setgroup .cards { display: flex; gap: 3px; }
+.opp .card.fw {
+  width: 40px !important; height: 56px !important;
+  border-radius: 6px; overflow: hidden; position: relative;
 }
-
-/* === GAME - fixed viewport, no scroll === */
-#game {
-  display: flex; flex-direction: column;
-  height: 100dvh; max-height: 100dvh; overflow: hidden;
-  background: linear-gradient(180deg, #1d4ed8, #3b82f6);
-  padding: 6px;
-  gap: 4px;
+/* BIG BRIGHT action flow banner - impossible to miss */
+#flowBanner {
+  background: linear-gradient(180deg, #ffd75f, #ffaa00);
+  color: #000; font-size: 18px; font-weight: 900;
+  text-align: center; padding: 14px 12px; border-radius: 14px;
+  margin: 8px 0; box-shadow: 0 0 24px rgba(255,215,95,.8);
+  border: 3px solid #fff;
+  animation: flowPulse 1.2s ease-in-out infinite;
 }
-#game.hidden { display: none !important; }
-
-/* Top bar */
-#topbar {
-  flex: 0 0 auto;
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 4px;
+#flowBanner.hidden { display: none; }
+@keyframes flowPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 24px rgba(255,215,95,.8); }
+  50% { transform: scale(1.02); box-shadow: 0 0 36px rgba(255,215,95,1); }
 }
-#backBtn {
-  width: 44px; height: 44px; border-radius: 12px; border: none;
-  background: #ea580c; color: #fff; font-size: 24px; cursor: pointer;
+/* pulsating targets during action flows */
+.flow-target {
+  animation: targetPulse 1s ease-in-out infinite !important;
+  cursor: pointer !important;
+  position: relative; z-index: 5;
 }
-#topbar .sndrow { display: flex; gap: 8px; }
-#topbar .sndrow .btn {
-  width: 44px; height: 44px; padding: 0; border-radius: 50%;
-  background: rgba(0,0,0,0.3); font-size: 20px;
+@keyframes targetPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 8px rgba(255,215,95,.6); }
+  50% { transform: scale(1.08); box-shadow: 0 0 20px rgba(255,215,95,1); }
 }
-
-/* Banner and flow */
-#banner, #flowBar, #turnBar { flex: 0 0 auto; text-align: center; }
-#banner:not(.hidden), #flowBar:not(.hidden), #turnBar:not(.hidden) {
-  padding: 8px; margin: 4px 0; border-radius: 8px;
-  background: rgba(0,0,0,0.4); font-weight: 700;
+.opp.flow-target { border: 3px solid #ffd75f !important; }
+/* Business Deals steal panel: full-size tappable cards */
+.stealcard { width: 84px; min-height: 104px; border-radius: 10px; background: #1e293b; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px; cursor: pointer; transition: transform .15s, box-shadow .15s; }
+.stealcard:active { transform: scale(.94); }
+.stealcard-val { font-size: 20px; font-weight: 800; }
+.stealcard-name { font-size: 11px; opacity: .85; text-align: center; line-height: 1.2; }
+/* Business Deals payment: tappable cards inside the modal */
+.paygrid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-height: 40vh; overflow-y: auto; padding: 4px; }
+.paycard { width: 72px; min-height: 88px; border-radius: 10px; background: #1e293b; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 6px; cursor: pointer; transition: transform .15s; }
+.paycard:active { transform: scale(.94); }
+.paycard-val { font-size: 18px; font-weight: 800; }
+.paycard-name { font-size: 10px; opacity: .8; text-align: center; line-height: 1.2; }
+.paycard.sel { transform: translateY(-4px); }
+/* Business Deals smooth card popup - scales up from hand */
+#focusArea .focus-card {
+  animation: popupIn .28s cubic-bezier(.34, 1.4, .64, 1);
+  transform-origin: bottom center;
 }
-#flowBar { background: #b45309; display: flex; justify-content: center; align-items: center; gap: 12px; }
-#flowBar:not(.hidden) { display: flex; }
-
-/* Opponents - pinned top */
-#opponents {
-  flex: 0 0 auto;
-  display: flex; gap: 6px;
-  max-height: 24vh; overflow: hidden;
+@keyframes popupIn {
+  from { transform: scale(.6) translateY(40px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
 }
-.oppcol { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.opp-banner {
-  display: flex; align-items: center; gap: 6px;
-  padding: 6px 8px; border-radius: 10px; color: #fff;
-  font-weight: 700; font-size: 14px;
-}
-.opp-avatar {
-  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
-  background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center;
-  font-size: 18px; border: 2px solid rgba(255,255,255,0.5);
-}
-.opp-bank {
-  margin-left: auto; background: rgba(0,0,0,0.3); border-radius: 12px;
-  padding: 2px 8px; font-size: 12px; display: flex; align-items: center; gap: 4px;
-}
-.opp-handcount { font-size: 12px; opacity: 0.9; padding: 2px 4px; }
-.opp-area {
-  display: flex; flex-wrap: nowrap; gap: 4px; padding: 4px 2px;
-  overflow-x: auto; overflow-y: hidden; align-items: flex-start;
-  scrollbar-width: none;
-}
-.opp-area::-webkit-scrollbar { display: none; }
-
-/* Middle - flexible open space */
-#midbar {
-  flex: 1 1 auto; min-height: 60px;
-  display: flex; align-items: flex-start; padding: 8px;
-  overflow: hidden;
-}
-#piles { display: flex; flex-direction: column; gap: 12px; }
-.pile {
-  width: 64px; height: 90px; border-radius: 8px;
-  border: 2px dashed rgba(255,255,255,0.4);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; color: rgba(255,255,255,0.7);
-  position: relative;
-}
-.pile .count {
-  position: absolute; bottom: 4px; right: 6px;
-  background: rgba(0,0,0,0.6); border-radius: 8px; padding: 1px 6px;
-  font-size: 11px; font-weight: 700;
-}
-
-/* Focus card overlay */
-#focusWrap.overlay {
-  position: fixed; inset: 0; z-index: 50;
-  background: rgba(0,0,0,0.7);
-  display: flex; align-items: center; justify-content: center;
-}
-#focusWrap:not(.overlay) { display: none; }
-
-/* Signet bar */
-#signetBar { flex: 0 0 auto; display: flex; justify-content: center; padding: 2px; }
-#signetBar:empty { display: none; }
-#signetBar .signet-btn {
-  background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #1f2937;
-  border: none; border-radius: 12px; padding: 10px 16px;
-  font-size: 14px; font-weight: 800; cursor: pointer;
-}
-
-/* Player row - bottom */
-#playerRow {
-  flex: 0 0 auto;
-  display: flex; gap: 8px; padding: 4px;
-  align-items: flex-start;
-}
-#myAvatar { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-#myAvatar .ava {
-  width: 44px; height: 44px; border-radius: 50%;
-  background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;
-  font-size: 24px; border: 3px solid #fbbf24;
-}
-#myAvatar .pname { font-size: 12px; font-weight: 700; margin-top: 2px; max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#myAvatar .my-handcount { font-size: 12px; }
-#myTable { flex: 1; min-width: 0; }
-#myTable .sect-label { font-size: 11px; opacity: 0.8; margin-bottom: 2px; }
-#mySets { display: flex; flex-wrap: wrap; gap: 4px; min-height: 40px; }
-#myBankRow { display: flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 13px; }
-#myBankRow .coin { font-size: 16px; }
-#myBank { display: flex; gap: 2px; }
-
-/* Hand */
-#handbar { flex: 0 0 auto; padding: 4px 0; }
-#handInfo {
-  display: flex; gap: 12px; align-items: center; padding: 2px 4px;
-  font-size: 14px; font-weight: 600;
-}
-#handInfo .mcoin {
-  width: 24px; height: 24px; border-radius: 50%; background: #fbbf24; color: #1f2937;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 800;
-}
-#hand {
-  display: flex; gap: 6px; padding: 6px 4px;
-  overflow-x: auto; overflow-y: hidden;
-  scrollbar-width: none;
-}
-#hand::-webkit-scrollbar { display: none; }
-#hand .card { flex: 0 0 auto; cursor: pointer; transition: transform 0.15s; }
-#hand .card:active { transform: scale(0.95); }
-
-/* Controls */
-#controls { flex: 0 0 auto; padding: 4px; display: flex; gap: 8px; }
-#controls .btn { flex: 1; padding: 14px; font-size: 16px; }
-
-/* Cards - visual design */
-.card, .table-card {
-  background: #fff; border-radius: 8px; overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  position: relative;
-}
-.table-card { width: 44px; height: 62px; flex-shrink: 0; }
-#hand .card { width: 64px; height: 90px; }
-.card.fw.mini { width: 44px; height: 62px; }
-.card.simple { overflow: hidden; }
-.card.simple .shead {
-  height: 40%; min-height: 18px; border-radius: 4px 4px 0 0;
-  display: flex; align-items: center; justify-content: center;
-}
-.card.simple .sbody { height: 60%; background: #f5f5f5; border-radius: 0 0 4px 4px; }
-.card.simple .swild { font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
-.card.simple .vbadge, .vbadge {
-  position: absolute; top: 2px; left: 2px;
-  width: 20px; height: 20px; border-radius: 50%;
-  background: #fbbf24; color: #1f2937;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 800; z-index: 2;
-}
-
-/* Modal */
-#modal.hidden { display: none; }
-#modal {
-  position: fixed; inset: 0; z-index: 100;
-  background: rgba(0,0,0,0.7);
-  display: flex; align-items: center; justify-content: center; padding: 16px;
-}
-#modalBox {
-  background: #1e293b; border-radius: 16px; padding: 20px;
-  max-width: 90vw; max-height: 85dvh; overflow-y: auto;
-  color: #fff;
-}
-
-/* Card entrance animation */
-.table-card, #hand .card, .opp-banner {
-  animation: cardIn 0.25s ease-out;
+/* Business Deals smooth card animations */
+.card.simple, .setgroup.bd {
+  transition: transform .25s ease-out, opacity .25s ease-out;
+  animation: cardIn .3s ease-out;
 }
 @keyframes cardIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+  from { transform: translateY(12px) scale(.9); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
 }
+.setgroup.bd .card-wrap { transition: margin .2s ease-out; }
+/* smooth hand card fan */
+#hand .card { transition: transform .2s ease-out; }
+#hand .card:active { transform: translateY(-8px) scale(1.05); }
+/* my avatar glows on my turn (like Business Deals active player) */
+#myAvatar .ava.my-turn { box-shadow: 0 0 0 3px #ffd75f, 0 0 16px #ffd75f; border-color: #ffd75f; }
+/* Business Deals EXACT: no turn banner (glowing avatar shows turn), no clutter */
+#turnBar { display: none !important; }
+/* signet bar: in-flow small button, never overlapping */
+#signetBar { display: flex; gap: 6px; align-items: center; justify-content: center; padding: 2px; min-height: 0; position: static; }
+#signetBar:empty { display: none; }
+#signetBar .my-signet { display: none; }
+#signetBar .btn.signet-power { font-size: 12px; padding: 6px 14px; border-radius: 16px; }
+#signetBar .btn.gold { font-size: 12px; padding: 6px 14px; }
+/* my hand count next to name (Business Deals style) */
+.my-handcount { font-size: 12px; font-weight: 700; color: #fff; margin-top: 2px; }
+/* Business Deals: player's properties in dark navy rounded panel */
+#mySets { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+#mySets:not(:empty) { background: rgba(0,0,0,.3); border-radius: 12px; padding: 10px; min-height: 80px; }
+#mySets:empty { display: none; }
+#mySets .setgroup.bd { display: flex; gap: 4px; }
+#mySets .setgroup.bd .card.simple { width: 52px !important; height: 72px !important; }
+/* player row: Business Deals style - no label, no panel, just cards */
+#playerRow { background: none !important; border: none !important; box-shadow: none !important; padding: 0; }
+#myTable .sect-label { display: none !important; }
+#myBankRow { display: none !important; }
+/* middle: open empty space like Business Deals */
+#midbar { flex: 1 1 auto; min-height: 60px; }
+/* Business Deals: open middle, compact indicators */
+#turnBar { padding: 4px 12px; font-size: 13px; margin: 2px 0; border-radius: 8px; }
+#turnBar.mine { background: rgba(22,163,74,.25); border: 1px solid #16a34a; }
+#turnBar:not(.mine) { background: rgba(0,0,0,.2); }
+/* signet bar: single compact row */
+#signetBar { display: flex; gap: 6px; align-items: center; justify-content: center; padding: 2px; min-height: 0; }
+#signetBar:empty { display: none; }
+#signetBar .my-signet { font-size: 12px; padding: 4px 8px; }
+#signetBar .btn.signet-power { font-size: 12px; padding: 6px 12px; }
+/* player row: no big panel, just cards like Business Deals */
+#playerRow { background: none; border: none; padding: 2px; }
+#myTable .sect-label { display: none; }
+#myBankRow { padding: 2px; }
+/* middle area: open space */
+#midbar { flex: 1 1 auto; min-height: 40px; }
+/* Business Deals top bar: back button left, icons right */
+#topbar { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; flex-shrink: 0; }
+#backBtn { width: 44px; height: 44px; border-radius: 12px; background: #ea580c; color: #fff; font-size: 28px; font-weight: 800; border: none; cursor: pointer; line-height: 1; }
+#topbar .snd-toggles { display: flex; gap: 8px; }
+#topbar .snd-toggles button { width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.35); border: none; font-size: 20px; cursor: pointer; }
+/* Business Deals: opponents pinned to top, compact, middle stays open */
+#opponents { display: flex; gap: 6px; padding: 0 2px; flex-shrink: 0; max-height: 32vh; overflow: hidden; }
+.oppcol { flex: 1; display: flex; flex-direction: column; min-width: 0; max-height: 100%; }
+.opp-area { flex: 1; overflow: hidden; max-height: 18vh; }
+/* middle: large open space for gameplay */
+#midbar { flex: 1 1 auto; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+/* Business Deals: full-width colored opponent banners */
+#opponents { display: flex; gap: 6px; padding: 0 2px; flex-shrink: 0; }
+.oppcol { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.opp-banner { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 10px; color: #fff; }
+.opp-avatar { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; border: 2px solid rgba(255,255,255,.5); }
+.oppcol.active-turn .opp-avatar { border-color: #ffd75f; box-shadow: 0 0 0 2px #ffd75f, 0 0 12px #ffd75f; }
+.opp-name { font-weight: 700; font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.opp-bank { display: flex; align-items: center; gap: 4px; font-weight: 800; font-size: 16px; }
+.mcoin { width: 22px; height: 22px; border-radius: 50%; background: #ffd75f; color: #7c4a00; font-size: 13px; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; }
+/* opponent card area: Business Deals style - white cards with color header */
+.opp-area { padding: 4px 2px; min-height: 20px; overflow: hidden; display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; max-width: 100%; }
+.opp-area .setgroup.bd { max-width: 100%; display: flex; gap: 4px; }
+.opp-area .setgroup.bd .card.simple { width: 48px !important; height: 68px !important; border-radius: 8px; background: #fff; position: relative; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,.3); }
+.opp-area .setgroup.bd .card.simple .shead { position: absolute; top: 0; left: 0; right: 0; height: 28px; }
+.opp-area .setgroup.bd .card.simple .sbody { position: absolute; top: 28px; left: 0; right: 0; bottom: 0; background: #fff; }
+.opp-area .setgroup.bd .card.simple .vbadge { position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: 50%; background: #ffd75f; color: #000; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; z-index: 2; }
+.opp-area .setgroup.bd .card-wrap { margin-left: 0; }
+.opp-handcount { font-size: 13px; color: #fff; opacity: .9; margin-bottom: 2px; }
+/* Business Deals: opponent columns with dividers, active player glow */
+#opponents { display: flex; gap: 0; padding: 0; }
+/* hand count next to money */
+.handcount { font-size: 14px; font-weight: 700; color: #fff; opacity: .9; }
+#playerRow { overflow: visible; margin-bottom: 0 !important; padding-bottom: 0 !important; }
+#myTable { overflow: visible; }
+#handbar { margin-top: 0 !important; padding-top: 4px; }
+.setgroup.bd .card.simple { width: 38px !important; height: 54px !important; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+.setgroup.bd .card-wrap { margin-left: -14px; }
+.setgroup.bd { margin: 3px; padding: 3px; }
+/* opponent area compact */
+#opponents { gap: 6px; }
+.opp .setgroup.bd .card.simple { width: 34px !important; height: 48px !important; }
+/* player sets row */
+#mySets { gap: 8px; }
+/* hand cards slightly larger for tapping */
+#hand .card { width: 56px !important; height: 78px !important; }
+.complete-badge {
+  position: absolute; top: -6px; right: -6px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #22c55e; color: #fff; font-size: 12px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,.5); z-index: 5;
+}
+.setgroup.bd.complete { border: 2px solid #22c55e; border-radius: 8px; }
+/* ===== CLEAN LAYOUT - no overlaps ===== */
+#game { flex-direction: column; gap: 8px; overflow-y: auto; overflow-x: hidden; }
+#game > * { flex-shrink: 0; }
+#midbar { flex: 1 1 auto; min-height: 0; flex-shrink: 1 !important; overflow: hidden; }
+#opponents { order: 1; }
+#payBanner, .pay-banner { order: 2; }
+#turnBar { order: 3; }
+#tableArea, #centerArea { order: 4; }
+#signetBar { order: 5; margin: 0 !important; }
+/* compact signet bar - hide the big panel, just show buttons */
+#signetBar .signet-panel { display: none; }
+#playerRow { order: 6; margin: 0 !important; align-items: flex-start !important; max-height: 28vh; overflow: hidden; }
+#handbar { order: 7; margin: 0 !important; }
+/* opponent banner: no overlap */
+.opp-banner { position: relative; overflow: hidden; }
+.opp-banner .opp-avatar { flex-shrink: 0; }
+.opp-banner .opp-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+/* my sets: allow wrapping, container grows */
+#myTable { min-width: 0; flex: 1; overflow: visible; }
+#mySets { display: flex; flex-wrap: wrap; gap: 6px; overflow: visible; align-items: flex-start; }
+#mySets .setgroup.bd { flex: 0 0 auto; }
+/* bank row below sets, not overlapping */
+#myBankRow { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.15); display: flex; align-items: center; gap: 8px; }
+/* hand: separate from sets */
+#hand-wrap { margin-top: 8px; border-top: 1px solid rgba(255,255,255,.1); padding-top: 8px; }
+.card.simple { overflow: hidden; }
+.card.simple .shead { height: 40%; min-height: 18px; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center; }
+.card.simple .sbody { height: 60%; background: #f5f5f5; border-radius: 0 0 4px 4px; }
+.card.simple .swild { font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+.card.simple .vbadge {
+  z-index: 2;
+  position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; font-size: 10px; line-height: 18px;
+  background: #ffd75f; color: #000; border-radius: 50%;
+  font-weight: 900; text-align: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+.opp .card.fw .vbadge {
+  position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; font-size: 9px; line-height: 16px;
+}
+/* my sets: compact, no scroll, wrap */
+#playerRow { overflow: visible !important; }
+#myTable { overflow: visible !important; }
+#mySets { display: flex; flex-wrap: wrap; gap: 6px; overflow: visible !important; max-height: none !important; }
+#mySets .setgroup { flex: 0 1 auto; min-width: 0; }
+#mySets .setgroup .setname { font-size: 11px; white-space: nowrap; }
+/* opponent area: contained, no cutoff */
+#opponents { display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px; }
+.opp { flex: 1 0 120px; min-width: 120px; max-width: 160px; overflow: hidden; }
+.opp-area { overflow: hidden; display: flex; flex-wrap: wrap; gap: 3px; padding: 4px; }
+.opp .setgroup.bd { margin: 1px; padding: 1px; }
+.opp .setgroup.bd .card.simple { width: 30px !important; height: 42px !important; }
+.opp .setgroup.bd .card-wrap { margin-left: -10px; }
+/* bank: contained, not cut off */
+#myBankRow { overflow: visible; flex-wrap: wrap; }
+#myBank { display: flex; flex-wrap: wrap; gap: 4px; }
+#myBank .card { position: relative !important; width: 40px !important; height: 56px !important; }
+.opp-banner.c3 { background: linear-gradient(100deg, #9333ea, #a855f7); }
+.opp-avatar { font-size: 22px; background: rgba(255,255,255,.25); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.opp-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.opp-bank { background: rgba(0,0,0,.3); border-radius: 10px; padding: 2px 8px; font-size: 12px; display: flex; align-items: center; gap: 3px; }
+.opp-handcount { padding: 4px 8px; font-size: 12px; color: #fff; opacity: .9; }
+.opp-area { padding: 4px; display: flex; flex-direction: column; gap: 4px; min-height: 60px; }
 
-/* Active player glow */
-.oppcol.active .opp-banner, #myAvatar.active .ava {
-  box-shadow: 0 0 12px #fbbf24, 0 0 24px #fbbf24;
-}
 /* ---------- lobby ---------- */
 #lobby { justify-content: center; align-items: center; position: relative; }
 .addi-corner {
@@ -306,3 +348,926 @@ html, body {
 .err { color: #ff9a9a; min-height: 20px; margin-top: 8px; font-size: 14px; }
 .roomcode { font-size: 30px; color: var(--gold); letter-spacing: 8px; margin: 12px 0; font-weight: 800; }
 .share-hint { color: var(--dim); font-size: 13px; margin-bottom: 10px; }
+/* lobby roster — obvious who's in */
+.lobby-roster-header {
+  font-size: 16px; font-weight: 900; color: var(--gold);
+  letter-spacing: 1px; margin: 12px 0 8px; text-align: center;
+}
+#playerList { list-style: none; padding: 0; margin: 8px 0; }
+#playerList li.lobby-player {
+  padding: 12px; border-bottom: 1px solid rgba(255,255,255,.1);
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.06); border-radius: 12px; margin-bottom: 6px;
+  font-size: 16px; font-weight: 700;
+}
+#playerList li .lp-avatar { font-size: 28px; }
+#playerList li .lp-name { flex: 1; }
+#playerList li .lp-host {
+  background: var(--gold); color: #3a2500; font-size: 11px; font-weight: 900;
+  padding: 3px 8px; border-radius: 8px; letter-spacing: .5px;
+}
+#playerList li .lp-bot {
+  background: rgba(255,255,255,.15); font-size: 11px; font-weight: 700;
+  padding: 3px 8px; border-radius: 8px;
+}
+
+/* ---------- game layout ---------- */
+/* game layout - single authoritative rule */
+#game:not(.hidden) { display: flex; flex-direction: column; height: 100dvh; max-height: 100dvh; overflow: hidden; padding: 4px 6px; padding-top: max(4px, env(safe-area-inset-top)); padding-bottom: max(4px, env(safe-area-inset-bottom)); gap: 4px; }
+#topbar { flex: 0 0 auto; }
+#opponents { flex: 0 0 auto; max-height: 28vh; overflow: hidden; }
+#midbar { flex: 0 1 auto; min-height: 60px; max-height: 30vh; overflow: hidden; }
+#playerRow { flex: 0 0 auto; }
+#handbar { flex: 0 0 auto; }
+#controls { flex: 0 0 auto; }
+#banner {
+  text-align: center; padding: 10px; font-size: 15px; font-weight: 600;
+  background: rgba(0,0,0,.4); border-radius: 12px; color: var(--gold);
+}
+
+/* (old opponent styles removed — using column layout above) */
+/* opponent turn glow */
+.opp.turn .opp-banner { animation: turnGlow 1.6s ease-in-out infinite; }
+@keyframes turnGlow {
+  0%,100% { box-shadow: 0 0 8px rgba(255,215,95,.4); filter: brightness(1); }
+  50% { box-shadow: 0 0 22px rgba(255,215,95,.95); filter: brightness(1.25); }
+}
+.opp .setgroup { margin-bottom: 2px; }
+
+/* mid area: piles + focus card + actions */
+#midbar { display: flex; gap: 8px; align-items: flex-start; flex: 1 1 auto; min-height: 0; overflow: hidden; margin: 2px 0; }
+#piles { display: flex; flex-direction: column; gap: 8px; }
+.pile {
+  width: 56px; height: 76px; border-radius: 8px;
+  background: rgba(0,0,0,.3); border: 2px dashed rgba(255,255,255,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--dim); position: relative; flex-shrink: 0;
+}
+.pile span { position: absolute; bottom: 2px; right: 5px; font-size: 11px; color: #fff; font-weight: 700; }
+/* the draw deck: a real stacked deck visual */
+#drawPile.has-cards {
+  border: 3px solid #d4af37; cursor: pointer;
+  background:
+    repeating-linear-gradient(45deg, #1a2340, #1a2340 6px, #24305a 6px, #24305a 12px);
+  box-shadow: 3px 3px 0 #8a6d1c, 6px 6px 0 rgba(0,0,0,.35), 0 6px 16px rgba(0,0,0,.5);
+}
+#drawPile.has-cards::before {
+  content: '🐉'; font-size: 26px;
+  text-shadow: 0 2px 6px rgba(0,0,0,.6);
+}
+#drawPile.has-cards span { background: rgba(0,0,0,.6); border-radius: 8px; padding: 1px 6px; bottom: 4px; right: 4px; }
+#drawPile.empty { opacity: .45; }
+/* Business Deals: everything fits on screen, no scrolling */
+/* removed duplicate #game rules - consolidated above */
+#opponents { flex-shrink: 0; }
+#midbar { flex: 1 1 auto; min-height: 40px; overflow: hidden; }
+#playerRow { flex-shrink: 0; }
+#handbar { flex-shrink: 0; }
+#controls { flex-shrink: 0; padding: 4px; }
+/* Business Deals: middle is open space, piles stacked on left */
+#midbar { flex: 1 1 auto; min-height: 100px; display: flex; align-items: flex-start; justify-content: flex-start; padding: 8px; }
+#piles { display: flex; flex-direction: column; gap: 12px; }
+.pile { width: 64px; height: 88px; border-radius: 10px; background: rgba(0,0,0,.25); border: 2px dashed rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-size: 28px; color: rgba(255,255,255,.5); }
+/* focusWrap is now an overlay only, not in the middle flow */
+#focusWrap:not(.overlay) { display: none !important; }
+#focusWrap { flex: 1; display: flex; gap: 8px; justify-content: center; align-items: center; min-height: 0; overflow: hidden; }
+/* overlay mode: tapped card pops up large over the game, never squeezed */
+#focusWrap.overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(10, 20, 40, .85);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  gap: 16px; padding: 20px; overflow-y: auto;
+}
+#focusWrap.overlay .focus-card.fw {
+  width: min(280px, 80vw); height: auto; min-height: 0; max-height: 62vh;
+  overflow-y: auto;
+}
+#focusWrap.overlay #focusActions {
+  flex-direction: row; gap: 14px; padding-top: 0;
+}
+#focusOverlayClose {
+  position: absolute; top: 14px; right: 16px;
+  background: rgba(255,255,255,.15); border: 2px solid rgba(255,255,255,.4);
+  color: #fff; font-size: 22px; width: 44px; height: 44px; border-radius: 50%;
+  cursor: pointer; display: none;
+}
+#focusWrap.overlay #focusOverlayClose { display: block; }
+#focusEmpty {
+  color: var(--dim); font-size: 13px; text-align: center;
+  padding: 8px 10px; flex: 1;
+}
+
+/* big focus card */
+/* (legacy .focus-card without .fw removed — all focus cards use .fw now) */
+
+/* circular action buttons */
+#focusActions { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
+.act-btn { display: flex; align-items: center; gap: 8px; }
+.act-btn .circle {
+  width: 56px; height: 56px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; color: #fff; font-weight: 800;
+  border: 3px solid rgba(255,255,255,.85);
+  box-shadow: 0 4px 12px rgba(0,0,0,.3);
+  cursor: pointer; flex-shrink: 0;
+}
+.act-btn .circle:active { transform: scale(.92); }
+.act-btn .lbl { font-size: 15px; font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.4); }
+.act-btn.flip .circle { background: #1e3a5f; }
+.act-btn.bank .circle { background: var(--green); }
+.act-btn.play .circle { background: var(--green); }
+.act-btn.pass .circle { background: var(--orange); }
+.act-btn:disabled .circle, .act-btn.disabled .circle { opacity: .35; }
+#playsLeft { display: flex; gap: 6px; justify-content: center; margin-top: 6px; }
+#playsLeft .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(0,0,0,.35); }
+#playsLeft .dot.on { background: var(--gold); }
+
+/* player row */
+#playerRow { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+#myAvatar { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+#myAvatar .ava {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: rgba(255,255,255,.2); border: 3px solid var(--gold);
+  display: flex; align-items: center; justify-content: center; font-size: 26px;
+  box-shadow: 0 0 14px rgba(255,215,95,.6);
+}
+#myAvatar .pname { font-size: 13px; font-weight: 700; }
+#myTable { flex: 1; background: var(--panel-dark); border-radius: 12px; padding: 8px; min-height: 96px; }
+#playerRow.turn #myAvatar .ava { animation: turnGlow 1.6s ease-in-out infinite; border-color: #ffd75f; }
+#playerRow.turn #myTable { outline: 2px solid var(--gold); box-shadow: 0 0 16px rgba(255,215,95,.35); }
+#mySets { display: flex; flex-wrap: wrap; gap: 6px; overflow-x: visible; padding-bottom: 4px; }
+/* winner overlay with confetti */
+#winnerOverlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,.85);
+  display: flex; align-items: center; justify-content: center;
+}
+#winnerOverlay.hidden { display: none; }
+.winner-box {
+  text-align: center; padding: 32px;
+  background: linear-gradient(180deg, #1a2a6c, #0a1a5c);
+  border: 4px solid #ffd75f; border-radius: 24px;
+  box-shadow: 0 0 40px rgba(255,215,95,.6);
+  z-index: 2; position: relative;
+}
+.winner-trophy { font-size: 80px; }
+.winner-name { font-size: 32px; font-weight: 900; color: #ffd75f; margin: 12px 0; }
+.winner-sub { font-size: 16px; color: #fff; margin-bottom: 20px; }
+.winner-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.confetti-piece {
+  position: absolute; top: -10px; width: 10px; height: 16px;
+  animation: confetti-fall linear infinite;
+}
+@keyframes confetti-fall {
+  to { transform: translateY(110vh) rotate(720deg); }
+}
+#myBankRow { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 14px; font-weight: 700; }
+#myBankRow .coin {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffe97a, #f5b301);
+  color: #5a3c00; font-size: 13px; font-weight: 900;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+#myBank { display: flex; gap: 4px; overflow-x: auto; flex: 1; }
+.sect-label { font-size: 11px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; padding-top: 12px; }
+
+.setgroup {
+  border: 1px solid rgba(255,255,255,.2); border-radius: 8px;
+  padding: 4px; background: rgba(0,0,0,.25); flex-shrink: 0;
+}
+.setgroup.complete { border-color: var(--gold); box-shadow: 0 0 8px rgba(255,215,95,.4); }
+.setgroup .setname { font-size: 10px; color: var(--dim); margin-bottom: 3px; white-space: nowrap; }
+.setgroup .cards { display: flex; gap: 3px; }
+.setgroup .boost { font-size: 10px; color: var(--gold); }
+
+/* hand */
+#handbar { margin-top: 2px; }
+#handInfo { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 14px; font-weight: 700; }
+#handInfo .coin {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffe97a, #f5b301);
+  color: #5a3c00; font-size: 13px; font-weight: 900;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+#turnInfo { font-size: 13px; color: var(--dim); font-weight: 600; }
+#hand { display: flex; justify-content: center; align-items: flex-end; min-height: 120px; padding: 8px 2px 0; margin-top: 8px; position: relative; z-index: 1; background: transparent; }
+#controls { display: flex; gap: 8px; margin: 8px 0 0; }
+#controls .btn { flex: 1; }
+/* End Turn pops bright when all plays are used */
+#endBtn.end-ready {
+  background: linear-gradient(100deg, #22c55e, #4ade80);
+  border: 2px solid #fff; color: #052e12;
+  font-size: 18px; font-weight: 900; letter-spacing: 1px;
+  animation: endPop 1.2s ease-in-out infinite;
+  box-shadow: 0 0 18px rgba(74,222,128,.8);
+}
+@keyframes endPop {
+  0%,100% { transform: scale(1); box-shadow: 0 0 12px rgba(74,222,128,.6); }
+  50% { transform: scale(1.06); box-shadow: 0 0 26px rgba(74,222,128,.95); }
+}
+#log {
+  background: rgba(0,0,0,.3); border-radius: 10px; padding: 6px 10px;
+  font-size: 12px; max-height: 70px; overflow-y: auto; color: var(--dim); margin-top: 6px;
+}
+#log div { margin: 1px 0; }
+
+/* persistent action-flow banner */
+#flowBar {
+  margin: 6px 10px 0; padding: 10px 12px; border-radius: 12px;
+  background: linear-gradient(100deg, #b8860b, #d4af37); color: #2a1f00;
+  font-weight: 800; font-size: 14px; line-height: 1.35;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.4); z-index: 20;
+  animation: flowPulse 1.6s ease-in-out infinite;
+}
+@keyframes flowPulse { 0%,100% { box-shadow: 0 4px 14px rgba(0,0,0,.4); } 50% { box-shadow: 0 4px 22px rgba(255,215,95,.75); } }
+#flowBar .btn { background: #2a1f00; color: #ffd75f; border: none; padding: 6px 12px; font-size: 13px; flex-shrink: 0; }
+/* glowing tappable targets during a flow */
+.flow-target { animation: targetGlow 1.2s ease-in-out infinite; cursor: pointer !important; }
+@keyframes targetGlow {
+  0%,100% { box-shadow: 0 0 6px rgba(255,215,95,.5); transform: scale(1); }
+  50% { box-shadow: 0 0 18px rgba(255,215,95,.95); transform: scale(1.04); }
+}
+
+/* sticky turn/activity banner — always see what opponents are doing */
+#turnBar {
+  position: sticky; top: 0; z-index: 30;
+  margin: 6px 10px 0; padding: 9px 14px; border-radius: 12px;
+  background: linear-gradient(100deg, #1a2340, #2a3560);
+  border: 2px solid #d4af37; color: #fff;
+  font-weight: 700; font-size: 14px; line-height: 1.35;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.45);
+}
+#turnBar #turnAvatar { font-size: 26px; }
+#turnBar.mine { border-color: #4ade80; background: linear-gradient(100deg, #14532d, #166534); }
+#turnBar .turn-action { color: #ffd75f; font-weight: 800; }
+#turnBar .turn-mini {
+  display: inline-block; padding: 3px 10px; margin: 0 4px; border-radius: 8px;
+  border: 2px solid #d4af37; color: #fff; font-size: 12px; font-weight: 800;
+  vertical-align: middle; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+/* compact game screen — everything fits in viewport, hand pinned to bottom */
+/* removed duplicate #game rules - consolidated above */
+/* compact signet bar - single row, not a chunky panel */
+#signetBar { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+#signetBar .btn.signet-power { font-size: 13px; padding: 6px 12px; }
+#signetBar .btn { font-size: 12px; padding: 5px 10px; }
+/* compact turn banner */
+#turnBanner, .turn-banner { padding: 6px 12px; font-size: 14px; margin: 0; }
+/* player row compact */
+#playerRow { padding: 4px; gap: 4px; }
+/* hand always visible at bottom */
+#handbar { margin-top: auto; padding: 4px 0; flex-shrink: 0; }
+#hand { max-height: 110px; }
+/* opponents compact */
+#opponents { flex-shrink: 0; }
+#opponents { margin-bottom: 2px; flex-shrink: 0; max-height: 22dvh; overflow-y: auto; }
+.opp-area { min-height: 80px; padding: 4px; }
+.opp-area .card.fw { width: 56px; min-height: 78px; font-size: 10px; } /* readable mini cards */
+/* compact opponent table cards */
+.opp-area .setgroup { margin: 2px; padding: 3px; }
+.opp-area .setgroup .setname { font-size: 10px; margin-bottom: 2px; }
+.opp-area .setgroup .cards { gap: 2px; }
+.opp-area .setgroup .card.fw.mini { width: 44px; height: 62px; }
+/* complete sets stack like a deck */
+.setgroup.stacked .cards {
+  position: relative;
+  min-height: 78px;
+}
+.opp-area .setgroup.stacked .cards {
+  min-height: 62px;
+}
+.setgroup.stacked .card-wrap {
+  position: absolute;
+  top: 0;
+  transition: transform .2s;
+}
+.setgroup.stacked .card-wrap:nth-child(1) { left: 0; z-index: 1; }
+.setgroup.stacked .card-wrap:nth-child(2) { left: 14px; z-index: 2; }
+.setgroup.stacked .card-wrap:nth-child(3) { left: 28px; z-index: 3; }
+.setgroup.stacked .card-wrap:nth-child(4) { left: 42px; z-index: 4; }
+.setgroup.stacked .card-wrap:nth-child(n+5) { left: 56px; z-index: 5; }
+.setgroup.stacked .setname { color: #7CFC00 !important; font-weight: 900; }
+.setgroup.complete {
+  border: 2px solid #7CFC00;
+  border-radius: 6px;
+  background: rgba(124, 252, 0, .06);
+  padding: 1px;
+  display: inline-block;
+  width: auto;
+}
+.setgroup.complete .setname { margin-bottom: 2px; }
+/* valid wild move destinations glow */
+.setgroup.move-target {
+  border: 3px dashed #ffd75f;
+  border-radius: 12px;
+  background: rgba(255, 215, 95, .15);
+  cursor: pointer;
+  animation: move-pulse 1s ease-in-out infinite;
+}
+@keyframes move-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 215, 95, .4); }
+  50% { box-shadow: 0 0 20px rgba(255, 215, 95, .8); }
+}
+#handbar { flex-shrink: 0; margin-top: auto; }
+#hand-wrap { background: linear-gradient(180deg, transparent, #2e86e8 30%); padding-top: 8px; z-index: 20; flex-shrink: 0; }
+#turnBar { padding: 6px 10px; margin-bottom: 4px; flex-shrink: 0; }
+#turnBar .turn-action { display: none; }
+/* old signetBar/playerRow rules removed - see AUTHORITATIVE section at end */
+#log { display: none; }
+#playerRow { margin-top: 2px; flex-shrink: 0; max-height: 22dvh; overflow-y: auto; }
+#myTable { min-height: 64px; padding: 10px 6px 6px; }
+/* bank row always fully visible */
+#myBankRow { display: flex; align-items: center; gap: 8px; margin-top: 6px; padding-bottom: 4px; font-size: 14px; font-weight: 700; min-height: 32px; }
+/* bank cards stack like a pile, off to the side — compact */
+#myBank { position: relative; width: 76px; height: 58px; flex-shrink: 0; }
+#myBank .card { position: absolute; top: 0; left: 0; width: 50px !important; height: 70px !important; }
+#myBank .card:nth-child(2) { transform: translate(7px, -4px) rotate(5deg); }
+#myBank .card:nth-child(3) { transform: translate(14px, -8px) rotate(-5deg); }
+#myBank .card:nth-child(n+4) { transform: translate(21px, -12px) rotate(9deg); }
+#drawBtn.end-ready {
+  animation: draw-pulse 1.2s ease-in-out infinite;
+  font-size: 18px; font-weight: 900;
+}
+@keyframes draw-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 215, 95, .4); }
+  50% { transform: scale(1.08); box-shadow: 0 0 24px rgba(255, 215, 95, .9); }
+}
+/* compact own table cards */
+#myTable .setgroup { margin: 2px; padding: 3px; }
+#myTable .setgroup .setname { font-size: 10px; margin-bottom: 2px; }
+#myTable .setgroup .cards { gap: 2px; }
+/* smooth scrolling with hardware acceleration */
+#opponents, #playerRow, #mySets, #hand {
+  -webkit-overflow-scrolling: touch;
+  will-change: scroll-position;
+}
+.card, .setgroup {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+/* reduce expensive shadows on mobile */
+@media (max-width: 500px) {
+  .card { box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+  .setgroup.complete { box-shadow: none; }
+}
+/* smaller hand cards to fit */
+#hand .card.fw { width: 72px; height: 100px; }
+#hand .card.fw.mini .vbadge { width: 16px; height: 16px; font-size: 9px; }
+#controls { margin: 4px 0 0; flex-shrink: 0; }
+
+/* Challenge cards: big swords circle in the middle like action cards */
+.card.fw .pbody.rent-body {
+  display: flex; flex-direction: column; align-items: center;
+  background: #1a1a1a; padding: 6px 4px;
+}
+.card.fw .rent-circle {
+  background: #fff; border: 2px solid #fff; border-radius: 50%;
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; margin: 4px 0; box-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+.card.fw.mini .rent-circle { width: 36px; height: 36px; font-size: 20px; }
+/* focus card big swords circle */
+.focus-card.fw .fc-rent-circle {
+  background: #fff; border: 3px solid #fff; border-radius: 50%;
+  width: 92px; height: 92px; display: flex; align-items: center; justify-content: center;
+  font-size: 48px; margin: 8px 0; box-shadow: 0 4px 16px rgba(0,0,0,.4);
+}
+@keyframes wild-flip {
+  0% { transform: rotateX(0); }
+  50% { transform: rotateX(90deg); }
+  100% { transform: rotateX(0); }
+}
+.focus-card.fw .fc-wface.flipping, .card.fw .wface.flipping {
+  animation: wild-flip 0.5s ease-in-out;
+}
+.fly-card {
+  position: fixed; z-index: 200; pointer-events: none;
+  width: 56px; height: 78px; border-radius: 8px;
+  border: 3px solid #d4af37;
+  background: repeating-linear-gradient(45deg, #1a2340, #1a2340 8px, #24305a 8px, #24305a 16px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.6);
+  transition: transform .5s cubic-bezier(.25,.8,.3,1), opacity .5s;
+}
+.fly-card.face { background: #161616; display: flex; align-items: center; justify-content: center; color: #ffd75f; font-weight: 900; font-size: 11px; text-align: center; padding: 4px; }
+
+/* deal animation overlay */
+#dealOverlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(10, 15, 40, .92);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+#dealTitle { font-size: 24px; font-weight: 900; color: #ffd75f; margin-bottom: 20px; text-shadow: 0 2px 8px rgba(0,0,0,.6); }
+#dealCards { position: relative; width: 100%; height: 60dvh; }
+.deal-card {
+  position: absolute; left: 50%; top: 40%;
+  width: 56px; height: 78px; margin: -39px 0 0 -28px;
+  border-radius: 8px; border: 3px solid #d4af37;
+  background: repeating-linear-gradient(45deg, #1a2340, #1a2340 8px, #24305a 8px, #24305a 16px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.5);
+  transition: transform .45s cubic-bezier(.2,.7,.3,1.2), opacity .3s;
+}
+.deal-pile {
+  position: absolute; left: 50%; top: 40%;
+  width: 62px; height: 84px; margin: -42px 0 0 -31px;
+  border-radius: 8px; border: 3px solid #d4af37;
+  background: repeating-linear-gradient(45deg, #1a2340, #1a2340 8px, #24305a 8px, #24305a 16px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; color: #ffd75f;
+}
+
+/* sound toggles */
+.snd-toggles { display: flex; gap: 6px; justify-content: flex-end; padding: 2px 4px; }
+.snd-toggles button {
+  width: 38px; height: 38px; border-radius: 50%; border: 2px solid rgba(255,255,255,.4);
+  background: rgba(0,0,0,.45); color: #fff; font-size: 18px; cursor: pointer;
+}
+.snd-toggles button.off { opacity: .4; }
+
+/* ---- Fourth Wing physical cards: dark, set-color frame, gold badges ---- */
+.card.fw {
+  background: #161616; color: #f0e9d8;
+  border: 3px solid #888; border-radius: 10px;
+  position: relative; cursor: pointer;
+  display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(0,0,0,.45);
+  transition: transform .12s;
+  width: 84px; height: 118px;
+}
+.card.fw.mini { width: 56px; height: 78px; cursor: default; border-width: 2px; }
+.card.fw .vbadge {
+  position: absolute; top: 3px; left: 3px; z-index: 2;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffe97a, #d99400);
+  color: #3a2500; font-weight: 900; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,.5); border: 1px solid #8a6d1c;
+}
+.card.fw.mini .vbadge { width: 18px; height: 18px; font-size: 10px; }
+.card.fw .phead, .card.fw .whead, .card.fw .ahead {
+  padding: 6px 4px 6px 30px; font-weight: 800; font-size: 9px; line-height: 1.15;
+  color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); min-height: 30px;
+  display: flex; align-items: center;
+}
+.card.fw.mini .phead, .card.fw.mini .whead, .card.fw.mini .ahead { font-size: 7px; padding-left: 22px; min-height: 24px; }
+.card.fw .ahead { justify-content: center; padding-left: 4px; letter-spacing: 2px; }
+.card.fw .ahead .aicon { font-size: 14px; margin-right: 4px; }
+/* clean action mini card — cream, big centered emoji, like the sample */
+.card.fw .ahead-clean {
+  background: #e9e2cb; display: flex; align-items: center; justify-content: center;
+  padding: 6px 4px; flex: 1;
+}
+.card.fw .ahead-clean .aicon-big { font-size: 44px; line-height: 1; }
+.card.fw .pbody .aname-clean {
+  font-size: 8px; font-weight: 800; color: #3a3226; text-align: center;
+  padding: 3px 2px 5px; line-height: 1.2; background: #e9e2cb;
+}
+.card.fw.mini .ahead-clean { padding: 4px; }
+.card.fw.mini .ahead-clean .aicon-big { font-size: 38px; }
+/* full-cream action card */
+.card.fw.action-clean { background: #e9e2cb; border-color: #fff; }
+.card.fw.action-clean .pbody { background: #e9e2cb; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+.focus-card.fw .fc-phead .fc-aicon { font-size: 22px; margin-right: 8px; }
+/* clean action focus card — cream like the sample, big emoji circle */
+.focus-card.fw .fc-acream {
+  background: #e9e2cb; flex: 1; display: flex; flex-direction: column;
+  align-items: center; padding: 10px 14px 8px; color: #2a251c; overflow: hidden;
+}
+.focus-card.fw .fc-atop {
+  font-weight: 900; font-size: 14px; letter-spacing: 1px; color: #2a251c;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-shrink: 0;
+}
+.focus-card.fw .fc-aval {
+  background: #fff; border: 2px solid #2a251c; border-radius: 50%;
+  width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 16px; color: #2a251c;
+}
+.focus-card.fw .fc-acircle {
+  background: #fff; border: 3px solid #2a251c; border-radius: 50%;
+  width: 92px; height: 92px; display: flex; align-items: center; justify-content: center;
+  margin: 4px 0 6px; box-shadow: 0 4px 12px rgba(0,0,0,.15); flex-shrink: 0;
+}
+.focus-card.fw .fc-aemoji { font-size: 44px; line-height: 1; }
+.focus-card.fw .fc-aname-big {
+  font-weight: 900; font-size: 15px; letter-spacing: .5px; text-align: center;
+  margin-bottom: 4px; color: #2a251c; flex-shrink: 0;
+}
+.focus-card.fw .fc-adesc { font-size: 12px; text-align: center; color: #4a4234; line-height: 1.35; overflow: hidden; }
+/* action focus: big readable name, small icon accent */
+.focus-card.fw .fc-aname {
+  font-size: 26px; font-weight: 900; color: #fff; line-height: 1.25;
+  margin: 6px 0 10px; letter-spacing: .5px;
+  text-shadow: 0 2px 6px rgba(0,0,0,.5);
+}
+.focus-card.fw .fc-asmall { font-size: 24px; margin-right: 6px; }
+.focus-card.fw .fc-desc { font-size: 15px; }
+.card.fw .pbody { padding: 5px 6px; flex: 1; display: flex; flex-direction: column; background: #161616; }
+.card.fw .pset { font-size: 8px; color: #d4af37; font-weight: 700; letter-spacing: .5px; }
+.card.fw .ptiers { font-size: 9px; color: #f0e9d8; margin-top: 2px; font-weight: 600; }
+.card.fw .aname { font-size: 9px; font-weight: 800; color: #fff; line-height: 1.2; }
+.card.fw .atext { font-size: 7px; color: #b8b0a0; margin-top: 2px; line-height: 1.25; overflow: hidden; }
+.card.fw.mini .pbody { padding: 3px 4px; }
+.card.fw.mini .pset { font-size: 6px; }
+.card.fw.mini .ptiers, .card.fw.mini .aname, .card.fw.mini .atext { display: none; }
+.card.fw .mnum {
+  font-size: 34px; font-weight: 900; color: #ffd75f; text-align: center;
+  text-shadow: 0 2px 6px rgba(0,0,0,.6); margin-top: 14px; line-height: 1;
+}
+.card.fw.mini .mnum { font-size: 22px; margin-top: 10px; }
+.card.fw .mlabel { font-size: 9px; color: #d4af37; text-align: center; letter-spacing: 2px; font-weight: 700; }
+.card.fw.selected { box-shadow: 0 0 16px rgba(255,215,95,.85); transform: translateY(-10px); }
+.card.fw.targetable { box-shadow: 0 0 12px rgba(127,224,216,.7); }
+#hand .card.fw { margin: 0 -7px; }
+#hand .card.fw:first-child { margin-left: 0; }
+#hand .card.fw:last-child { margin-right: 0; }
+
+/* focus card — large physical card, scales to fit available space */
+.focus-card.fw {
+  width: min(210px, 58vw); height: min(300px, 100%); min-height: 0;
+  background: #161616; color: #f0e9d8;
+  border: 4px solid #888; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 10px 32px rgba(0,0,0,.5);
+  display: flex; flex-direction: column; flex-shrink: 0; position: relative;
+}
+.focus-card.fw .fvbadge {
+  position: absolute; top: 10px; left: 10px; z-index: 2;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffe97a, #d99400);
+  color: #3a2500; font-weight: 900; font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.5); border: 2px solid #8a6d1c;
+}
+.focus-card.fw .fc-phead {
+  padding: 10px 10px 10px 60px; font-weight: 900; font-size: 15px; line-height: 1.2;
+  color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,.6); min-height: 52px;
+  display: flex; align-items: center; letter-spacing: .5px; flex-shrink: 0;
+}
+.focus-card.fw .fc-pbody { padding: 10px 14px; flex: 1; display: flex; flex-direction: column; overflow-y: auto; min-height: 0; }
+.focus-card.fw .fc-set { font-size: 11px; color: #d4af37; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px; flex-shrink: 0; }
+.focus-card.fw .fc-name { font-size: 18px; font-weight: 900; color: #fff; margin-bottom: 4px; flex-shrink: 0; }
+.focus-card.fw .fc-rent-title { font-size: 13px; font-weight: 800; color: #d4af37; margin: 6px 0 4px; letter-spacing: 1px; flex-shrink: 0; }
+.focus-card.fw .fc-tier { display: flex; align-items: center; gap: 8px; padding: 3px 0; flex-shrink: 0; }
+.focus-card.fw .fc-tier .tnum {
+  width: 30px; height: 34px; border: 2px solid #d4af37; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 16px; color: #ffd75f; background: #222; flex-shrink: 0;
+}
+.focus-card.fw .fc-tier .tdots { flex: 1; border-bottom: 2px dotted #555; }
+.focus-card.fw .fc-tier .tval { font-weight: 800; color: #fff; font-size: 15px; }
+.focus-card.fw .fc-desc { font-size: 14px; color: #cfc8b8; margin-top: 10px; line-height: 1.45; }
+.focus-card.fw .fc-mnum {
+  font-size: 72px; font-weight: 900; color: #ffd75f; text-align: center;
+  text-shadow: 0 3px 10px rgba(0,0,0,.6); margin: 16px 0 4px; line-height: 1;
+}
+.focus-card.fw .fc-icon {
+  width: 110px; height: 110px; border-radius: 50%;
+  border: 4px solid #d4af37; margin: 12px auto;
+  display: flex; align-items: center; justify-content: center;
+  background: #222; font-size: 14px; font-weight: 900; text-align: center;
+  color: #ffd75f; line-height: 1.3; padding: 10px;
+}
+/* wild cards — big vivid dual-color face like the physical cards */
+.card.fw .wface {
+  margin: 4px 6px 0; border-radius: 6px; height: 62px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.25);
+}
+.card.fw.mini .wface { height: 40px; margin: 3px 4px 0; }
+.card.fw .wwild {
+  font-weight: 900; font-size: 15px; letter-spacing: 2px; color: #fff;
+  text-shadow: 0 2px 5px rgba(0,0,0,.75), 0 0 12px rgba(0,0,0,.5);
+  background: rgba(0,0,0,.35); padding: 3px 10px; border-radius: 12px;
+}
+.card.fw.mini .wwild { font-size: 10px; padding: 2px 6px; }
+.card.fw .wcur {
+  margin: 4px 6px 0; border-radius: 5px; text-align: center;
+  font-size: 8px; font-weight: 800; color: #fff; letter-spacing: 1px;
+  padding: 2px 4px; text-shadow: 0 1px 3px rgba(0,0,0,.6);
+}
+.card.fw.mini .wcur { font-size: 6px; margin: 3px 4px 0; }
+/* focus card wild face */
+.focus-card.fw .fc-wface {
+  margin: 14px 16px 0; border-radius: 10px; height: 130px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,.3);
+}
+.focus-card.fw .fc-wwild {
+  font-weight: 900; font-size: 30px; letter-spacing: 4px; color: #fff;
+  text-shadow: 0 3px 8px rgba(0,0,0,.75), 0 0 20px rgba(0,0,0,.5);
+  background: rgba(0,0,0,.35); padding: 8px 22px; border-radius: 20px;
+}
+.focus-card.fw .fc-curnote { font-size: 13px; color: #cfc8b8; margin-bottom: 8px; line-height: 1.4; }
+/* legacy card styles kept for modal pickers */
+.card:not(.fw) {
+  width: 76px; height: 108px; border-radius: 8px;
+  background: #fff; color: #1a1a1a; border: 2px solid #999;
+  position: relative; cursor: pointer; display: flex; flex-direction: column;
+  overflow: hidden; flex-shrink: 0; box-shadow: 0 3px 8px rgba(0,0,0,.3);
+}
+
+/* signet bar */
+/* old signetBar rule removed - see AUTHORITATIVE section at end */
+#signetBar .my-signet b { color: var(--gold); }
+#signetBar .blocked { color: #ff9a9a; }
+.opp-signet { font-size: 11px; color: var(--dim); }
+.opp-signet b { color: #fff; }
+#signetBar .btn { padding: 8px 12px; font-size: 13px; }
+
+/* modal */
+#modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,.65);
+  display: flex; align-items: center; justify-content: center; z-index: 50;
+}
+#modalBox {
+  background: #16266e; border: 2px solid rgba(255,255,255,.25); border-radius: 16px;
+  padding: 22px; max-width: 480px; width: calc(100% - 24px); text-align: center;
+  max-height: 85dvh; overflow-y: auto; color: #fff;
+}
+#modalBox h3 { color: var(--gold); margin-top: 0; }
+#modalBox .btn { margin: 6px; }
+.pickgrid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
+.pickgrid .btn { flex: 1 1 44%; }
+
+/* signet draft */
+#signetDraft {
+  position: fixed; inset: 0; background: rgba(0,0,0,.85);
+  display: flex; align-items: center; justify-content: center; z-index: 60;
+}
+#signetBox {
+  background: #16266e; border: 2px solid var(--gold); border-radius: 16px;
+  padding: 24px; max-width: 600px; width: calc(100% - 24px); text-align: center;
+  max-height: 90dvh; overflow-y: auto;
+}
+#signetBox h2 { color: var(--gold); margin-top: 0; }
+.signet-card {
+  background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.2); border-radius: 12px;
+  padding: 14px; min-width: 150px; flex: 1 1 44%; cursor: pointer; color: #fff;
+}
+.signet-card h4 { color: var(--gold); margin: 0 0 6px; }
+.signet-card p { font-size: 12px; color: var(--dim); margin: 4px 0; }
+.signet-card .sdesc { font-style: italic; color: #fff; }
+/* pickable signet cards glow and handle touch properly */
+.signet-card.pickable {
+  border: 3px solid #ffd75f;
+  box-shadow: 0 0 16px rgba(255, 215, 95, .5);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.signet-card .pick-hint {
+  margin-top: 8px; font-weight: 900; color: #ffd75f;
+  font-size: 13px; letter-spacing: 1px;
+}
+
+/* larger phones / landscape tweaks */
+@media (min-width: 500px) {
+  .focus-card { width: 230px; }
+  .card { width: 84px; height: 118px; }
+}
+
+
+/* === CLEAN GAME LAYOUT (Business Deals) === */
+
+#game {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding: 4px 6px;
+  gap: 4px;
+}
+#game.hidden {
+  display: none;
+}
+
+#topbar { flex: 0 0 auto; }
+
+#opponents {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 6px;
+  max-height: 26vh;
+  overflow: hidden;
+}
+.oppcol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.opp-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 2px;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+#midbar {
+  flex: 1 1 auto;
+  min-height: 60px;
+  display: flex;
+  align-items: flex-start;
+  padding: 8px;
+}
+#piles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#signetBar {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  padding: 2px;
+  min-height: 0;
+}
+#signetBar:empty { display: none; }
+#signetBar .my-signet { display: none; }
+
+#playerRow {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 10px;
+  padding: 4px;
+  align-items: flex-start;
+}
+#playerRow.hidden { display: none; }
+
+#handbar { flex: 0 0 auto; padding: 4px 0; }
+#handbar.hidden { display: none; }
+
+#controls { flex: 0 0 auto; padding: 4px; }
+#controls.hidden { display: none; }
+
+#turnBar { display: none; }
+#focusWrap:not(.overlay) { display: none; }
+
+/* FORCE correct visual order */
+#game { display: flex; flex-direction: column; }
+#topbar { order: 1; }
+#opponents { order: 2; }
+#midbar { order: 3; }
+#signetBar { order: 4; }
+#playerRow { order: 5; }
+#handbar { order: 6; }
+#controls { order: 7; }
+
+/* TIGHTEN: everything fits without scrolling */
+#game {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+}
+#opponents {
+  max-height: 20vh !important;
+}
+#midbar {
+  flex: 0 1 auto !important;
+  min-height: 80px !important;
+  max-height: 25vh !important;
+}
+#playerRow {
+  padding: 2px !important;
+}
+#handbar {
+  padding: 2px 0 !important;
+}
+#hand .card {
+  width: 56px !important;
+  height: 78px !important;
+}
+#controls {
+  padding: 2px !important;
+}
+#controls .btn {
+  padding: 8px !important;
+  font-size: 14px !important;
+}
+
+/* LOCK game to viewport - no scrolling ever */
+#game.hidden {
+  display: none !important;
+}
+
+/* === SIMPLE WORKING LAYOUT === */
+#game {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+}
+#game.hidden { display: none !important; }
+#topbar { flex: 0 0 auto !important; }
+#opponents { flex: 0 0 auto !important; max-height: 22vh !important; overflow: hidden !important; }
+#midbar { flex: 1 1 auto !important; min-height: 0 !important; overflow: hidden !important; }
+#signetBar { flex: 0 0 auto !important; }
+#signetBar:empty { display: none !important; }
+#playerRow { flex: 0 0 auto !important; }
+#handbar { flex: 0 0 auto !important; }
+#controls { flex: 0 0 auto !important; }
+
+/* COMPACT: fit everything on one screen */
+.opp-banner { padding: 4px 6px !important; }
+.opp-avatar { width: 28px !important; height: 28px !important; font-size: 16px !important; }
+#topbar { padding: 4px !important; }
+#topbar .btn { width: 36px !important; height: 36px !important; font-size: 16px !important; }
+.table-card { width: 48px !important; height: 68px !important; }
+#mySets .table-card { width: 44px !important; height: 62px !important; }
+#hand .card { width: 52px !important; height: 74px !important; }
+#playerRow { padding: 2px 4px !important; gap: 6px !important; }
+#myAvatar .ava { width: 36px !important; height: 36px !important; font-size: 20px !important; }
+.pname { font-size: 12px !important; }
+#handbar { padding: 2px 0 !important; }
+#controls .btn { padding: 10px !important; font-size: 15px !important; }
+#signetBar .signet-btn { font-size: 12px !important; padding: 6px 8px !important; }
+
+/* Business Deals: tiny table cards */
+.table-card {
+  width: 36px !important;
+  height: 50px !important;
+  border-radius: 4px !important;
+}
+.table-card .tc-head { height: 14px !important; }
+.table-card .tc-val { font-size: 10px !important; }
+.table-card .tc-name { display: none !important; }
+.table-card .tc-rent { display: none !important; }
+#mySets .table-card {
+  width: 40px !important;
+  height: 56px !important;
+}
+.opp-area { gap: 3px !important; padding: 2px !important; }
+
+/* Fix opponent card alignment - straight rows */
+.opp-area {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  gap: 4px !important;
+  padding: 4px 2px !important;
+  justify-content: flex-start !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+.opp-area .table-card {
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+}
+
+/* STRICT height budget - must fit in 100dvh */
+#game { height: 100dvh !important; max-height: 100dvh !important; }
+#topbar { max-height: 50px !important; overflow: hidden !important; }
+#opponents { max-height: 140px !important; overflow: hidden !important; }
+#midbar { max-height: 120px !important; min-height: 80px !important; overflow: hidden !important; }
+#playerRow { max-height: 90px !important; overflow: hidden !important; }
+#handbar { max-height: 100px !important; overflow: hidden !important; }
+#controls { max-height: 60px !important; overflow: hidden !important; }
+/* Hide scrollbars */
+#game::-webkit-scrollbar { display: none !important; }
+#game { scrollbar-width: none !important; }
+
+/* Smooth animations - no more blinking */
+.table-card, #hand .card, .opp-banner {
+  animation: cardIn 0.3s ease-out !important;
+  transition: transform 0.2s ease, opacity 0.2s ease !important;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: scale(0.8) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+#opponents, #playerRow, #handbar {
+  transition: opacity 0.3s ease !important;
+}
+/* Turn banner slide-in */
+#turnBar {
+  animation: slideDown 0.4s ease-out !important;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Lock entire page - no scrolling anywhere */
+html, body {
+  overflow: hidden !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  position: fixed !important;
+  width: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+#game {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+}
+
+
