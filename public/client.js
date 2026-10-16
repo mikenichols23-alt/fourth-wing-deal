@@ -1182,7 +1182,7 @@ function playActionCard(c) {
   else if (a === 'dagger_acro') { closeOverlay(); startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Step 1/2: tap a rider (or one of their cards) to steal a property from' }); }
   else if (a === 'double_relics') { closeOverlay(); showRelicModal(c); }
   else if (a === 'search_arch') { closeOverlay(); showSearchModal(c); }
-  else if (a === 'time_stopping') { closeOverlay(); startFlow({ kind: 'targetPlayer', card: c.id, action: a, label: 'Time Stopping: choose a rider' }); }
+  else if (a === 'time_stopping') { closeOverlay(); showSignetTargetPanel(c.id, a); }
   else if (a === 'fonilee') { if (confirm('Collect 2 Blades from EVERY other rider?')) send({ t: 'play', card: c.id, opts: {} }); selCard = null; }
   else if (a === 'dragonscale') { selCard = null; render(); toast('Dragonscale Armor is played when someone targets you.'); }
 }
@@ -1373,6 +1373,44 @@ function showWildMovePanel(cardId, validSets) {
   $('wildMoveCancel').onclick = () => { hideModal(); };
 }
 
+// Signet target panel: show opponents with their signet name, power, and emoji
+function showSignetTargetPanel(cardId, action) {
+  const signetEmoji = { shadow: '🌑', mending: '🌿', foresight: '🔮', lightning: '⚡️', distance: '📏' };
+  const targets = S.players
+    .map((p, i) => ({ p, i }))
+    .filter(({ p, i }) => i !== myIdx && p.signet && !p.signetBlocked);
+  if (!targets.length) { toast('No valid targets (all signets blocked or none).'); return; }
+  const cards = targets.map(({ p, i }) => {
+    const emoji = signetEmoji[p.signet.id] || '✨';
+    return `<div class="signet-target" data-idx="${i}" style="cursor:pointer;background:#1e293b;border:3px solid #7c3aed;border-radius:12px;padding:14px;margin:8px 0;display:flex;align-items:center;gap:12px">
+      <div style="font-size:36px">${emoji}</div>
+      <div style="flex:1">
+        <div style="font-size:16px;font-weight:800;color:#fff">${esc(p.name)}</div>
+        <div style="font-size:14px;color:#c4b5fd;font-weight:700">${emoji} ${esc(p.signet.name)}</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:2px">${esc(p.signet.text)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  showModal(`<div style="background:#7c3aed;border-radius:12px;padding:10px;margin:-8px -8px 12px">
+      <h3 style="font-size:18px;margin:0;color:#fff">⏸️ Time Stopping — choose a rider</h3>
+      <p style="font-size:13px;margin:4px 0 0;color:#e9d5ff">Tap a rider to stop their signet ability.</p>
+    </div>
+    <div style="max-height:50vh;overflow-y:auto">${cards}</div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
+      <button class="btn" id="signetTargetCancel" style="font-size:16px;padding:12px 24px;background:#475569">✖ Cancel</button>
+    </div>`, true);
+  $('modalBox').querySelectorAll('.signet-target').forEach(el => {
+    el.onclick = (ev) => {
+      ev.stopPropagation();
+      const idx = parseInt(el.dataset.idx);
+      hideModal();
+      AudioSys.tap();
+      send({ t: 'play', card: cardId, opts: { target: idx } });
+    };
+  });
+  $('signetTargetCancel').onclick = () => { hideModal(); };
+}
+
 // Business Deals steal panel: target's properties as full-size tappable cards
 function showStealPanel(playerIdx, actionId) {
   const target = S.players[playerIdx];
@@ -1540,11 +1578,13 @@ function selectCard(c) {
 // ---------- pending prompts ----------
 let lastWaitingOn = null;
 let lastAutoWards = null;
+let answeredWards = null; // track wards we've already answered (prevent double-prompt)
 function renderPending() {
   const pd = S.pending;
   if (!pd) {
     lastWaitingOn = null;
     lastAutoWards = null;
+    answeredWards = null;
     if (!$('modal').classList.contains('hidden') && !modalPinned) hideModal();
     return;
   }
@@ -1556,6 +1596,9 @@ function renderPending() {
   if (pd.kind === 'wards') {
     // Only show if this prompt is actually for ME (not waiting on someone else)
     if (pd.waiting) return;
+    // Don't re-show a prompt we've already answered
+    const wardsKey = pd.by + ':' + pd.actionName;
+    if (answeredWards === wardsKey) return;
     if (!pd.hasWards) {
       // Don't even ask — auto-decline once per prompt
       if (lastAutoWards !== pd) { lastAutoWards = pd; send({ t: 'answer', resp: { use: false } }); }
@@ -1564,8 +1607,8 @@ function renderPending() {
     showModal(`<h3>🛡️ Dragonscale Armor?</h3><p>${esc(pd.byName)} plays <b>${esc(pd.actionName)}</b> against you.</p>
       <button class="btn gold" id="wYes">Play Dragonscale Armor</button><button class="btn" id="wNo">Take it</button>`,
       true);
-    $('wNo').onclick = () => { send({ t: 'answer', resp: { use: false } }); hideModal(); };
-    const y = $('wYes'); if (y) y.onclick = () => { send({ t: 'answer', resp: { use: true } }); hideModal(); };
+    $('wNo').onclick = () => { answeredWards = wardsKey; send({ t: 'answer', resp: { use: false } }); hideModal(); };
+    const y = $('wYes'); if (y) y.onclick = () => { answeredWards = wardsKey; send({ t: 'answer', resp: { use: true } }); hideModal(); };
   } else if (pd.kind === 'pay') {
     // Only show if this payment is actually for ME (not waiting on someone else)
     if (pd.waiting) return;
