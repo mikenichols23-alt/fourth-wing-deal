@@ -189,7 +189,7 @@ body {
 #lobby { justify-content: center; align-items: center; position: relative; }
 
 .addi-corner {
-  position: absolute; top: 70px; right: 52px;
+  position: absolute; top: 140px; right: 52px;
   width: 170px; text-align: center; z-index: 5;
 }
 .addi-corner img {
