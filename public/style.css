@@ -1239,3 +1239,9 @@ body {
   max-height: 20vh !important;
   min-height: 80px !important;
 }
+
+/* Hide handbar and controls by default too */
+#handbar { display: none !important; }
+#controls { display: none !important; }
+#game:not(.hidden) #handbar { display: block !important; }
+#game:not(.hidden) #controls { display: block !important; }
