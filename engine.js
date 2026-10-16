@@ -399,7 +399,9 @@ class Game {
     if (pd.type === 'pay') {
       const p = this.me(idx);
       return { kind: 'pay', to: pd.to, amount: pd.amount, need: pd.need,
-        bankTaken: pd.bankTaken, properties: p.table.map(e => ({ card: e.card, name: this.card(e.card).name, set: e.set, value: this.card(e.card).value })) };
+        bankTaken: 0,
+        bankCards: p.bank.map(id => ({ card: id, name: this.card(id).name, value: this.card(id).value })),
+        properties: p.table.map(e => ({ card: e.card, name: this.card(e.card).name, set: e.set, value: this.card(e.card).value })) };
     }
     return null;
   }
@@ -567,28 +569,28 @@ class Game {
 
   _collectFrom(byIdx, fromIdx, amount) {
     const from = this.me(fromIdx), to = this.me(byIdx);
-    // auto-take from bank, largest first
-    const bank = [...from.bank].sort((a, b) => this.card(b).value - this.card(a).value);
-    let taken = 0; const takenIds = [];
-    for (const id of bank) {
-      if (taken >= amount) break;
-      taken += this.card(id).value; takenIds.push(id);
-    }
-    for (const id of takenIds) {
-      from.bank.splice(from.bank.indexOf(id), 1);
-      to.bank.push(id);
-    }
-    const need = amount - taken;
-    if (need <= 0) {
-      this.logMsg(`${from.name} paid ${amount} Blades to ${to.name}.`);
-      return null; // no prompt needed
-    }
-    const payable = from.table.filter(e => !this.card(e.card).everyColor);
-    if (!payable.length) {
-      this.logMsg(`${from.name} couldn't cover the full ${amount} Blades to ${to.name} — paid ${taken}.`);
+    // Let player choose which cards to pay with (bank first, then properties if needed).
+    // Don't auto-take — the client shows bank cards large for selection.
+    const bankTotal = from.bank.reduce((t, id) => t + this.card(id).value, 0);
+    const tablePayable = from.table.filter(e => !this.card(e.card).everyColor);
+    const tableTotal = tablePayable.reduce((t, e) => t + this.card(e.card).value, 0);
+    // Can't cover at all: take everything (no choice)
+    if (bankTotal + tableTotal < amount) {
+      const takenBank = [...from.bank];
+      for (const id of takenBank) {
+        from.bank.splice(from.bank.indexOf(id), 1);
+        to.bank.push(id);
+      }
+      for (const e of [...from.table]) {
+        const ei = from.table.indexOf(e);
+        from.table.splice(ei, 1);
+        to.table.push(e);
+      }
+      this.logMsg(`${from.name} couldn't cover ${amount} Blades to ${to.name} — paid everything (${bankTotal + tableTotal}).`);
       return null;
     }
-    this.pending = { type: 'pay', by: byIdx, from: fromIdx, to: byIdx, amount, need, bankTaken: taken, awaits: fromIdx };
+    // Prompt: player selects from bank and/or table
+    this.pending = { type: 'pay', by: byIdx, from: fromIdx, to: byIdx, amount, need: amount, bankTaken: 0, awaits: fromIdx };
     return this._promptFor(fromIdx);
   }
 
@@ -597,26 +599,43 @@ class Game {
     const from = this.me(pd.from), to = this.me(pd.to);
     const ids = resp.cards || [];
     let sum = 0;
+    const bankIds = [], tableIds = [];
     for (const id of ids) {
-      const e = from.table.find(e => e.card === id);
-      if (!e) return { ok: false, err: 'Invalid property.' };
-      if (this.card(id).everyColor) return { ok: false, err: 'Every-color wilds cannot be used to pay.' };
-      sum += this.card(id).value;
+      // Check bank first, then table
+      if (from.bank.includes(id)) {
+        bankIds.push(id);
+        sum += this.card(id).value;
+      } else {
+        const e = from.table.find(e => e.card === id);
+        if (!e) return { ok: false, err: 'Invalid card.' };
+        if (this.card(id).everyColor) return { ok: false, err: 'Every-color wilds cannot be used to pay.' };
+        tableIds.push(id);
+        sum += this.card(id).value;
+      }
     }
-    const allValue = from.table
+    const allBank = from.bank.reduce((t, id) => t + this.card(id).value, 0);
+    const allTable = from.table
       .filter(e => !this.card(e.card).everyColor)
       .reduce((t, e) => t + this.card(e.card).value, 0);
+    const allValue = allBank + allTable;
     if (sum < pd.need && sum < allValue)
-      return { ok: false, err: `Need ${pd.need} Blades in properties (or everything you can pay).` };
-    for (const id of ids) {
+      return { ok: false, err: `Need ${pd.need} Blades (or everything you can pay).` };
+    // Move bank cards
+    for (const id of bankIds) {
+      from.bank.splice(from.bank.indexOf(id), 1);
+      to.bank.push(id);
+    }
+    // Move table cards
+    for (const id of tableIds) {
       const ei = from.table.findIndex(e => e.card === id);
       const [entry] = from.table.splice(ei, 1);
       to.table.push(entry);
     }
+    const paidNames = ids.map(id => this.card(id).name).join(', ');
     if (sum < pd.need)
-      this.logMsg(`${from.name} paid ${pd.bankTaken}M + all properties to ${to.name} (couldn't cover ${pd.amount}M).`);
+      this.logMsg(`${from.name} paid all (${sum}M: ${paidNames}) to ${to.name} (couldn't cover ${pd.amount}M).`);
     else
-      this.logMsg(`${from.name} paid ${pd.bankTaken}M + properties (${ids.map(id => this.card(id).name).join(', ')}) to ${to.name}.`);
+      this.logMsg(`${from.name} paid ${sum}M (${paidNames}) to ${to.name}.`);
     // continue charge chain
     const ch = pd; // save
     if (ch.action === 'fonilee' || this._pendingWasThreshing()) {
