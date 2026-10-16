@@ -996,6 +996,8 @@ function _render() {
   // controls
   $('drawBtn').classList.toggle('hidden', !(myTurn && S.needDraw));
   $('drawBtn').classList.toggle('end-ready', myTurn && S.needDraw);
+  // Defensive: if it's my draw phase, Draw MUST be visible (needDraw flag is redundant)
+  if (myTurn && S.phase === 'draw' && !S.winner) $('drawBtn').classList.remove('hidden');
   // clarify normal draw vs signet power
   const me2 = S.players[myIdx];
   if (myTurn && S.needDraw && me2.signet && (me2.signet.id === 'mending' || me2.signet.id === 'foresight') && !me2.signetBlocked) {
@@ -1016,6 +1018,8 @@ function _render() {
     AudioSys.tap();
   }
   $('endBtn').classList.toggle('hidden', !myTurn || S.phase !== 'play' || mustDiscard);
+  // Defensive: if it's my play phase and not discarding, End Turn MUST be visible
+  if (myTurn && S.phase === 'play' && !mustDiscard && !S.winner) $('endBtn').classList.remove('hidden');
   $('endBtn').textContent = S.playsLeft === 3 && me.hand.length <= 7 ? 'End Turn' : `End Turn (${S.playsLeft} left)`;
   // pop bright when all plays are used — hard to miss
   $('endBtn').classList.toggle('end-ready', myTurn && S.phase === 'play' && !mustDiscard && S.playsLeft === 0);
