@@ -1703,3 +1703,12 @@ html, body {
 .opp-area .card .chead { height: 14px !important; }
 .opp-area .card .cname { display: none !important; }
 .opp-area .card .cbody { padding: 1px !important; }
+
+/* Split oversized sets - each max-size group separate */
+.setgroup-split {
+  display: flex !important;
+  gap: 6px !important;
+}
+.setgroup-split .setgroup {
+  flex-shrink: 0 !important;
+}
