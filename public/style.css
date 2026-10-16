@@ -1724,3 +1724,24 @@ html, body {
   max-height: 120px !important;
   min-height: 70px !important;
 }
+
+/* Player sets - fit all without scrolling */
+#mySets {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  flex-wrap: nowrap !important;
+  gap: 4px !important;
+}
+#mySets .setgroup {
+  flex-shrink: 1 !important;
+  min-width: 0 !important;
+}
+#mySets .setgroup .card, #mySets .setgroup .table-card {
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 54px !important;
+}
+/* Opponent sets - same, no scroll */
+.opp-area {
+  overflow-x: hidden !important;
+}
