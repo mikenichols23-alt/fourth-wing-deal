@@ -223,7 +223,13 @@ function animatePlays() {
     if (p.bankTotal > pp.bankTotal) {
       // Self-bank, not a payment: their hand shrank (card moved hand -> bank).
       // A real payment doesn't reduce the receiver's hand.
-      if (p.hand.length < pp.hand.length) return;
+      // Show a subtle bank animation (no payment banner).
+      if (p.hand.length < pp.hand.length) {
+        const oppEls2 = document.querySelectorAll('#opponents .oppcol');
+        const bankEl = i < myIdx ? oppEls2[i]?.querySelector('.opp-bank') : oppEls2[i - 1]?.querySelector('.opp-bank');
+        if (bankEl) { flyMoney($('midbar'), bankEl); AudioSys.clink(); }
+        return;
+      }
       // This opponent RECEIVED money - find who paid (bank decreased)
       const payerIdx = S.players.findIndex((q, j) => j !== i && prevS.players[j] && q.bankTotal < prevS.players[j].bankTotal);
       const amount = p.bankTotal - pp.bankTotal;
@@ -998,17 +1004,6 @@ function _render() {
   $('drawBtn').classList.toggle('end-ready', myTurn && S.needDraw);
   // Defensive: if it's my draw phase, Draw MUST be visible (needDraw flag is redundant)
   if (myTurn && S.phase === 'draw' && !S.winner) $('drawBtn').classList.remove('hidden');
-  // DIAGNOSTIC (temporary): if it's my turn with no buttons, show state on screen
-  if (myTurn && !S.winner && !S.pending) {
-    const drawHidden = $('drawBtn').classList.contains('hidden');
-    const endHidden = $('endBtn').classList.contains('hidden');
-    if (drawHidden && endHidden) {
-      const dbg = $('debugInfo') || (() => { const d = document.createElement('div'); d.id = 'debugInfo'; d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#f00;color:#fff;font-size:10px;padding:4px;z-index:9999;'; document.body.appendChild(d); return d; })();
-      dbg.textContent = `DIAG turn=${S.turn} myIdx=${myIdx} phase=${S.phase} needDraw=${S.needDraw} pending=${!!S.pending} winner=${!!S.winner}`;
-    } else {
-      const dbg = $('debugInfo'); if (dbg) dbg.remove();
-    }
-  }
   // clarify normal draw vs signet power
   const me2 = S.players[myIdx];
   if (myTurn && S.needDraw && me2.signet && (me2.signet.id === 'mending' || me2.signet.id === 'foresight') && !me2.signetBlocked) {
