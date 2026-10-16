@@ -92,6 +92,45 @@ function showPlayBanner(playerName, cardName) {
     setTimeout(() => banner.classList.add('hidden'), 500);
   }, 3500);
 }
+// Center-stage card reveal - shows played card large, then flies to destination
+function showCenterCard(card, playerName, isMe) {
+  let stage = $('centerStage');
+  if (!stage) {
+    stage = document.createElement('div');
+    stage.id = 'centerStage';
+    document.body.appendChild(stage);
+  }
+  // Render the actual card large
+  const el = cardEl(card, false, '', false);
+  el.style.width = '140px';
+  el.style.height = '200px';
+  stage.innerHTML = '';
+  const label = document.createElement('div');
+  label.className = 'center-label';
+  label.innerHTML = `<b>${esc(playerName)}</b> plays`;
+  stage.appendChild(label);
+  stage.appendChild(el);
+  stage.classList.remove('hidden');
+  stage.classList.add('show');
+  AudioSys.pop();
+  // After 1.6s, fly to discard pile (actions) or fade (properties stay on table)
+  setTimeout(() => {
+    if (card.kind === 'action' || card.kind === 'rent') {
+      // Fly to discard pile
+      const r = el.getBoundingClientRect();
+      const d = $('discardPile')?.getBoundingClientRect();
+      if (d) {
+        el.style.transition = 'transform 0.7s ease-in-out, opacity 0.7s';
+        el.style.transform = `translate(${d.left + d.width/2 - (r.left + r.width/2)}px, ${d.top + d.height/2 - (r.top + r.height/2)}px) scale(0.4)`;
+        el.style.opacity = '0.3';
+      }
+    }
+    setTimeout(() => {
+      stage.classList.remove('show');
+      setTimeout(() => stage.classList.add('hidden'), 400);
+    }, 700);
+  }, 1600);
+}
 function tableIds(p) { return (p.table || []).map(e => e.id || e.card); }
 function animatePlays() {
   if (!prevS || !S) return;
@@ -110,9 +149,13 @@ function animatePlays() {
       const cid = e.id || e.card;
       if (k === 0) {
         lastPlayInfo = { playerIdx: i, cardId: cid };
-        // Announce what the opponent played - visible banner
+        // Show the played card LARGE in center so everyone sees it
+        const c = S.cardMap[cid];
+        if (c) {
+          showCenterCard(c, p.name, isMe);
+        }
+        // Announce what was played
         if (!isMe) {
-          const c = S.cardMap[cid];
           const cardName = c ? c.name : 'a card';
           showPlayBanner(p.name, cardName);
         }
