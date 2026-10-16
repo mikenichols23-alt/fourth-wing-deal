@@ -188,6 +188,10 @@ body {
 /* ---------- lobby ---------- */
 #lobby { justify-content: center; align-items: center; position: relative; }
 
+.addi-corner {
+  position: absolute; top: 70px; right: 52px;
+  width: 170px; text-align: center; z-index: 5;
+}
 .addi-corner img {
   width: 170px; height: 170px; object-fit: cover; object-position: center 35%;
   border-radius: 50%; border: 3px solid var(--gold);
