@@ -1156,3 +1156,20 @@ body {
 #game.hidden {
   display: none !important;
 }
+
+/* === SIMPLE WORKING LAYOUT === */
+#game {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+}
+#game.hidden { display: none !important; }
+#topbar { flex: 0 0 auto !important; }
+#opponents { flex: 0 0 auto !important; max-height: 22vh !important; overflow: hidden !important; }
+#midbar { flex: 1 1 auto !important; min-height: 0 !important; overflow: hidden !important; }
+#signetBar { flex: 0 0 auto !important; }
+#signetBar:empty { display: none !important; }
+#playerRow { flex: 0 0 auto !important; }
+#handbar { flex: 0 0 auto !important; }
+#controls { flex: 0 0 auto !important; }
