@@ -93,8 +93,25 @@ function showPlayBanner(playerName, cardName) {
   }, 3500);
 }
 // Center-stage card reveal - shows played card large, then flies to destination
+// Queue for center-stage card reveals - show one at a time, no overlap
+let centerQueue = [];
+let centerBusy = false;
+function queueCenterCard(card, playerName, isMe) {
+  if (!card || !card.name) return;
+  centerQueue.push({ card, playerName, isMe });
+  if (!centerBusy) processCenterQueue();
+}
+function processCenterQueue() {
+  if (!centerQueue.length) { centerBusy = false; return; }
+  centerBusy = true;
+  const { card, playerName, isMe } = centerQueue.shift();
+  showCenterCardNow(card, playerName, isMe);
+}
 function showCenterCard(card, playerName, isMe) {
-  if (!card || !card.name) return; // guard against bad data
+  // Legacy wrapper - use queue
+  queueCenterCard(card, playerName, isMe);
+}
+function showCenterCardNow(card, playerName, isMe) {
   let stage = $('centerStage');
   if (!stage) {
     stage = document.createElement('div');
@@ -128,9 +145,13 @@ function showCenterCard(card, playerName, isMe) {
     }
     setTimeout(() => {
       stage.classList.remove('show');
-      setTimeout(() => stage.classList.add('hidden'), 400);
+      setTimeout(() => {
+        stage.classList.add('hidden');
+        // Process next in queue
+        setTimeout(processCenterQueue, 300);
+      }, 400);
     }, 700);
-  }, 1600);
+  }, 2200); // Show for 2.2s (was 1.6s) - enough time to read
 }
 function tableIds(p) { return (p.table || []).map(e => e.id || e.card); }
 function animatePlays() {
