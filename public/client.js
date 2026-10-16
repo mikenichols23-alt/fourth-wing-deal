@@ -140,15 +140,49 @@ const AudioSys = {
       o.connect(g); g.connect(this.ctx.destination); o.start(t); o.stop(t + 0.2);
     });
   },
-  // win fanfare
+  // EPIC win fanfare - triumphant horns + drums + sparkle
   fanfare() {
     if (!soundOn) return; this.ensure(); if (!this.ctx) return;
-    [523, 659, 784, 1047, 784, 1047].forEach((fr, i) => {
-      const t = this.ctx.currentTime + i * 0.13;
-      const o = this.ctx.createOscillator(); o.type = 'square'; o.frequency.value = fr;
-      const g = this.ctx.createGain();
-      g.gain.setValueAtTime(0.16, t); g.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
-      o.connect(g); g.connect(this.ctx.destination); o.start(t); o.stop(t + 0.28);
+    const ctx = this.ctx;
+    // Triumphant horn melody (C E G C E G C up)
+    const melody = [523, 659, 784, 1047, 784, 1047, 1319, 1568];
+    melody.forEach((fr, i) => {
+      const t = ctx.currentTime + i * 0.16;
+      // Main horn (sawtooth for brass feel)
+      const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = fr;
+      const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 2500;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.001, t);
+      g.gain.exponentialRampToValueAtTime(0.22, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
+      o.connect(f); f.connect(g); g.connect(ctx.destination);
+      o.start(t); o.stop(t + 0.45);
+      // Harmony octave up (softer)
+      const o2 = ctx.createOscillator(); o2.type = 'triangle'; o2.frequency.value = fr * 2;
+      const g2 = ctx.createGain();
+      g2.gain.setValueAtTime(0.001, t);
+      g2.gain.exponentialRampToValueAtTime(0.08, t + 0.02);
+      g2.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+      o2.connect(g2); g2.connect(ctx.destination);
+      o2.start(t); o2.stop(t + 0.35);
+    });
+    // Drum hits on beats
+    [0, 4, 8, 12].forEach(i => {
+      const t = ctx.currentTime + i * 0.16;
+      const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(120, t);
+      o.frequency.exponentialRampToValueAtTime(40, t + 0.15);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.3, t); g.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+      o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.25);
+    });
+    // Sparkle shimmer at the end
+    const endT = ctx.currentTime + melody.length * 0.16;
+    [2093, 2637, 3136, 4186].forEach((fr, i) => {
+      const t = endT + i * 0.08;
+      const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = fr;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+      o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.55);
     });
   },
   // soft tap
