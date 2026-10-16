@@ -1638,3 +1638,34 @@ html, body {
 #centerStage .card {
   box-shadow: 0 12px 40px rgba(0,0,0,.6) !important;
 }
+
+/* Opponent cards - tight overlapping row, no wrap mess */
+.opp-area {
+  overflow: hidden !important;
+  flex-wrap: nowrap !important;
+  gap: 0 !important;
+  align-items: flex-start !important;
+  max-height: 90px !important;
+  padding: 6px 4px !important;
+}
+.opp-area .set-group {
+  display: flex !important;
+  flex-shrink: 0 !important;
+  margin-right: 3px !important;
+}
+.opp-area .card, .opp-area .table-card {
+  width: 46px !important;
+  min-width: 46px !important;
+  height: 64px !important;
+  margin-left: -22px !important;
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+}
+.opp-area .set-group .card:first-child,
+.opp-area .set-group .table-card:first-child {
+  margin-left: 0 !important;
+}
+.opp-area .set-group:first-child .card:first-child,
+.opp-area .set-group:first-child .table-card:first-child {
+  margin-left: 0 !important;
+}
