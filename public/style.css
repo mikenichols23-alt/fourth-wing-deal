@@ -1558,3 +1558,52 @@ html, body {
   padding: 18px 32px !important;
   top: 30% !important;
 }
+
+/* Business Deals spacing - generous, readable */
+#game {
+  padding: 10px !important;
+  gap: 8px !important;
+}
+
+#opponents {
+  max-height: 28vh !important;
+  gap: 10px !important;
+}
+.oppcol {
+  border-radius: 14px !important;
+}
+.opp-banner {
+  padding: 8px 10px !important;
+  font-size: 15px !important;
+}
+.opp-avatar {
+  width: 36px !important; height: 36px !important;
+  font-size: 20px !important;
+}
+.opp-area {
+  padding: 8px !important;
+  max-height: 140px !important;
+  gap: 4px !important;
+}
+.opp-area .card, .opp-area .table-card {
+  width: 58px !important;
+  min-width: 58px !important;
+  height: 80px !important;
+}
+
+/* More breathing room in middle */
+#midbar {
+  padding: 12px !important;
+  min-height: 120px !important;
+}
+
+/* Player area - spacious */
+#playerRow {
+  padding: 10px !important;
+  gap: 12px !important;
+  border-radius: 14px !important;
+}
+#myAvatar .ava {
+  width: 56px !important; height: 56px !important;
+  font-size: 32px !important;
+}
