@@ -1029,219 +1029,83 @@ body {
   .card { width: 84px; height: 118px; }
 }
 
-/* ============================================================
-   AUTHORITATIVE GAME LAYOUT - Business Deals exact match
-   This section overrides all previous rules. Do not add
-   conflicting rules above this line.
-   ============================================================ */
 
-/* Game container: fixed viewport, no scroll - only when visible */
-#game:not(.hidden) {
+/* === CLEAN GAME LAYOUT (Business Deals) === */
+
+#game {
   display: flex;
   flex-direction: column;
   height: 100dvh;
   max-height: 100dvh;
   overflow: hidden;
   padding: 4px 6px;
-  padding-top: max(4px, env(safe-area-inset-top));
-  padding-bottom: max(4px, env(safe-area-inset-bottom));
   gap: 4px;
 }
+#game.hidden {
+  display: none;
+}
 
-/* Top bar: fixed */
-#topbar { flex: 0 0 auto !important; }
+#topbar { flex: 0 0 auto; }
 
-/* Opponents: pinned to top, compact */
 #opponents {
-  flex: 0 0 auto !important;
-  display: flex !important;
-  gap: 6px !important;
-  padding: 0 2px !important;
-  max-height: 26vh !important;
-  overflow: hidden !important;
-  margin: 0 !important;
+  flex: 0 0 auto;
+  display: flex;
+  gap: 6px;
+  max-height: 26vh;
+  overflow: hidden;
 }
 .oppcol {
-  flex: 1 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  min-width: 0 !important;
-  max-height: 100% !important;
-  overflow: hidden !important;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 .opp-area {
-  flex: 1 !important;
-  overflow: hidden !important;
-  min-height: 0 !important;
-  padding: 4px 2px !important;
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 6px !important;
-  align-items: flex-start !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 2px;
+  justify-content: flex-start;
+  overflow: hidden;
 }
 
-/* Opponent cards: Business Deals white cards with color header */
-.opp-area .setgroup.bd { display: flex !important; gap: 4px !important; max-width: 100% !important; }
-.opp-area .setgroup.bd .card.simple {
-  width: 48px !important; height: 68px !important;
-  border-radius: 8px !important;
-  background: #fff !important;
-  position: relative !important;
-  overflow: hidden !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,.3) !important;
-  flex-shrink: 0 !important;
-}
-.opp-area .setgroup.bd .card.simple .shead {
-  position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important;
-  height: 28px !important;
-}
-.opp-area .setgroup.bd .card.simple .sbody {
-  position: absolute !important; top: 28px !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
-  background: #fff !important;
-}
-.opp-area .setgroup.bd .card.simple .vbadge {
-  position: absolute !important; top: 4px !important; left: 4px !important;
-  width: 20px !important; height: 20px !important;
-  border-radius: 50% !important;
-  background: #ffd75f !important; color: #000 !important;
-  font-size: 12px !important; font-weight: 800 !important;
-  display: flex !important; align-items: center !important; justify-content: center !important;
-  z-index: 2 !important;
-}
-.opp-area .setgroup.bd .card-wrap { margin: 0 !important; }
-
-/* Middle: open space, piles on left */
 #midbar {
-  flex: 1 1 auto !important;
-  min-height: 40px !important;
-  max-height: none !important;
-  overflow: hidden !important;
-  display: flex !important;
-  align-items: flex-start !important;
-  justify-content: flex-start !important;
-  padding: 8px !important;
-  margin: 0 !important;
+  flex: 1 1 auto;
+  min-height: 60px;
+  display: flex;
+  align-items: flex-start;
+  padding: 8px;
 }
-#piles { display: flex !important; flex-direction: column !important; gap: 12px !important; }
-.pile {
-  width: 64px !important; height: 88px !important;
-  border-radius: 10px !important;
-  background: rgba(0,0,0,.25) !important;
-  border: 2px dashed rgba(255,255,255,.25) !important;
-  display: flex !important; align-items: center !important; justify-content: center !important;
-  font-size: 28px !important; color: rgba(255,255,255,.5) !important;
-  flex-shrink: 0 !important;
+#piles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-/* Signet bar: minimal, in-flow */
 #signetBar {
-  display: flex !important;
-  gap: 6px !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 2px !important;
-  margin: 0 !important;
-  min-height: 0 !important;
-  position: static !important;
-  background: none !important;
-  border: none !important;
-  flex: 0 0 auto !important;
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  padding: 2px;
+  min-height: 0;
 }
-#signetBar:empty { display: none !important; }
-#signetBar .my-signet { display: none !important; }
-#signetBar .btn.signet-power { font-size: 12px !important; padding: 6px 14px !important; border-radius: 16px !important; }
-#signetBar .btn.gold { font-size: 12px !important; padding: 6px 14px !important; }
+#signetBar:empty { display: none; }
+#signetBar .my-signet { display: none; }
 
-/* Player row: no background panel, just content */
 #playerRow {
-  flex: 0 0 auto !important;
-  display: flex !important;
-  align-items: flex-start !important;
-  gap: 10px !important;
-  padding: 4px !important;
-  margin: 0 !important;
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
+  flex: 0 0 auto;
+  display: flex;
+  gap: 10px;
+  padding: 4px;
+  align-items: flex-start;
 }
-#myTable .sect-label { display: none !important; }
-#myBankRow { display: none !important; }
+#playerRow.hidden { display: none; }
 
-/* My sets: dark panel only when has cards */
-#mySets { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; align-items: flex-start !important; }
-#mySets:not(:empty) {
-  background: rgba(0,0,0,.3) !important;
-  border-radius: 12px !important;
-  padding: 10px !important;
-  min-height: 80px !important;
-}
-#mySets:empty { display: none !important; }
-#mySets .setgroup.bd { display: flex !important; gap: 4px !important; }
-#mySets .setgroup.bd .card.simple { width: 52px !important; height: 72px !important; }
+#handbar { flex: 0 0 auto; padding: 4px 0; }
+#handbar.hidden { display: none; }
 
-/* My hand count next to name */
-.my-handcount { font-size: 12px !important; font-weight: 700 !important; color: #fff !important; margin-top: 2px !important; }
+#controls { flex: 0 0 auto; padding: 4px; }
+#controls.hidden { display: none; }
 
-/* My avatar glows on my turn */
-#myAvatar .ava.my-turn { box-shadow: 0 0 0 3px #ffd75f, 0 0 16px #ffd75f !important; border-color: #ffd75f !important; }
-
-/* Hand bar: fixed at bottom */
-#handbar { flex: 0 0 auto !important; margin: 0 !important; padding: 4px 0 !important; }
-#hand { max-height: 110px !important; }
-
-/* Controls: fixed at bottom */
-#controls { flex: 0 0 auto !important; padding: 4px !important; margin: 0 !important; }
-
-/* Turn bar: hidden (avatar glow shows turn) */
-#turnBar { display: none !important; }
-
-/* Focus wrap: overlay only */
-#focusWrap:not(.overlay) { display: none !important; }
-#focusWrap.overlay {
-  position: fixed !important; inset: 0 !important; z-index: 100 !important;
-  background: rgba(10, 20, 40, .85) !important;
-  display: flex !important; flex-direction: column !important;
-  justify-content: center !important; align-items: center !important;
-  gap: 16px !important; padding: 20px !important;
-}
-
-/* NUCLEAR OPTION: hide player row by default, only show when game is active */
-#playerRow { display: none !important; }
-#game:not(.hidden) #playerRow { display: flex !important; }
-
-/* FIX: Opponent cards in tight row, not spread out */
-.opp-area {
-  justify-content: flex-start !important;
-}
-.opp-area .setgroup.bd {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* FIX: Signet bar compact */
-#signetBar .btn.signet-power {
-  font-size: 11px !important;
-  padding: 4px 10px !important;
-  border-radius: 12px !important;
-  white-space: nowrap !important;
-}
-
-/* FIX: Ensure no scrolling - strict height limits */
-#game:not(.hidden) {
-  height: 100dvh !important;
-  max-height: 100dvh !important;
-  overflow: hidden !important;
-}
-#opponents {
-  max-height: 24vh !important;
-}
-#midbar {
-  max-height: 20vh !important;
-  min-height: 80px !important;
-}
-
-/* Hide handbar and controls by default too */
-#handbar { display: none !important; }
-#controls { display: none !important; }
-#game:not(.hidden) #handbar { display: block !important; }
-#game:not(.hidden) #controls { display: block !important; }
+#turnBar { display: none; }
+#focusWrap:not(.overlay) { display: none; }
