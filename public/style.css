@@ -946,3 +946,16 @@ html, body {
   width: 120px !important; height: 120px !important;
 }
 #lobby .lobby-card { padding-top: 20px !important; }
+
+/* Dark blue input, override Safari autofill yellow */
+.lobby-card input, #nameInput, #codeInput {
+  background: #1e3a8a !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.3) !important;
+}
+.lobby-card input:-webkit-autofill,
+.lobby-card input:-webkit-autofill:hover,
+.lobby-card input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fff !important;
+  -webkit-box-shadow: 0 0 0 1000px #1e3a8a inset !important;
+}
