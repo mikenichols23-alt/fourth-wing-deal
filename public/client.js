@@ -74,6 +74,24 @@ function showPaymentBanner(from, to, amount) {
     setTimeout(() => banner.classList.add('hidden'), 500);
   }, 2500);
 }
+// Play announcement - shows what card an opponent played
+function showPlayBanner(playerName, cardName) {
+  let banner = $('playBanner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'playBanner';
+    document.body.appendChild(banner);
+  }
+  banner.innerHTML = `🃏 <b>${esc(playerName)}</b> plays <b>${esc(cardName)}</b>`;
+  banner.classList.remove('hidden');
+  banner.classList.add('show');
+  AudioSys.pop();
+  clearTimeout(banner._t);
+  banner._t = setTimeout(() => {
+    banner.classList.remove('show');
+    setTimeout(() => banner.classList.add('hidden'), 500);
+  }, 2000);
+}
 function tableIds(p) { return (p.table || []).map(e => e.id || e.card); }
 function animatePlays() {
   if (!prevS || !S) return;
@@ -90,7 +108,15 @@ function animatePlays() {
     const fromEl = isMe ? $('hand') : oppEl;
     newOnTable.slice(0, 3).forEach((e, k) => {
       const cid = e.id || e.card;
-      if (k === 0) lastPlayInfo = { playerIdx: i, cardId: cid };
+      if (k === 0) {
+        lastPlayInfo = { playerIdx: i, cardId: cid };
+        // Announce what the opponent played - visible banner
+        if (!isMe) {
+          const c = S.cardMap[cid];
+          const cardName = c ? c.name : 'a card';
+          showPlayBanner(p.name, cardName);
+        }
+      }
       setTimeout(() => {
         // find the actual card element in the DOM for a precise landing spot
         const cardEl = document.querySelector(`.card[data-cid="${cid}"]`);
