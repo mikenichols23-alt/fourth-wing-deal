@@ -1220,3 +1220,15 @@ body {
   flex: 0 0 auto !important;
   margin: 0 !important;
 }
+
+/* STRICT height budget - must fit in 100dvh */
+#game { height: 100dvh !important; max-height: 100dvh !important; }
+#topbar { max-height: 50px !important; overflow: hidden !important; }
+#opponents { max-height: 140px !important; overflow: hidden !important; }
+#midbar { max-height: 120px !important; min-height: 80px !important; overflow: hidden !important; }
+#playerRow { max-height: 90px !important; overflow: hidden !important; }
+#handbar { max-height: 100px !important; overflow: hidden !important; }
+#controls { max-height: 60px !important; overflow: hidden !important; }
+/* Hide scrollbars */
+#game::-webkit-scrollbar { display: none !important; }
+#game { scrollbar-width: none !important; }
