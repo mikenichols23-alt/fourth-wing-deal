@@ -959,3 +959,14 @@ html, body {
   -webkit-text-fill-color: #fff !important;
   -webkit-box-shadow: 0 0 0 1000px #1e3a8a inset !important;
 }
+
+/* Dark background behind Addi's photo and caption */
+.addi-corner {
+  background: #0f172a !important;
+  border-radius: 16px !important;
+  padding: 12px 8px 8px !important;
+}
+.addi-caption {
+  color: #fbbf24 !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8) !important;
+}
