@@ -740,8 +740,22 @@ function focusCardEl(c) {
 }
 
 function setGroupEl(p, setId, entries, forFlow) {
+  // Split oversized sets: a 3-card set with max 2 shows as [2][1], not [3]
+  const maxSize = (typeof SETMAP !== 'undefined' && SETMAP[setId]) ? SETMAP[setId].size : 99;
+  if (entries.length > maxSize) {
+    // Render as multiple groups
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < entries.length; i += maxSize) {
+      const chunk = entries.slice(i, i + maxSize);
+      frag.appendChild(setGroupEl(p, setId, chunk, forFlow));
+    }
+    const wrapper = document.createElement('div');
+    wrapper.className = 'setgroup-split';
+    wrapper.appendChild(frag);
+    return wrapper;
+  }
   const g = document.createElement('div');
-  const complete = entries.length >= SETMAP[setId].size;
+  const complete = entries.length >= maxSize;
   g.className = 'setgroup bd' + (complete ? ' complete' : '');
   // highlight valid move destinations during moveWild flow
   if (flow && flow.kind === 'moveWild' && p.idx === myIdx && flow.sets.includes(setId)) {
