@@ -914,9 +914,11 @@ function _render() {
     d.className = 'oppcol' + (S.turn === i ? ' active-turn' : '');
     const av = AVATARS[oi % AVATARS.length];
     const bg = bannerColors[oi % bannerColors.length]; oi++;
+    const signetEmoji = { shadow: '🌑', mending: '🌿', foresight: '🔮', lightning: '⚡️', distance: '📏' };
+    const sEmoji = p.signet ? (signetEmoji[p.signet.id] || '✨') : '';
     d.innerHTML = `<div class="opp-banner" style="background:${bg}">
         <div class="opp-avatar">${av}</div>
-        <div class="opp-name">${esc(p.name.replace(' \u{1F916}', ''))}</div>
+        <div class="opp-name">${sEmoji ? sEmoji + ' ' : ''}${esc(p.name.replace(' \u{1F916}', ''))}</div>
         <div class="opp-bank"><span class="mcoin">M</span>${p.bankTotal}M</div>
       </div><div class="opp-area"><div class="opp-handcount">🂠 ×${p.handCount}</div></div>`;
     const area = d.querySelector('.opp-area');
@@ -983,7 +985,9 @@ function _render() {
   $('log').scrollTop = 1e6;
 
   // my table
-  $('myName').textContent = me.name;
+  const mySignetEmoji = { shadow: '🌑', mending: '🌿', foresight: '🔮', lightning: '⚡️', distance: '📏' };
+  const mySEmoji = me.signet ? (mySignetEmoji[me.signet.id] || '✨') : '';
+  $('myName').textContent = (mySEmoji ? mySEmoji + ' ' : '') + me.name;
   const mt = $('myTable'); mt.classList.toggle('turn', myTurn);
   $('playerRow').classList.toggle('turn', myTurn);
   // my avatar glows on my turn (Business Deals style)
