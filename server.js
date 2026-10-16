@@ -150,6 +150,16 @@ wss.on('connection', ws => {
         return errTo(ws, 'Game already started.');
       }
       if (room.players.length >= 4) return errTo(ws, 'Room is full (4 max).');
+      // Prevent duplicate seats: if this name is already in the room,
+      // reconnect them instead of adding another seat.
+      const dup = room.players.find(p => p.name === name);
+      if (dup) {
+        try { if (dup.ws && dup.ws !== ws) dup.ws.close(); } catch {}
+        dup.ws = ws;
+        ws._pid = dup.id; ws._room = c;
+        broadcast(room);
+        return;
+      }
       const id = nextId++;
       room.players.push({ ws, id, name, idx: room.players.length });
       ws._pid = id; ws._room = c;
