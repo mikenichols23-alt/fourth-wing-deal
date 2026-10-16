@@ -1527,3 +1527,34 @@ html, body {
 }
 #playBanner.hidden { display: none !important; }
 #playBanner b { color: #a78bfa !important; }
+
+/* Opponent cards - readable size, wrap to 2 rows if needed */
+.opp-area {
+  overflow: hidden !important;
+  flex-wrap: wrap !important;
+  gap: 3px !important;
+  align-content: flex-start !important;
+  max-height: 110px !important;
+}
+.opp-area .card, .opp-area .table-card {
+  width: 52px !important;
+  min-width: 52px !important;
+  height: 72px !important;
+  font-size: 11px !important;
+  margin-left: 0 !important;
+  margin-right: 2px !important;
+  margin-bottom: 2px !important;
+}
+.opp-area .set-group {
+  display: flex !important;
+  gap: 2px !important;
+  margin-right: 4px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Play banner - bigger, stays longer */
+#playBanner {
+  font-size: 22px !important;
+  padding: 18px 32px !important;
+  top: 30% !important;
+}
