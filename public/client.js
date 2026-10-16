@@ -90,7 +90,7 @@ function showPlayBanner(playerName, cardName) {
   banner._t = setTimeout(() => {
     banner.classList.remove('show');
     setTimeout(() => banner.classList.add('hidden'), 500);
-  }, 2000);
+  }, 3500);
 }
 function tableIds(p) { return (p.table || []).map(e => e.id || e.card); }
 function animatePlays() {
