@@ -1900,7 +1900,7 @@ function renderSignets() {
     }
     if (me.signetBlocked && myTurn) {
       const b = document.createElement('button'); b.className = 'btn gold'; b.textContent = '⏳ Unfreeze signet (discard 10⚔️)';
-      b.onclick = () => { selSet = []; startFlow({ kind: 'unblockPick', label: 'Click hand cards worth 10+ Blades, then confirm below' }); updateUnblockBar(); };
+      b.onclick = () => { showUnfreezeModal(); };
       bar.appendChild(b);
     }
   }
@@ -1930,6 +1930,55 @@ function updateUnblockBar() {
   cx.innerHTML = `<div class="circle">✕</div><div class="lbl">Cancel</div>`;
   cx.onclick = () => { flow = null; selSet = []; render(); };
   fa.appendChild(cx);
+}
+
+// Unfreeze signet modal: pick hand cards worth 10+ blades (like payment modal)
+function showUnfreezeModal() {
+  const me = S.players[myIdx];
+  const hand = me.hand || [];
+  if (!hand.length) { toast('No cards in hand to discard.'); return; }
+  let selected = new Set();
+  const total = () => [...selected].reduce((t, id) => t + (hand.find(x => x.id === id)?.value || 0), 0);
+  const renderModal = () => {
+    const sum = total();
+    showModal(`<div style="background:#7c3aed;border-radius:12px;padding:12px;margin:-8px -8px 12px;text-align:center">
+        <h3 style="font-size:18px;margin:0;color:#fff">⏳ Unfreeze Signet</h3>
+        <p style="font-size:14px;margin:6px 0 0;color:#e9d5ff">Select cards worth <b>10+ ⚔️</b> to discard</p>
+        <div style="font-size:20px;font-weight:900;color:${sum >= 10 ? '#22c55e' : '#fbbf24'};margin-top:8px">Selected: ${sum}⚔️ / 10⚔️</div>
+      </div>
+      <div id="unfreezeGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-height:50vh;overflow-y:auto;padding:4px"></div>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
+        <button class="btn gold" id="unfreezeConfirm" style="font-size:18px;padding:14px 32px;${sum < 10 ? 'opacity:0.4' : ''}" ${sum < 10 ? 'disabled' : ''}>✓ Unfreeze (${sum}⚔️)</button>
+        <button class="btn" id="unfreezeCancel" style="font-size:16px;padding:12px 24px;background:#475569">✖ Cancel</button>
+      </div>`, true);
+    const grid = $('unfreezeGrid');
+    hand.forEach(c => {
+      const full = (S.cardMap && S.cardMap[c.id]) || c;
+      const card = cardEl(full, false, '', false);
+      card.style.cursor = 'pointer';
+      card.style.width = '90px'; card.style.height = '126px';
+      const isSel = selected.has(c.id);
+      card.style.border = isSel ? '4px solid #22c55e' : '3px solid transparent';
+      if (isSel) card.style.boxShadow = '0 0 16px #22c55e';
+      card.onclick = (ev) => {
+        ev.stopPropagation();
+        if (selected.has(c.id)) selected.delete(c.id); else selected.add(c.id);
+        AudioSys.tap();
+        renderModal();
+      };
+      grid.appendChild(card);
+    });
+    const confirm = $('unfreezeConfirm');
+    if (confirm && sum >= 10) {
+      confirm.onclick = () => {
+        hideModal();
+        AudioSys.tap();
+        send({ t: 'unblock', cards: [...selected] });
+      };
+    }
+    $('unfreezeCancel').onclick = () => { hideModal(); };
+  };
+  renderModal();
 }
 
 // (double-tap wild recolor removed — single tap goes straight to move mode)
