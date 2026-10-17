@@ -325,8 +325,16 @@ async function pumpBots(room) {
         const now = JSON.stringify({ t: g2.turn, ph: g2.phase, p: g2.pending,
           h: g2.players.map(p => p.hand.length) });
         if (now === snapshot) {
+          // NEVER time out a pending that a human needs to answer — wait for them
+          const pd2 = g2.pending;
+          const humanAwaited = pd2 && !room.botObjs.some(b => {
+            const ai = pd2.awaits != null ? pd2.awaits : pd2.from != null ? pd2.from
+              : (pd2.type === 'foresight' ? pd2.by : null);
+            return ai === b.i;
+          });
+          if (humanAwaited) return; // human is thinking — do not clear, do not skip
           if (unstickBot(room)) pumpBots(room).catch(e => console.error("pump:", e));
-          else { // last resort: clear pending and force next turn
+          else { // last resort: clear pending and force next turn (bots only)
             try { g2.pending = null; g2._nextTurn(); } catch (e) {}
             broadcast(room);
             pumpBots(room).catch(e => console.error("pump:", e));
@@ -348,6 +356,16 @@ function unstickBot(room) {
   if (!g || g.winner != null || !room.botObjs || !room.botObjs.length) return false;
   const bot = room.botObjs.find(b => b.i === g.turn);
   if (!bot) return false;
+  // NEVER unstick if a human needs to answer a pending — wait for them
+  const pd = g.pending;
+  if (pd) {
+    const humanAwaited = !room.botObjs.some(b => {
+      const ai = pd.awaits != null ? pd.awaits : pd.from != null ? pd.from
+        : (pd.type === 'foresight' ? pd.by : null);
+      return ai === b.i;
+    });
+    if (humanAwaited) return false;
+  }
   const key = g.turn + '|' + g.phase + '|' + JSON.stringify(g.pending) + '|' +
     g.players.map(p => p.hand.length + '/' + p.table.length + '/' + p.bank.length).join(',');
   if (room._lastBotKey === key && (room._botStuckCount = (room._botStuckCount || 0) + 1) >= 2) {
