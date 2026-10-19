@@ -1799,7 +1799,25 @@ window.onload = () => {
   const drawPick = (e) => { e.preventDefault(); AudioSys.deal(); send({ t: 'draw' }); };
   $('drawBtn').onclick = drawPick;
   $('drawBtn').ontouchend = drawPick;
-  $('endBtn').onclick = () => { AudioSys.tap(); endTurnTapped = true; send({ t: 'end' }); };
+  $('endBtn').onclick = () => {
+    AudioSys.tap();
+    // Confirm only when ending early — a normal end (0 plays left) stays one tap
+    if (S && S.playsLeft > 0) {
+      const n = S.playsLeft;
+      showModal(`<div style="background:#b45309;border-radius:12px;padding:12px;margin:-8px -8px 12px;text-align:center">
+          <h3 style="font-size:20px;margin:0;color:#fff">End Turn?</h3>
+          <p style="font-size:15px;margin:8px 0 0;color:#fef3c7">You still have <b>${n} play${n === 1 ? '' : 's'}</b> left.</p>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:8px">
+          <button class="btn" id="endKeep" style="font-size:17px;padding:14px 28px;background:#16a34a">▶ Keep Playing</button>
+          <button class="btn" id="endConfirm" style="font-size:17px;padding:14px 28px;background:#475569">End Turn</button>
+        </div>`, true);
+      $('endKeep').onclick = () => { AudioSys.tap(); hideModal(); };
+      $('endConfirm').onclick = () => { AudioSys.tap(); hideModal(); endTurnTapped = true; send({ t: 'end' }); };
+      return;
+    }
+    endTurnTapped = true; send({ t: 'end' });
+  };
   $('drawPile').onclick = () => { if (myIdx != null && S && S.turn === myIdx && S.phase === 'draw') { AudioSys.deal(); send({ t: 'draw' }); } };
   $('focusOverlayClose').onclick = () => { selCard = null; selTableWild = null; render(); };
   $('focusWrap').onclick = (e) => { if (e.target.id === 'focusWrap') { selCard = null; selTableWild = null; render(); } };
